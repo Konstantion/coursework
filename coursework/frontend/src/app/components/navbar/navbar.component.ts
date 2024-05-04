@@ -60,19 +60,19 @@ export class NavbarComponent implements OnInit {
   }
 
   onTables() {
-    this.router.navigate([`tables`]);
+    this.router.navigate([`expeditions`]);
   }
 
   onProducts() {
-    this.router.navigate([`products`]);
+    this.router.navigate([`gears`]);
   }
 
   onOrders() {
-    this.router.navigate([`orders`]);
+    this.router.navigate([`equipments`]);
   }
 
   onBills() {
-    this.router.navigate([`bills`]);
+    this.router.navigate([`logs`]);
   }
 
   onUser() {

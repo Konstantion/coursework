@@ -41,28 +41,4 @@ subprojects {
     test {
         useJUnitPlatform()
     }
-
-    tasks.register('checkstyleReport') {
-        group "myTasks"
-        dependsOn checkstyleMain
-        doFirst {
-            println "Checkstyle completed for module $project.name"
-        }
-    }
-
-    tasks.register('projectParentCheck') {
-        group "myTasks"
-        def javaWebProject = this.parent
-        doFirst {
-            println "$javaWebProject.name"
-        }
-    }
-
-    tasks.register('projectChildCheck') {
-        group "myTasks"
-        def javaWebProject = this.childProjects
-        doFirst {
-            println "$javaWebProject"
-        }
-    }
 }

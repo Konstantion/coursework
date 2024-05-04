@@ -3,20 +3,20 @@
     <p-confirmPopup></p-confirmPopup>
     <nav class="navbar navbar-expand-lg navbar-light bg-light border">
         <div class="container-fluid">
-            <a class="navbar-brand mb-2" href="#">Restraint manager</a>
+            <a class="navbar-brand mb-2" href="#">Speleologists' Hub</a>
             <div class="navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item cursor-pointer" (click)="onTables()">
-                        <a class="nav-link cursor-pointer">Tables</a>
+                        <a class="nav-link cursor-pointer">Expeditions</a>
                     </li>
                     <li class="nav-item cursor-pointer" (click)="onProducts()">
-                        <a class="nav-link">Products</a>
+                        <a class="nav-link">Gear</a>
                     </li>
                     <li class="nav-item cursor-pointer" (click)="onOrders()">
-                        <a class="nav-link">Orders</a>
+                        <a class="nav-link">Equipment Requests</a>
                     </li>
                     <li class="nav-item cursor-pointer" (click)="onBills()">
-                        <a class="nav-link">Bills</a>
+                        <a class="nav-link">Supply Log</a>
                     </li>
                     <ng-container *ngIf="authorizedUser.authenticated.user.roles.includes('ADMIN')">
                         <li class="nav-item cursor-pointer" (click)="onAdmin()">
@@ -24,7 +24,7 @@
                         </li>
                     </ng-container>
                     <li class="nav-item cursor-pointer" (click)="calls.length !== 0 ? onCalls() : null">
-                        <a class="nav-link">Calls <span *ngIf="calls.length !== 0" class="badge bg-secondary">
+                        <a class="nav-link">Alerts <span *ngIf="calls.length !== 0" class="badge bg-secondary">
                                 {{calls.length !== 0 ? calls.length : ''}}</span></a>
                         <p-overlay [(visible)]="overlayVisible"
                             [responsive]="{ breakpoint: '640px', direction: 'bottom', contentStyleClass: 'h-20rem' }"

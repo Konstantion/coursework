@@ -1,0 +1,119 @@
+<ng-container *ngIf="(pageState$ | async) as pageState">
+    <div class="container border my-3 rounded" style="height: 100hv;">
+        <div class="container">
+            <p-toast></p-toast>
+            <p-confirmPopup></p-confirmPopup>
+            <h1 class="text-center">Gear: <i> {{ pageState.product.name }} </i></h1>
+            <div class="row">
+                <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
+                    <app-spinner></app-spinner>
+                </ng-container>
+                <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
+                    <div class="col-6">
+                        <p><strong>Name:</strong> {{ pageState.product.name }}</p>
+                        <p><strong>Price:</strong> {{ pageState.product.price }}</p>
+                        <p><strong>Weight:</strong> {{ pageState.product.weight }}</p>
+                        <p class="card-text cursor-pointer"><strong>Category: </strong><span class="badge"
+                                [ngClass]="pageState.category ? 'text-bg-success' : 'text-bg-danger'">
+                                {{ pageState.category ? pageState.category.name : 'absent' }} </span>
+                        </p>
+                        <p><strong>Description: </strong> {{ pageState.product.description }}</p>
+                        <p><strong>Created At: </strong> {{ pageState.product.createdAt }}</p>
+                        <p><strong>Deactivated At: </strong> {{ pageState.product.deactivateAt }}</p>
+                        <p><strong>Status: </strong> <span class="badge"
+                                [ngClass]="pageState.product.active ? 'text-bg-success' : 'text-bg-danger'">
+                                {{ pageState.product.active ? 'active' : 'inactive' }} </span></p>
+                        <div class="mb-3">
+                            <button (click)="onActivate()"
+                                class="btn btn-success me-3 w-25 border-1 border-dark">Activate</button>
+                            <button (click)="onDeactivate()"
+                                class="btn btn-warning me-3 w-25 border-1 border-dark">Deactivate</button>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-primary me-3 w-25 border-1 border-dark"
+                                (click)="onUpdate()">Update</button>
+                            <button class="btn btn-danger me-3 w-25 border-1 border-dark"
+                                (click)="onDelete()">Delete</button>
+                        </div>
+                    </div>
+                    <div class="col md-9">
+                        <img class="img" style="width: 40vh; height: 40vh;" [src]="pageState.imageUrl"
+                            alt="Product Image">
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <!--Update product modal-->
+    <ng-container *ngIf="showUpdateModal">
+        <ng-container *ngIf="(createState$ | async) as cSate">
+            <app-modal [closeOnClick]="false" [showModal]="showUpdateModal" (closeModel)="closeModal()">
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input [ngClass]="cSate.invalid && cSate.violations.name ? 'is-invalid' : null" type="text"
+                        class="form-control" id="name" [(ngModel)]="productData.name" name="name">
+                    <div *ngIf="cSate.invalid && cSate.violations.name">
+                        <div class="text-red-500">
+                            {{ cSate.violations.name }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input [ngClass]="cSate.invalid && cSate.violations.price ? 'is-invalid' : null" type="number"
+                        class="form-control" id="price" [(ngModel)]="productData.price" name="price">
+                    <div *ngIf="cSate.invalid && cSate.violations.price">
+                        <div class="text-red-500" [innerHTML]="cSate.violations.price">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="weight" class="form-label">Weight</label>
+                    <input [ngClass]="cSate.invalid && cSate.violations.weight ? 'is-invalid' : null" type="number"
+                        class="form-control" id="weight" [(ngModel)]="productData.weight" name="weight">
+                    <div *ngIf="cSate.invalid && cSate.violations.weight">
+                        <div class="text-red-500">
+                            {{ cSate.violations.weight }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image</label>
+                    <input [ngClass]="cSate.invalid && cSate.violations.file ? 'is-invalid' : null" type="file"
+                        class="form-control" id="image" (change)="onImageSelected($event)" name="image">
+                    <div *ngIf="cSate.invalid && cSate.violations.file">
+                        <div class="text-red-500">
+                            {{ cSate.violations.file }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea [ngClass]="cSate.invalid && cSate.violations.description ? 'is-invalid' : null"
+                        class="form-control" id="description" [(ngModel)]="productData.description"
+                        name="description"></textarea>
+                    <div *ngIf="cSate.invalid && cSate.violations.description">
+                        <div class="text-red-500">
+                            {{ cSate.violations.description }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="categoryId" class="form-label">Category</label>
+                    <select class="form-select" id="categoryId" [(ngModel)]="productData.categoryId" name="categoryId">
+                        <option value="" selected>Not specified</option>
+                        <option *ngFor="let category of categories" [value]="category.id">{{ category.name
+                            }}</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <p> if you <b>don't want to change </b>the value of a variable, leave its <b>input empty</b>! </p>
+                </div>
+                <button (click)="updateProduct()" class="btn btn-primary me-2">Update Gear</button>
+                <button (click)="closeModal()" class="btn btn-secondary">Close</button>
+            </app-modal>
+        </ng-container>
+    </ng-container>
+</ng-container>

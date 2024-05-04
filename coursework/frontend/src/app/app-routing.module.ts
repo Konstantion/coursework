@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
-import { HallComponent } from './components/hall/hall.component';
+import { CampComponent } from './components/camp/camp.component';
 import { AccessGuardService } from './services/guard/access-guard.service';
-import { TablesComponent } from './components/tables/tables.component';
-import { TableComponent } from './components/table/table.component';
+import { ExpeditionComponents } from './components/expeditions/expedition-components.component';
+import { ExpeditionComponent } from './components/expedition/expedition.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { AdminAccessGuardService } from './services/admin-guard/admin-access-guard.service';
 import { OrderComponent } from './components/order/order.component';
-import { ProductsComponent } from './components/products/products.component';
-import { ProductComponent } from './components/product/product.component';
+import { GearsComponent } from './components/gears/gears.component';
+import { GearComponent } from './components/gear/gear.component';
 import { UserComponent } from './components/user/user.component';
 import { BillComponent } from './components/bill/bill.component';
 import { OrdersComponent } from './components/orders/orders.component';
@@ -19,7 +19,7 @@ import { CategoryComponent } from './components/category/category.component';
 
 const routes: Routes = [{
   path: '',
-  redirectTo: 'tables',
+  redirectTo: 'expeditions',
   pathMatch: 'full'
 },
 {
@@ -27,8 +27,8 @@ const routes: Routes = [{
   component: LoginComponent
 },
 {
-  path: 'halls/:id',
-  component: HallComponent,
+  path: 'camps/:id',
+  component: CampComponent,
   canActivate: [AccessGuardService]
 },
 {
@@ -37,33 +37,33 @@ const routes: Routes = [{
   canActivate: [AccessGuardService]
 },
 {
-  path: 'tables/:id',
-  component: TableComponent,
+  path: 'expeditions/:id',
+  component: ExpeditionComponent,
   canActivate: [AccessGuardService]
 },
 {
-  path: 'orders/:id',
+  path: 'equipments/:id',
   component: OrderComponent,
   canActivate: [AccessGuardService]
 },
 {
-  path: 'orders',
+  path: 'equipments',
   component: OrdersComponent,
   canActivate: [AccessGuardService]
 },
 {
-  path: 'bills',
+  path: 'logs',
   component: BillsComponent,
   canActivate: [AccessGuardService]
 },
 {
-  path: 'bills/:id',
+  path: 'logs/:id',
   component: BillComponent,
   canActivate: [AccessGuardService]
 },
 {
-  path: 'products/:id',
-  component: ProductComponent,
+  path: 'gears/:id',
+  component: GearComponent,
   canActivate: [AccessGuardService]
 },
 {
@@ -77,13 +77,13 @@ const routes: Routes = [{
   canActivate: [AdminAccessGuardService]
 },
 {
-  path: 'tables',
-  component: TablesComponent,
+  path: 'expeditions',
+  component: ExpeditionComponents,
   canActivate: [AccessGuardService]
 },
 {
-  path: 'products',
-  component: ProductsComponent,
+  path: 'gears',
+  component: GearsComponent,
   canActivate: [AccessGuardService]
 },
 {
@@ -93,7 +93,7 @@ const routes: Routes = [{
 },
 {
   path: '**',
-  redirectTo: 'tables'
+  redirectTo: 'expeditions'
 }];
 
 @NgModule({

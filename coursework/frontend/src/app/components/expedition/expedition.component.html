@@ -1,0 +1,210 @@
+<ng-container *ngIf="(pageState$ | async) as pageState">
+    <p-toast></p-toast>
+    <p-confirmPopup></p-confirmPopup>
+    <div class="container border my-3 rounded" style="height: 100hv;">
+        <div class="container">
+            <h1 class="text-center">Expedition: <i> {{ pageState.table.name }} </i></h1>
+            <div class="row">
+                <ng-container *ngIf="pageState.tableState === DataState.LOADED_STATE">
+                    <div class="col-6">
+                        <p><strong>Name:</strong> {{ pageState.table.name }}</p>
+                        <p><strong>Capacity:</strong> {{ pageState.table.capacity }}</p>
+                        <p><strong>Created At: </strong> {{ pageState.table.createdAt }}</p>
+                        <p><strong>Type: </strong>
+                            <span class="badge"
+                                [ngClass]="pageState.table.tableType === 'VIP' ? 'text-bg-warning' : 'text-bg-info'">
+                                {{ pageState.table.tableType }} </span>
+                        </p>
+                        <p class="card-text cursor-pointer" [ngClass]="pageState.table.hallId ? 'cursor-pointer' : null"
+                            (click)="onHallClick()"><strong>Camp: </strong><span class="badge"
+                                [ngClass]="pageState.table.hallId ? 'text-bg-success' : 'text-bg-danger'">
+                                {{ pageState.table.hallId ? 'present' : 'absent' }} </span>
+                        </p>
+                        <p (click)="onOrderClick()" class="card-text cursor-pointer"><strong>Equipment: </strong><span
+                                class="badge"
+                                [ngClass]="pageState.table.orderId ? 'text-bg-success' : 'text-bg-danger'">
+                                {{ pageState.table.orderId ? 'present' : 'absent' }} </span>
+                        </p>
+                        <p><strong>Status: </strong> <span class="badge"
+                                [ngClass]="pageState.table.active ? 'text-bg-success' : 'text-bg-danger'">
+                                {{ pageState.table.active ? 'active' : 'inactive' }} </span></p>
+                        <div class="mb-3">
+                            <button (click)="onActivate()"
+                                class="btn btn-success me-3 w-25 border-1 border-dark">Activate</button>
+                            <button (click)="onDeactivate()"
+                                class="btn btn-warning me-3 w-25 border-1 border-dark">Deactivate</button>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-primary me-3 w-25 border-1 border-dark"
+                                (click)="onShowTableModal()">Update</button>
+                            <button class="btn btn-danger me-3 w-25 border-1 border-dark"
+                                (click)="deletePopUp()">Delete</button>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-primary me-3 w-25 border-1 border-dark"
+                                (click)="onCreateOrder()">Create equipment</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary me-3 w-25 border-1 border-dark"
+                                (click)="onShowWaiterModal()">Add Guide</button>
+                            <button class="btn btn-primary me-3 w-25 border-1 border-dark"
+                                (click)="onRemoveWaiterModal()">Remove Guide</button>
+                            <button class="btn btn-danger me-3 w-25 border-1 border-dark"
+                                (click)="onRemoveWaiters()">Remove all</button>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="container my-3">
+            <ng-container *ngIf="pageState.usersState === DataState.LOADING_STATE">
+                <div class="d-flex justify-content-center align-items-center">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="pageState.usersState === DataState.LOADED_STATE && pageState.waiters.length !== 0">
+                <h2 class="text-center">Expedition Guides</h2>
+                <div class="row row-cols-2 row-cols-md-3 g-4">
+
+                    <ng-container *ngFor="let waiter of pageState.waiters">
+                        <div class="col-4">
+                            <app-user-card (onClick)="userRoute($event)" [user]="waiter">
+                            </app-user-card>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>
+<!--table modal -->
+<ng-container *ngIf="showTableModal">
+    <app-modal [closeOnClick]="false" [showModal]="showTableModal" (closeModel)="onCloseTableModal()">
+        <ng-container *ngIf="(updateTableState$ | async) as utState">
+            <ng-container *ngIf="utState.dataState === DataState.LOADING_STATE">
+                <div class="d-flex justify-content-center align-items-center">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+            </ng-container>
+            <p-message *ngIf="utState.dataState === DataState.ERROR_STATE" severity="error" [text]="utState.message"
+                styleClass="mb-2 w-full"></p-message>
+            <form *ngIf="utState.dataState !== DataState.LOADING_STATE">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input [ngClass]="utState.invalid && utState.violations.name? 'is-invalid' : null" type="text"
+                        class="form-control" name="name" [(ngModel)]="updateTableRequest.name">
+                    <div *ngIf="utState.invalid && utState.violations.name">
+                        <div class="text-red-500">
+                            {{utState.violations.name}}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="capacity" class="form-label">Capacity</label>
+                    <input [ngClass]="utState.invalid && utState.violations.capacity? 'is-invalid' : null" type="number"
+                        class="form-control" name="capacity" [(ngModel)]="updateTableRequest.capacity" [ngClass]="">
+                    <div *ngIf="utState.invalid && utState.violations.capacity">
+                        <div class="text-red-500">
+                            {{utState.violations.capacity}}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="tableType" class="form-label">Expedition Type</label>
+                    <select [ngClass]="utState.invalid && utState.violations.tableType? 'is-invalid' : null"
+                        class="form-control" name="tableType" [(ngModel)]="updateTableRequest.tableType">
+                        <option value="COMMON" [selected]="true">Common</option>
+                        <option value="VIP">VIP</option>
+                    </select>
+                    <div *ngIf="utState.invalid && utState.violations.tableType">
+                        <div class="text-red-500">
+                            {{utState.violations.tableType}}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="hallId" class="form-label">Camp</label>
+                    <select class="form-control" name="hallId" [(ngModel)]="updateTableRequest.hallId">
+                        <ng-container *ngFor="let hall of halls">
+                            <option [selected]="hall.id === updateTableRequest.hallId" [value]="hall.id"> {{
+                                hall.name }}
+                            </option>
+                        </ng-container>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input [ngClass]="utState.invalid && utState.violations.password? 'is-invalid' : null"
+                        type="password" class="form-control" name="password" [(ngModel)]="updateTableRequest.password"
+                        placeholder="If you don't want  to change this value leave it empty!">
+                    <div *ngIf="utState.invalid && utState.violations.password">
+                        <div class="text-red-500">
+                            {{utState.violations.password}}
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <button type="button" class="btn btn-secondary me-2 w-25" (click)="onCloseTableModal()">Close</button>
+            <button [disabled]="utState.dataState === DataState.LOADING_STATE" type="button"
+                class="btn btn-primary w-25" (click)="onUpdate()">Update expedition</button>
+        </ng-container>
+    </app-modal>
+</ng-container>
+<!--waiter modal-->
+<ng-container *ngIf="showWaiterModal">
+    <app-modal [closeOnClick]="false" [showModal]="showWaiterModal" (closeModel)="onCloseWaiterModal()">
+        <ng-container *ngIf="(addWaiterState$ | async) as awState">
+            <ng-container *ngIf="awState.dataState === DataState.LOADING_STATE">
+                <div class="d-flex justify-content-center align-items-center">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+            </ng-container>
+            <p-message *ngIf="awState.dataState === DataState.ERROR_STATE" severity="error" [text]="awState.message"
+                styleClass="mb-2 w-full"></p-message>
+            <form *ngIf="awState.dataState !== DataState.LOADING_STATE">
+                <div class="mb-3">
+                    <label for="waiterId" class="form-label">Guide</label>
+                    <select class="form-control" name="waiterId" [(ngModel)]="addWaiterRequest.waiterId">
+                        <ng-container *ngFor="let waiter of waiters">
+                            <option [selected]="waiter.id === addWaiterRequest.waiterId" [value]="waiter.id">
+                                {{ waiter.lastName + ' ' + waiter.firstName + ' - ' + waiter.username }}
+                            </option>
+                        </ng-container>
+                    </select>
+                </div>
+            </form>
+            <button type="button" class="btn btn-secondary me-2 w-25" (click)="onCloseWaiterModal()">Close</button>
+            <button [disabled]="awState.dataState === DataState.LOADING_STATE" type="button"
+                class="btn btn-primary w-25" (click)="onAddWaiter()">Add Guide</button>
+        </ng-container>
+    </app-modal>
+</ng-container>
+<!--remove modal-->
+<ng-container *ngIf="removeWaiterModal">
+    <app-modal [closeOnClick]="false" [showModal]="removeWaiterModal" (closeModel)="onCloseRemoveModal()">
+        <ng-container *ngIf="(removeWaiterState$ | async) as rwState">
+            <ng-container *ngIf="rwState.dataState === DataState.LOADING_STATE">
+                <div class="d-flex justify-content-center align-items-center">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+            </ng-container>
+            <p-message *ngIf="rwState.dataState === DataState.ERROR_STATE" severity="error" [text]="rwState.message"
+                styleClass="mb-2 w-full"></p-message>
+            <form *ngIf="rwState.dataState !== DataState.LOADING_STATE">
+                <div class="mb-3">
+                    <label for="waiterId" class="form-label">Guide</label>
+                    <select class="form-control" name="waiterId" [(ngModel)]="removeWaiterRequest.waiterId">
+                        <ng-container *ngFor="let waiter of waiters">
+                            <option [selected]="waiter.id === removeWaiterRequest.waiterId" [value]="waiter.id">
+                                {{ waiter.lastName + ' ' + waiter.firstName + ' - ' + waiter.username }}
+                            </option>
+                        </ng-container>
+                    </select>
+                </div>
+            </form>
+            <button type="button" class="btn btn-secondary me-2 w-25" (click)="onCloseRemoveModal()">Close</button>
+            <button [disabled]="rwState.dataState === DataState.LOADING_STATE" type="button"
+                class="btn btn-primary w-25" (click)="onRemoveWaiter()">Remove Guide</button>
+        </ng-container>
+    </app-modal>
+</ng-container>

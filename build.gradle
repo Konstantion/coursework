@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'idea'
     apply plugin: 'checkstyle'
 
-    group = 'edu.geekhub'
+    group = 'com.konstantion'
 
 
     repositories {

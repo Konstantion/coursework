@@ -13,7 +13,7 @@ import { MessageModule } from 'primeng/message';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
-import { HallComponent } from './components/hall/hall.component';
+import { CampComponent } from './components/camp/camp.component';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SidebarModule } from 'primeng/sidebar';
@@ -25,18 +25,18 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TabViewModule } from 'primeng/tabview';
 import { HttpInterceptorService } from './services/interceptor/http-interceptor.service';
-import { TablesComponent } from './components/tables/tables.component';
+import { ExpeditionComponents } from './components/expeditions/expedition-components.component';
 import { ModalComponent } from './components/modal/modal.component';
-import { TableCardComponent } from './components/table-card/table-card.component';
+import { ExpeditionCardComponent } from './components/expedition-card/expedition-card.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { TableComponent } from './components/table/table.component';
+import { ExpeditionComponent } from './components/expedition/expedition.component';
 import { UserCardComponent } from './components/user-card/user-card.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { ConfirmationService } from 'primeng/api';
 import { OrderComponent } from './components/order/order.component';
-import { ProductsComponent } from './components/products/products.component';
-import { ProductsCardComponent } from './components/products-card/products-card.component';
-import { ProductComponent } from './components/product/product.component';
+import { GearsComponent } from './components/gears/gears.component';
+import { GearCardComponent } from './components/gear-card/gear-card.component';
+import { GearComponent } from './components/gear/gear.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { UserComponent } from './components/user/user.component';
 import { BillComponent } from './components/bill/bill.component';
@@ -61,18 +61,18 @@ import { AdminTablesComponent } from './components/admin-tables/admin-tables.com
   declarations: [
     AppComponent,
     LoginComponent,
-    HallComponent,
-    TablesComponent,
+    CampComponent,
+    ExpeditionComponents,
     ModalComponent,
-    TableCardComponent,
+    ExpeditionCardComponent,
     NavbarComponent,
-    TableComponent,
+    ExpeditionComponent,
     UserCardComponent,
     AdminComponent,
     OrderComponent,
-    ProductsComponent,
-    ProductsCardComponent,
-    ProductComponent, SpinnerComponent, UserComponent, BillComponent, OrderCardComponent, OrdersComponent, BillCardComponent, BillsComponent, GuestComponent, GuestCardComponent, GuestsComponent, UsersComponent, CallsComponent, AdminTablesComponent, CategoryComponent, CategoriesComponent, CategoryCardComponent
+    GearsComponent,
+    GearCardComponent,
+    GearComponent, SpinnerComponent, UserComponent, BillComponent, OrderCardComponent, OrdersComponent, BillCardComponent, BillsComponent, GuestComponent, GuestCardComponent, GuestsComponent, UsersComponent, CallsComponent, AdminTablesComponent, CategoryComponent, CategoriesComponent, CategoryCardComponent
   ],
   imports: [
     BrowserModule,

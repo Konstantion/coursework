@@ -1,0 +1,150 @@
+<div class="container-fluid">
+    <p-toast></p-toast>
+    <p-confirmPopup></p-confirmPopup>
+    <ng-container *ngIf="(pageState$ | async) as pageState">
+        <div class="row" style="height: 850px">
+            <div class="col-2 bg-light border-end border-dark border-opacity-50" style="height: 100hv;">
+                <h4 class="text-center my-3">Camp</h4>
+                <ul class="nav flex-column mb-4">
+                    <select #halls (change)="onSelectChange(halls.value)" class="form-select custom-select border-dark">
+                        <ng-container *ngIf="pageState.hallsState === DataState.LOADING_STATE">
+                            <option></option>
+                        </ng-container>
+                        <ng-container *ngIf="pageState.hallsState === DataState.LOADED_STATE">
+                            <ng-container *ngFor="let hall of pageState.halls">
+                                <option [value]="hall.id"
+                                    [selected]="(hallIdStatus$ | async) !== '' && (hallIdStatus$ | async) === hall.id ? true : null">
+                                    {{ hall.name }}
+                                </option>
+                            </ng-container>
+                        </ng-container>
+                    </select>
+                </ul>
+                <div class="d-grid">
+                    <button class="btn btn-primary mb-3 border-1 border-dark" (click)="onShowTableModal()">Create
+                        Expedition</button>
+                </div>
+                <div class="d-grid">
+                    <button class="btn btn-primary mb-3 border-1 border-dark" (click)="onShowHallModal()">Create
+                        Camp</button>
+                </div>
+                <ng-container *ngIf="pageState.hallsState === DataState.LOADED_STATE">
+                    <div class="d-grid">
+                        <button class="btn btn btn-secondary mb-3 border-1 border-dark"
+                            [disabled]="(hallIdStatus$ | async) === '' ? 'true' : null"
+                            (click)="onSelectedHallClick()">Selected Camp</button>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="col mt-3">
+                <div class="row row-cols-2 row-cols-md-3 g-4">
+                    <ng-container *ngIf="pageState.tablesState !== DataState.LOADED_STATE">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p-progressSpinner></p-progressSpinner>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="pageState.tablesState === DataState.LOADED_STATE">
+                        <ng-container *ngFor="let table of pageState.tables">
+                            <div class="col-4">
+                                <app-table-card [table]="table"></app-table-card>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <!--table modal -->
+    <ng-container *ngIf="showTableModal">
+        <app-modal [closeOnClick]="false" [showModal]="showTableModal" (closeTableModel)="onCloseTableModal()">
+            <ng-container *ngIf="(createTableState$ | async) as ctState">
+                <ng-container *ngIf="ctState.dataState === DataState.LOADING_STATE">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <p-progressSpinner></p-progressSpinner>
+                    </div>
+                </ng-container>
+                <p-message *ngIf="ctState.dataState === DataState.ERROR_STATE" severity="error" [text]="ctState.message"
+                    styleClass="mb-2 w-full"></p-message>
+                <form *ngIf="ctState.dataState !== DataState.LOADING_STATE">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input [ngClass]="ctState.invalid && ctState.violations.name? 'is-invalid' : null" type="text"
+                            class="form-control" name="name" [(ngModel)]="createTableRequest.name">
+                        <div *ngIf="ctState.invalid && ctState.violations.name">
+                            <div class="text-red-500">
+                                {{ctState.violations.name}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="capacity" class="form-label">Capacity</label>
+                        <input [ngClass]="ctState.invalid && ctState.violations.capacity? 'is-invalid' : null"
+                            type="number" class="form-control" name="capacity" [(ngModel)]="createTableRequest.capacity"
+                            [ngClass]="">
+                        <div *ngIf="ctState.invalid && ctState.violations.capacity">
+                            <div class="text-red-500">
+                                {{ctState.violations.capacity}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tableType" class="form-label">Expedition Type</label>
+                        <select [ngClass]="ctState.invalid && ctState.violations.tableType? 'is-invalid' : null"
+                            class="form-control" name="tableType" [(ngModel)]="createTableRequest.tableType">
+                            <option value="COMMON" [selected]="true">Common</option>
+                            <option value="VIP">VIP</option>
+                        </select>
+                        <div *ngIf="ctState.invalid && ctState.violations.tableType">
+                            <div class="text-red-500">
+                                {{ctState.violations.tableType}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input [ngClass]="ctState.invalid && ctState.violations.password? 'is-invalid' : null"
+                            type="password" class="form-control" name="password"
+                            [(ngModel)]="createTableRequest.password">
+                        <div *ngIf="ctState.invalid && ctState.violations.password">
+                            <div class="text-red-500">
+                                {{ctState.violations.password}}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <button type="button" class="btn btn-secondary me-2 w-25" (click)="onCloseTableModal()">Close</button>
+                <button [disabled]="ctState.dataState === DataState.LOADING_STATE" type="button"
+                    class="btn btn-primary w-25" (click)="createTable()">Create Expedition</button>
+            </ng-container>
+        </app-modal>
+    </ng-container>
+    <!--hall modal -->
+    <ng-container *ngIf="showHallModal">
+        <app-modal [closeOnClick]="false" [showModal]="showHallModal" (closeModel)="onCloseHallModal()">
+            <ng-container *ngIf="(createHallState$ | async) as chState">
+                <ng-container *ngIf="chState.dataState === DataState.LOADING_STATE">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <p-progressSpinner></p-progressSpinner>
+                    </div>
+                </ng-container>
+                <p-message *ngIf="chState.dataState === DataState.ERROR_STATE" severity="error" [text]="chState.message"
+                    styleClass="mb-2 w-full"></p-message>
+                <form *ngIf="chState.dataState !== DataState.LOADING_STATE">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input [ngClass]="chState.invalid && chState.violations.name? 'is-invalid' : null" type="text"
+                            class="form-control" name="name" [(ngModel)]="createHallRequest.name">
+                        <div *ngIf="chState.invalid && chState.violations.name">
+                            <div class="text-red-500">
+                                {{chState.violations.name}}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <button type="button" class="btn btn-secondary me-2 w-25" (click)="onCloseHallModal()">Close</button>
+                <button [disabled]="chState.dataState === DataState.LOADING_STATE" type="button"
+                    class="btn btn-primary w-25" (click)="createHall()">Create Camp</button>
+            </ng-container>
+        </app-modal>
+    </ng-container>
+</div>
