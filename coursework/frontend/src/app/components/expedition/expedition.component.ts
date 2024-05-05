@@ -17,25 +17,16 @@ import {TableService} from 'src/app/services/table/table.service';
 import {UserService} from 'src/app/services/user/user.service';
 
 @Component({
-  selector: 'app-table',
+  selector: 'app-expedition',
   templateUrl: './expedition.component.html',
   styleUrls: ['./expedition.component.css'],
   providers: [ConfirmationService, MessageService]
 })
 export class ExpeditionComponent implements OnInit {
-  private tableId: string;
-  private pageSubject = new BehaviorSubject<TablePageState>({});
-  private tableSubject = new BehaviorSubject<TableDto>({});
-  private usersSubject = new BehaviorSubject<UserDto[]>([]);
-  private waitersSubject = new BehaviorSubject<UserDto[]>([]);
-
   readonly DataState = DataState;
-
-  pageState$ = this.pageSubject.asObservable();
   updateTableState$: Observable<CreateTableState> = of({});
   addWaiterState$: Observable<AddWaiterState> = of({});
   removeWaiterState$: Observable<AddWaiterState> = of({});
-
   halls: HallDto[] = [];
   waiters: UserDto[] = [];
   showTableModal = false;
@@ -44,7 +35,12 @@ export class ExpeditionComponent implements OnInit {
   updateTableRequest: CreateTableRequestDto = {};
   addWaiterRequest: TableWaiterRequestDto = {};
   removeWaiterRequest: TableWaiterRequestDto = {};
-
+  private tableId: string;
+  private pageSubject = new BehaviorSubject<TablePageState>({});
+  pageState$ = this.pageSubject.asObservable();
+  private tableSubject = new BehaviorSubject<TableDto>({});
+  private usersSubject = new BehaviorSubject<UserDto[]>([]);
+  private waitersSubject = new BehaviorSubject<UserDto[]>([]);
 
   constructor(
     private activeRoute: ActivatedRoute,

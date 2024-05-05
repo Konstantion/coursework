@@ -7,22 +7,23 @@
       <div class="text-center" style="margin-bottom: 50%;">
         <h1>Restraint manager</h1>
       </div>
-      <p-message *ngIf="errorMsg && !validationState.isInvalid" severity="error" [text]="errorMsg"
-        styleClass="mb-2 w-full"></p-message>
+      <p-message *ngIf="errorMsg && !validationState.isInvalid" [text]="errorMsg" severity="error"
+                 styleClass="mb-2 w-full"></p-message>
       <div class="text-left">
         <h2>Sign in </h2>
       </div>
       <div class="field" style="width: 50vh; margin-bottom: 50%;">
 
-        <input [ngClass]="{'ng-invalid ng-dirty' : validationState.isInvalid}"
-          [(ngModel)]="authenticationRequest.password" id="password" pInputText placeholder="Password" type="password"
-          class="w-full">
+        <input [(ngModel)]="authenticationRequest.password"
+               [ngClass]="{'ng-invalid ng-dirty' : validationState.isInvalid}" class="w-full" id="password" pInputText
+               placeholder="Password"
+               type="password">
         <div *ngIf="validationState.isInvalid">
           <div class="text-red-500">
-            {{validationState.validationError}}
+            {{ validationState.validationError }}
           </div>
         </div>
-        <button pButton label="Login" class="w-full mt-2" (click)="login()"></button>
+        <button (click)="login()" class="w-full mt-2" label="Login" pButton></button>
       </div>
     </div>
   </div>

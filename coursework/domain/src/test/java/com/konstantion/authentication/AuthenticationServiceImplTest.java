@@ -1,9 +1,9 @@
 package com.konstantion.authentication;
 
 import com.konstantion.exception.ValidationException;
+import com.konstantion.expedition.model.LoginTableRequest;
+import com.konstantion.expedition.validator.ExpeditionValidator;
 import com.konstantion.jwt.JwtService;
-import com.konstantion.table.model.LoginTableRequest;
-import com.konstantion.table.validator.TableValidator;
 import com.konstantion.user.model.LoginUserRequest;
 import com.konstantion.user.validator.UserValidator;
 import com.konstantion.utils.validator.ValidationResult;
@@ -24,7 +24,9 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 class AuthenticationServiceImplTest {
@@ -33,7 +35,7 @@ class AuthenticationServiceImplTest {
     @Mock
     AuthenticationManager authenticationManager;
     @Mock
-    TableValidator tableValidator;
+    ExpeditionValidator tableValidator;
     @Mock
     UserValidator userValidator;
     @InjectMocks

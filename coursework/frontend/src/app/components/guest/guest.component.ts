@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { BehaviorSubject, catchError, map, of } from 'rxjs';
-import { UpdateGuestRequestDto } from 'src/app/models/dto/guest/update-guest-request-dto';
-import { UpdateGuestState } from 'src/app/models/state/crud/update-guest-state';
-import { DataState } from 'src/app/models/state/enum/data-state';
-import { GuestPageState } from 'src/app/models/state/pages/guest-page-state';
-import { GuestService } from 'src/app/services/guest/guest.service';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {BehaviorSubject, catchError, map, of} from 'rxjs';
+import {UpdateGuestRequestDto} from 'src/app/models/dto/guest/update-guest-request-dto';
+import {UpdateGuestState} from 'src/app/models/state/crud/update-guest-state';
+import {DataState} from 'src/app/models/state/enum/data-state';
+import {GuestPageState} from 'src/app/models/state/pages/guest-page-state';
+import {GuestService} from 'src/app/services/guest/guest.service';
 
 @Component({
   selector: 'app-guest',
@@ -15,26 +15,23 @@ import { GuestService } from 'src/app/services/guest/guest.service';
   providers: [ConfirmationService, MessageService]
 })
 export class GuestComponent implements OnInit {
+  updateGuestData: UpdateGuestRequestDto = {};
+  update = false;
+  readonly DataState = DataState;
+  private guestId = '';
+  private guestPageSubject = new BehaviorSubject<GuestPageState>({dataState: DataState.LOADING_STATE});
+  pageState$ = this.guestPageSubject.asObservable();
+  private updateGuestSubject = new BehaviorSubject<UpdateGuestState>({});
+  updateState$ = this.updateGuestSubject.asObservable();
+
   constructor(
     private guestService: GuestService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router,
     private activeRoute: ActivatedRoute
-  ) { }
-
-  private guestId = '';
-  private guestPageSubject = new BehaviorSubject<GuestPageState>({ dataState: DataState.LOADING_STATE });
-  private updateGuestSubject = new BehaviorSubject<UpdateGuestState>({});
-
-  pageState$ = this.guestPageSubject.asObservable();
-  updateState$ = this.updateGuestSubject.asObservable();
-
-  updateGuestData: UpdateGuestRequestDto = {};
-
-  update = false;
-
-  readonly DataState = DataState;
+  ) {
+  }
 
   ngOnInit(): void {
     this.guestId = this.activeRoute.snapshot.paramMap.get('id');
@@ -52,7 +49,7 @@ export class GuestComponent implements OnInit {
   }
 
   onUpdate() {
-    this.updateGuestData = { ...this.guestPageSubject.value.guest };
+    this.updateGuestData = {...this.guestPageSubject.value.guest};
     this.updateGuestSubject.next({});
     this.update = true;
   }
@@ -126,7 +123,7 @@ export class GuestComponent implements OnInit {
       catchError(error => {
         if (error.status === 422) {
           const response = error.error;
-          this.updateGuestSubject.next({ invalid: true, violations: response.data })
+          this.updateGuestSubject.next({invalid: true, violations: response.data})
           return of({});
         } else {
           return this.handleError(error);
@@ -138,11 +135,11 @@ export class GuestComponent implements OnInit {
   handleError(error: any) {
     let errorResponse = error.error;
     if (error.status === 403) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'Not enough authorities' });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: 'Not enough authorities'});
     } else if (error.status === 400) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: errorResponse.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: errorResponse.message});
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: error.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: error.message});
     }
     return of();
   }

@@ -1,4 +1,4 @@
 export interface CreateBillRequestDto {
-    orderId: string;
-    guestId: string;
+  orderId: string;
+  guestId: string;
 }

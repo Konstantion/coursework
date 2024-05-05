@@ -1,30 +1,30 @@
-<div class="card cursor-pointer" (click)="onCardClick()">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <div class="card-header">
-        <h5 class="card-title"> {{ user.username }}</h5>
-    </div>
-    <div class="card-body">
-        <p class="card-text">First Name: {{ user.firstName }}</p>
-        <p class="card-text">Last Name: {{ user.lastName }}</p>
-        <p class="card-text">Phone Number: {{ user.phoneNumber }}</p>
-        <p class="card-text">Age: {{ user.age }}</p>
-        <p>
-            <span class="badge" [ngClass]="user.active ? 'text-bg-success' : 'text-bg-danger'">
+<div (click)="onCardClick()" class="card cursor-pointer">
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="card-header">
+    <h5 class="card-title"> {{ user.username }}</h5>
+  </div>
+  <div class="card-body">
+    <p class="card-text">First Name: {{ user.firstName }}</p>
+    <p class="card-text">Last Name: {{ user.lastName }}</p>
+    <p class="card-text">Phone Number: {{ user.phoneNumber }}</p>
+    <p class="card-text">Age: {{ user.age }}</p>
+    <p>
+            <span [ngClass]="user.active ? 'text-bg-success' : 'text-bg-danger'" class="badge">
                 {{ user.active ? 'active' : 'inactive' }} </span>
-        </p>
-        <p *ngIf="user.roles">
-            <ng-component *ngFor="let role of user.roles">
-                <span class="badge me-2" [ngClass]="'text-bg-warning'">
+    </p>
+    <p *ngIf="user.roles">
+      <ng-component *ngFor="let role of user.roles">
+                <span [ngClass]="'text-bg-warning'" class="badge me-2">
                     {{ role }} </span>
-            </ng-component>
-        </p>
-        <p *ngIf="user.permissions">
-            <ng-component *ngFor="let permission of user.permissions">
-                <span class="badge me-2" [ngClass]="'text-bg-info'">
+      </ng-component>
+    </p>
+    <p *ngIf="user.permissions">
+      <ng-component *ngFor="let permission of user.permissions">
+                <span [ngClass]="'text-bg-info'" class="badge me-2">
                     {{ permission }} </span>
-            </ng-component>
-        </p>
-        <p class="card-text">Created At: {{ user.createdAt }}</p>
-    </div>
+      </ng-component>
+    </p>
+    <p class="card-text">Created At: {{ user.createdAt }}</p>
+  </div>
 </div>

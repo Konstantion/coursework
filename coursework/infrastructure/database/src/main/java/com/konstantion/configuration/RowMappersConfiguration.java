@@ -1,13 +1,13 @@
 package com.konstantion.configuration;
 
-import com.konstantion.bill.Bill;
 import com.konstantion.call.Call;
+import com.konstantion.camp.Camp;
 import com.konstantion.category.Category;
+import com.konstantion.equipment.Equipment;
+import com.konstantion.expedition.Expedition;
+import com.konstantion.gear.Gear;
 import com.konstantion.guest.Guest;
-import com.konstantion.hall.Hall;
-import com.konstantion.order.Order;
-import com.konstantion.product.Product;
-import com.konstantion.table.Table;
+import com.konstantion.log.Log;
 import com.konstantion.user.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,13 +17,13 @@ import org.springframework.jdbc.core.RowMapper;
 @Configuration
 public class RowMappersConfiguration {
     @Bean
-    public RowMapper<Bill> billRowMapper() {
-        return new BeanPropertyRowMapper<>(Bill.class);
+    public RowMapper<Log> billRowMapper() {
+        return new BeanPropertyRowMapper<>(Log.class);
     }
 
     @Bean
-    public RowMapper<Order> orderRowMapper() {
-        return new BeanPropertyRowMapper<>(Order.class);
+    public RowMapper<Equipment> orderRowMapper() {
+        return new BeanPropertyRowMapper<>(Equipment.class);
     }
 
     @Bean
@@ -37,8 +37,8 @@ public class RowMappersConfiguration {
     }
 
     @Bean
-    public RowMapper<Product> productRowMapper() {
-        return new BeanPropertyRowMapper<>(Product.class);
+    public RowMapper<Gear> productRowMapper() {
+        return new BeanPropertyRowMapper<>(Gear.class);
     }
 
     @Bean
@@ -47,8 +47,8 @@ public class RowMappersConfiguration {
     }
 
     @Bean
-    public RowMapper<Table> tableRowMapper() {
-        return new BeanPropertyRowMapper<>(Table.class);
+    public RowMapper<Expedition> tableRowMapper() {
+        return new BeanPropertyRowMapper<>(Expedition.class);
     }
 
     @Bean
@@ -57,7 +57,7 @@ public class RowMappersConfiguration {
     }
 
     @Bean
-    public RowMapper<Hall> hallRowMapper() {
-        return new BeanPropertyRowMapper<>(Hall.class);
+    public RowMapper<Camp> hallRowMapper() {
+        return new BeanPropertyRowMapper<>(Camp.class);
     }
 }

@@ -8,21 +8,21 @@ public enum Permission {
     //super admin permission
     SUPER_USER,
     //table actions
-    CREATE_TABLE, DELETE_TABLE, UPDATE_TABLE, CHANGE_TABLE_STATE,
-    ASSIGN_WAITER_TO_TABLE, REMOVE_WAITER_FROM_TABLE,
+    CREATE_EXPEDITION, DELETE_EXPEDITION, UPDATE_EXPEDITION, CHANGE_EXPEDITION_STATE,
+    ASSIGN_GUIDE_TO_EXPEDITION, REMOVE_GUIDE_FROM_EXPEDITION,
     //user actions
     CREATE_USER, CHANGE_USER_STATE,
     //product actions
-    CREATE_PRODUCT, DELETE_PRODUCT, UPDATE_PRODUCT, CHANGE_PRODUCT_STATE,
-    DELETE_PRODUCT_FROM_ORDER, ADD_PRODUCT_TO_ORDER,
+    CREATE_GEAR, DELETE_GEAR, UPDATE_GEAR, CHANGE_GEAR_STATE,
+    DELETE_GEAR_FROM_EQUIPMENT, ADD_GEAR_TO_EQUIPMENT,
     //hall actions
-    CREATE_HALL, DELETE_HALL, UPDATE_HALL, CHANGE_HALL_STATE,
+    CREATE_CAMP, DELETE_CAMP, UPDATE_CAMP, CHANGE_CAMP_STATE,
     //bill actions
     CREATE_BILL_FROM_ORDER, CANCEL_BILL, GET_BILL, CLOSE_BILL, CHANGE_BILL_STATE,
     //call actions
-    CALL_WAITER, CLOSE_CALL,
+    CALL_GUIDE, CLOSE_CALL,
     //order actions
-    OPEN_ORDER, CLOSE_ORDER, TRANSFER_ORDER, DELETE_ORDER,
+    OPEN_EQUIPMENT, CLOSE_EQUIPMENT, TRANSFER_EQUIPMENT, DELETE_EQUIPMENT,
     //guest actions
     CREATE_GUEST, UPDATE_GUEST, DELETE_GUEST, CHANGE_GUEST_STATE,
     //category actions
@@ -31,9 +31,9 @@ public enum Permission {
 
     public static Set<Permission> getDefaultWaiterPermission() {
         return Sets.newHashSet(
-                OPEN_ORDER, CLOSE_ORDER,
-                ADD_PRODUCT_TO_ORDER,
-                TRANSFER_ORDER,
+                OPEN_EQUIPMENT, CLOSE_EQUIPMENT,
+                ADD_GEAR_TO_EQUIPMENT,
+                TRANSFER_EQUIPMENT,
                 CLOSE_BILL, CREATE_BILL_FROM_ORDER,
                 CLOSE_CALL
         );
@@ -41,12 +41,12 @@ public enum Permission {
 
     public static Set<Permission> getDefaultAdminPermission() {
         Set<Permission> adminPermissions = Sets.newHashSet(
-                DELETE_PRODUCT_FROM_ORDER, DELETE_ORDER,
-                CREATE_TABLE, UPDATE_TABLE, CHANGE_TABLE_STATE,
+                DELETE_GEAR_FROM_EQUIPMENT, DELETE_EQUIPMENT,
+                CREATE_EXPEDITION, UPDATE_EXPEDITION, CHANGE_EXPEDITION_STATE,
                 CREATE_USER, CHANGE_USER_STATE,
                 CANCEL_BILL, CHANGE_BILL_STATE,
-                CREATE_PRODUCT, UPDATE_PRODUCT, CHANGE_PRODUCT_STATE,
-                CREATE_HALL, UPDATE_HALL, CHANGE_HALL_STATE,
+                CREATE_GEAR, UPDATE_GEAR, CHANGE_GEAR_STATE,
+                CREATE_CAMP, UPDATE_CAMP, CHANGE_CAMP_STATE,
                 CREATE_GUEST, UPDATE_GUEST, CHANGE_GUEST_STATE,
                 CREATE_CATEGORY, UPDATE_CATEGORY
         );
@@ -58,7 +58,7 @@ public enum Permission {
 
     public static Set<Permission> getDefaultTablePermission() {
         return Set.of(
-                CALL_WAITER, GET_BILL
+                CALL_GUIDE, GET_BILL
         );
     }
 }

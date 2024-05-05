@@ -1,12 +1,17 @@
 package com.konstantion.dto.table.converter;
 
-import com.konstantion.dto.table.dto.*;
-import com.konstantion.table.Table;
-import com.konstantion.table.model.CreateTableRequest;
-import com.konstantion.table.model.LoginTableRequest;
-import com.konstantion.table.model.TableWaitersRequest;
-import com.konstantion.table.model.UpdateTableRequest;
+import com.konstantion.dto.table.dto.CreateTableRequestDto;
+import com.konstantion.dto.table.dto.LoginTableRequestDto;
+import com.konstantion.dto.table.dto.TableDto;
+import com.konstantion.dto.table.dto.TableWaitersRequestDto;
+import com.konstantion.dto.table.dto.UpdateTableRequestDto;
+import com.konstantion.expedition.Expedition;
+import com.konstantion.expedition.model.CreateTableRequest;
+import com.konstantion.expedition.model.LoginTableRequest;
+import com.konstantion.expedition.model.TableWaitersRequest;
+import com.konstantion.expedition.model.UpdateTableRequest;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -15,9 +20,17 @@ import java.util.List;
 public interface TableMapper {
     TableMapper INSTANCE = Mappers.getMapper(TableMapper.class);
 
-    TableDto toDto(Table table);
+    @Mapping(target = "tableType", source = "expeditionType")
+    @Mapping(target = "hallId", source = "campId")
+    @Mapping(target = "waitersId", source = "guidesId")
+    @Mapping(target = "orderId", source = "equipmentId")
+    TableDto toDto(Expedition table);
 
-    List<TableDto> toDto(List<Table> entities);
+    @Mapping(target = "tableType", source = "expeditionType")
+    @Mapping(target = "hallId", source = "campId")
+    @Mapping(target = "waitersId", source = "guidesId")
+    @Mapping(target = "orderId", source = "equipmentId")
+    List<TableDto> toDto(List<Expedition> entities);
 
     LoginTableRequest toLoginTableRequest(LoginTableRequestDto requestDto);
 

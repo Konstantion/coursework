@@ -1,8 +1,8 @@
 package com.konstantion.security.table;
 
-import com.konstantion.table.Table;
-import com.konstantion.table.TablePort;
-import com.konstantion.table.authentication.TableAuthenticationToken;
+import com.konstantion.expedition.Expedition;
+import com.konstantion.expedition.ExpeditionPort;
+import com.konstantion.expedition.authentication.TableAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -17,11 +17,11 @@ import java.util.List;
 
 @Component
 public class TableAuthenticationProvider implements AuthenticationProvider {
-    private final TablePort tablePort;
+    private final ExpeditionPort expeditionPort;
     private final PasswordEncoder passwordEncoder;
 
-    public TableAuthenticationProvider(TablePort tablePort, PasswordEncoder passwordEncoder) {
-        this.tablePort = tablePort;
+    public TableAuthenticationProvider(ExpeditionPort expeditionPort, PasswordEncoder passwordEncoder) {
+        this.expeditionPort = expeditionPort;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -51,8 +51,8 @@ public class TableAuthenticationProvider implements AuthenticationProvider {
         return TableAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    private Table getTableByPassword(String password) {
-        List<Table> tables = tablePort.findAll();
+    private Expedition getTableByPassword(String password) {
+        List<Expedition> tables = expeditionPort.findAll();
         return tables.stream()
                 .filter(table -> passwordEncoder.matches(password, table.getPassword()))
                 .findAny().orElse(null);

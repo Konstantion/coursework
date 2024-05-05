@@ -12,7 +12,7 @@ import {ObjectUtils} from 'src/app/models/util/object-utils';
 import {HallService} from 'src/app/services/hall/hall.service';
 
 @Component({
-  selector: 'app-hall',
+  selector: 'app-camp',
   templateUrl: './camp.component.html',
   styleUrls: ['./camp.component.css'],
   providers: [ConfirmationService, MessageService]

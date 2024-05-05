@@ -5,7 +5,7 @@ import com.konstantion.dto.order.dto.OrderDto;
 import com.konstantion.dto.order.dto.OrderProductsRequestDto;
 import com.konstantion.dto.product.converter.ProductMapper;
 import com.konstantion.dto.product.dto.ProductDto;
-import com.konstantion.order.OrderService;
+import com.konstantion.equipment.EquipmentService;
 import com.konstantion.response.ResponseDto;
 import com.konstantion.user.User;
 import com.konstantion.utils.HashMaps;
@@ -13,12 +13,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.ORDER;
+import static com.konstantion.utils.EntityNameConstants.ORDERS;
+import static com.konstantion.utils.EntityNameConstants.PRODUCTS;
 import static java.lang.Math.max;
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
@@ -27,14 +34,14 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/web-api/orders")
 public record OrderController(
-        OrderService orderService
+        EquipmentService equipmentService
 ) {
     private static final OrderMapper orderMapper = OrderMapper.INSTANCE;
     private static final ProductMapper productMapper = ProductMapper.INSTANCE;
 
     @GetMapping()
     public ResponseDto getAllActiveOrders() {
-        List<OrderDto> dtos = orderMapper.toDto(orderService.getAll());
+        List<OrderDto> dtos = orderMapper.toDto(equipmentService.getAll());
 
         return ResponseDto.builder()
                 .status(OK)
@@ -49,7 +56,7 @@ public record OrderController(
     public ResponseDto getOrderById(
             @PathVariable("id") UUID id
     ) {
-        OrderDto dto = orderMapper.toDto(orderService.getById(id));
+        OrderDto dto = orderMapper.toDto(equipmentService.getById(id));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -65,7 +72,7 @@ public record OrderController(
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal User user
     ) {
-        OrderDto dto = orderMapper.toDto(orderService.close(id, user));
+        OrderDto dto = orderMapper.toDto(equipmentService.close(id, user));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -83,11 +90,11 @@ public record OrderController(
             @AuthenticationPrincipal User user
     ) {
 
-        int count = orderService.addProduct(
+        int count = equipmentService.addProduct(
                 id,
                 orderMapper.toOrderProductsRequest(requestDto),
                 user);
-        OrderDto dto = orderMapper.toDto(orderService.getById(id));
+        OrderDto dto = orderMapper.toDto(equipmentService.getById(id));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -105,11 +112,11 @@ public record OrderController(
             @AuthenticationPrincipal User user
     ) {
 
-        int count = orderService.removeProduct(
+        int count = equipmentService.removeProduct(
                 id,
                 orderMapper.toOrderProductsRequest(requestDto),
                 user);
-        OrderDto dto = orderMapper.toDto(orderService.getById(id));
+        OrderDto dto = orderMapper.toDto(equipmentService.getById(id));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -125,7 +132,7 @@ public record OrderController(
             @PathVariable("id") UUID orderId
     ) {
         List<ProductDto> products = productMapper.toDto(
-                orderService.getProductsByOrderId(orderId)
+                equipmentService.getProductsByOrderId(orderId)
         );
         Page<ProductDto> pageDto = new PageImpl<>(products, Pageable.ofSize(max(products.size(), 1)), max(products.size(), 1));
 
@@ -144,7 +151,7 @@ public record OrderController(
             @PathVariable("tableId") UUID tableId,
             @AuthenticationPrincipal User user
     ) {
-        OrderDto dto = orderMapper.toDto(orderService.transferToAnotherTable(
+        OrderDto dto = orderMapper.toDto(equipmentService.transferToAnotherTable(
                 orderId,
                 tableId,
                 user

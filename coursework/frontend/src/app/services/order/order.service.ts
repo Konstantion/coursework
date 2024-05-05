@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { OrderProductRequestDto } from 'src/app/models/dto/order/order-product-request-dto';
-import { OrderResponse } from 'src/app/models/responses/order-response';
-import { ProductResponse } from 'src/app/models/responses/product-response';
-import { environment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, tap} from 'rxjs';
+import {OrderProductRequestDto} from 'src/app/models/dto/order/order-product-request-dto';
+import {OrderResponse} from 'src/app/models/responses/order-response';
+import {ProductResponse} from 'src/app/models/responses/product-response';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,8 @@ export class OrderService {
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
   activeOrders$ = <Observable<OrderResponse>>this.http.get(this.orderUrl)
     .pipe(

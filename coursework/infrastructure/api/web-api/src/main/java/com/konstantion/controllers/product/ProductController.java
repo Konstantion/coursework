@@ -2,11 +2,15 @@ package com.konstantion.controllers.product;
 
 import com.konstantion.dto.product.converter.ProductMapper;
 import com.konstantion.dto.product.dto.ProductDto;
-import com.konstantion.product.ProductService;
+import com.konstantion.gear.GearService;
 import com.konstantion.response.ResponseDto;
 import com.konstantion.utils.HashMaps;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +24,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/web-api/products")
 public record ProductController(
-        ProductService productService
+        GearService gearService
 ) {
     private static final ProductMapper productMapper = ProductMapper.INSTANCE;
 
@@ -34,7 +38,7 @@ public record ProductController(
             @RequestParam("ascending") Optional<Boolean> ascending
     ) {
         Page<ProductDto> productsDto = productMapper.toDto(
-                productService.getAll(
+                gearService.getAll(
                         productMapper.toGetProductsRequest(
                                 pageNumber.orElse(1),
                                 pageSize.orElse(6),
@@ -59,7 +63,7 @@ public record ProductController(
     public ResponseDto getProductById(
             @PathVariable("id") UUID id
     ) {
-        ProductDto productDto = productMapper.toDto(productService.getById(id));
+        ProductDto productDto = productMapper.toDto(gearService.getById(id));
 
         return ResponseDto.builder()
                 .status(OK)

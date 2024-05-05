@@ -1,12 +1,12 @@
 package com.konstantion.adapters.call;
 
 import com.konstantion.ApplicationStarter;
-import com.konstantion.adapters.table.TableDatabaseAdapter;
+import com.konstantion.adapters.expedition.ExpeditionDatabaseAdapter;
 import com.konstantion.adapters.user.UserDatabaseAdapter;
 import com.konstantion.call.Call;
 import com.konstantion.call.Purpose;
 import com.konstantion.configuration.RowMappersConfiguration;
-import com.konstantion.table.Table;
+import com.konstantion.expedition.Expedition;
 import com.konstantion.testcontainers.configuration.DatabaseContainer;
 import com.konstantion.testcontainers.configuration.DatabaseTestConfiguration;
 import com.konstantion.user.User;
@@ -53,7 +53,7 @@ class CallDatabaseAdapterTest {
 
     CallDatabaseAdapter callAdapter;
     UserDatabaseAdapter userDatabaseAdapter;
-    TableDatabaseAdapter tableDatabaseAdapter;
+    ExpeditionDatabaseAdapter tableDatabaseAdapter;
     UUID[] USER_IDS;
     UUID[] TABLE_IDS;
 
@@ -62,8 +62,8 @@ class CallDatabaseAdapterTest {
         callAdapter = new CallDatabaseAdapter(jdbcTemplate, rowMappers.callRowMapper());
         //Initialize related entities for tests
         userDatabaseAdapter = new UserDatabaseAdapter(jdbcTemplate, rowMappers.userRowMapper());
-        tableDatabaseAdapter = new TableDatabaseAdapter(jdbcTemplate, rowMappers.tableRowMapper());
-        Table table = Table.builder()
+        tableDatabaseAdapter = new ExpeditionDatabaseAdapter(jdbcTemplate, rowMappers.tableRowMapper());
+        Expedition table = Expedition.builder()
                 .name("TEST_TABLE")
                 .active(true)
                 .password("PASSWORD")
@@ -91,8 +91,8 @@ class CallDatabaseAdapterTest {
         Call call = Call.builder()
                 .id(null)
                 .purpose(Purpose.CALL_BILL)
-                .tableId(TABLE_IDS[0])
-                .waitersId(Set.of(USER_IDS[0]))
+                .expeditionId(TABLE_IDS[0])
+                .guidesId(Set.of(USER_IDS[0]))
                 .build();
         callAdapter.save(call);
 
@@ -106,13 +106,13 @@ class CallDatabaseAdapterTest {
                 .id(null)
                 .purpose(Purpose.CALL_BILL)
                 .openedAt(openedAt)
-                .tableId(TABLE_IDS[0])
-                .waitersId(Set.of(USER_IDS[0]))
+                .expeditionId(TABLE_IDS[0])
+                .guidesId(Set.of(USER_IDS[0]))
                 .build();
         callAdapter.save(call);
         UUID id = call.getId();
 
-        call.setPurpose(Purpose.CALL_WAITER);
+        call.setPurpose(Purpose.CALL_GUIDE);
         callAdapter.save(call);
 
         Optional<Call> dbCall = callAdapter.findById(id);
@@ -120,7 +120,7 @@ class CallDatabaseAdapterTest {
         assertThat(dbCall).isPresent()
                 .get()
                 .matches(matchedCall -> matchedCall.getId().equals(id)
-                                        && matchedCall.getPurpose().equals(Purpose.CALL_WAITER));
+                        && matchedCall.getPurpose().equals(Purpose.CALL_GUIDE));
         assertThat(dbCall.get().getOpenedAt())
                 .isEqualToIgnoringSeconds(openedAt);
 
@@ -132,14 +132,14 @@ class CallDatabaseAdapterTest {
         Call first = Call.builder()
                 .id(null)
                 .purpose(Purpose.CALL_BILL)
-                .tableId(TABLE_IDS[0])
-                .waitersId(Set.of(USER_IDS[0]))
+                .expeditionId(TABLE_IDS[0])
+                .guidesId(Set.of(USER_IDS[0]))
                 .build();
         Call second = Call.builder()
                 .id(null)
                 .purpose(Purpose.CALL_BILL)
-                .tableId(TABLE_IDS[0])
-                .waitersId(Set.of(USER_IDS[0]))
+                .expeditionId(TABLE_IDS[0])
+                .guidesId(Set.of(USER_IDS[0]))
                 .build();
         callAdapter.save(first);
         callAdapter.save(second);
@@ -156,14 +156,14 @@ class CallDatabaseAdapterTest {
         Call first = Call.builder()
                 .id(null)
                 .purpose(Purpose.CALL_BILL)
-                .tableId(TABLE_IDS[0])
-                .waitersId(Set.of(USER_IDS[0]))
+                .expeditionId(TABLE_IDS[0])
+                .guidesId(Set.of(USER_IDS[0]))
                 .build();
         Call second = Call.builder()
                 .id(null)
                 .purpose(Purpose.CALL_BILL)
-                .tableId(TABLE_IDS[0])
-                .waitersId(Set.of(USER_IDS[0]))
+                .expeditionId(TABLE_IDS[0])
+                .guidesId(Set.of(USER_IDS[0]))
                 .build();
         callAdapter.save(first);
         callAdapter.save(second);
@@ -181,19 +181,19 @@ class CallDatabaseAdapterTest {
         Call first = Call.builder()
                 .id(null)
                 .purpose(Purpose.CALL_BILL)
-                .tableId(TABLE_IDS[0])
-                .waitersId(Set.of(USER_IDS[0]))
+                .expeditionId(TABLE_IDS[0])
+                .guidesId(Set.of(USER_IDS[0]))
                 .build();
         Call second = Call.builder()
                 .id(null)
-                .purpose(Purpose.CALL_WAITER)
-                .tableId(TABLE_IDS[0])
-                .waitersId(Set.of(USER_IDS[0]))
+                .purpose(Purpose.CALL_GUIDE)
+                .expeditionId(TABLE_IDS[0])
+                .guidesId(Set.of(USER_IDS[0]))
                 .build();
         callAdapter.save(first);
         callAdapter.save(second);
 
-        Optional<Call> dbCall = callAdapter.findByTableIdAndPurpose(TABLE_IDS[0], Purpose.CALL_WAITER);
+        Optional<Call> dbCall = callAdapter.findByTableIdAndPurpose(TABLE_IDS[0], Purpose.CALL_GUIDE);
 
 
         assertThat(dbCall).isPresent()

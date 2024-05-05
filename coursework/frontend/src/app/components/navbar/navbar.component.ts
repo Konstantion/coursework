@@ -1,16 +1,15 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
-import { AuthenticationResponseDto } from 'src/app/models/dto/authentication/authentication-response-dto';
-import { CallDto } from 'src/app/models/dto/call/call-dto';
-import { TableDto } from 'src/app/models/dto/table/table-dto';
-import { CallResponse } from 'src/app/models/responses/call-response';
-import { DataState } from 'src/app/models/state/enum/data-state';
-import { CallPageState } from 'src/app/models/state/pages/call-page-state';
-import { CallService } from 'src/app/services/call/call.service';
-import { TableService } from 'src/app/services/table/table.service';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {catchError, map, Observable, of} from 'rxjs';
+import {AuthenticationResponseDto} from 'src/app/models/dto/authentication/authentication-response-dto';
+import {CallDto} from 'src/app/models/dto/call/call-dto';
+import {TableDto} from 'src/app/models/dto/table/table-dto';
+import {CallResponse} from 'src/app/models/responses/call-response';
+import {DataState} from 'src/app/models/state/enum/data-state';
+import {CallService} from 'src/app/services/call/call.service';
+import {TableService} from 'src/app/services/table/table.service';
 
 @Component({
   selector: 'app-navbar',
@@ -24,14 +23,15 @@ export class NavbarComponent implements OnInit {
   calls: CallDto[] = [];
 
   readonly DataState = DataState;
+
   constructor(
     private cdr: ChangeDetectorRef,
     private router: Router,
     private callsService: CallService,
     private tableService: TableService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService) { }
-
+    private messageService: MessageService) {
+  }
 
 
   ngOnInit(): void {
@@ -105,11 +105,11 @@ export class NavbarComponent implements OnInit {
   handleError(error: any) {
     let errorResponse = error.error;
     if (error.status === 403) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'Not enough authorities' });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: 'Not enough authorities'});
     } else if (error.status === 400) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: errorResponse.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: errorResponse.message});
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: error.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: error.message});
     }
     return of();
   }

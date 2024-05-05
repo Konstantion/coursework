@@ -10,13 +10,23 @@ import com.konstantion.user.Role;
 import com.konstantion.user.User;
 import com.konstantion.user.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.ORDER;
+import static com.konstantion.utils.EntityNameConstants.USER;
+import static com.konstantion.utils.EntityNameConstants.USERS;
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.OK;
@@ -86,7 +96,7 @@ public record AdminUserController(
     @GetMapping("/waiters")
     public ResponseDto getAllWaiters() {
         List<UserDto> dto = userMapper.toDto(
-                userService.getAll(false, Role.WAITER)
+                userService.getAll(false, Role.GUIDE)
         );
 
         return ResponseDto.builder()

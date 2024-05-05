@@ -5,8 +5,8 @@ import com.konstantion.dto.authentication.converter.AuthenticationMapper;
 import com.konstantion.dto.authentication.dto.AuthenticationResponseDto;
 import com.konstantion.dto.table.converter.TableMapper;
 import com.konstantion.dto.table.dto.LoginTableRequestDto;
+import com.konstantion.expedition.ExpeditionService;
 import com.konstantion.response.ResponseDto;
-import com.konstantion.table.TableService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +23,12 @@ import static java.util.Map.of;
 @RestController
 @RequestMapping("/table-api/authentication")
 public record TableAuthenticationController(
-        TableService tableService,
+        ExpeditionService expeditionService,
         AuthenticationService authenticationService
 ) {
+    public static final String BEARER_PREFIX = "Bearer ";
     private static final TableMapper tableMapper = TableMapper.INSTANCE;
     private static final AuthenticationMapper authenticationMapper = AuthenticationMapper.INSTANCE;
-    public static final String BEARER_PREFIX = "Bearer ";
 
     @PostMapping()
     public ResponseEntity<ResponseDto> authenticate(

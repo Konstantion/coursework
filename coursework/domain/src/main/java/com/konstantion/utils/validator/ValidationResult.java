@@ -3,7 +3,9 @@ package com.konstantion.utils.validator;
 import com.konstantion.exception.ValidationException;
 import org.springframework.validation.FieldError;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNullElse;
@@ -21,6 +23,18 @@ public record ValidationResult(Set<FieldError> errors, boolean errorsPresent) {
         return new ValidationResult(errors, !errors.isEmpty());
     }
 
+    public static void validOrThrow(ValidationResult validationResult, String message) {
+        if (validationResult.errorsPresent()) {
+            throw new ValidationException(message,
+                    validationResult.errorsMap()
+            );
+        }
+    }
+
+    public static void validOrThrow(ValidationResult validationResult) {
+        validOrThrow(validationResult, "Process failed, given data is invalid");
+    }
+
     public ValidationResult union(ValidationResult that) {
         errors.addAll(that.errors);
         return new ValidationResult(errors, errorsPresent || that.errorsPresent());
@@ -35,18 +49,6 @@ public record ValidationResult(Set<FieldError> errors, boolean errorsPresent) {
                         )
                 )
         );
-    }
-
-    public static void validOrThrow(ValidationResult validationResult, String message) {
-        if (validationResult.errorsPresent()) {
-            throw new ValidationException(message,
-                    validationResult.errorsMap()
-            );
-        }
-    }
-
-    public static void validOrThrow(ValidationResult validationResult) {
-        validOrThrow(validationResult, "Process failed, given data is invalid");
     }
 
     public void validOrTrow() {

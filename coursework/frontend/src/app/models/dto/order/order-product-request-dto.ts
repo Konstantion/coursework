@@ -1,4 +1,4 @@
 export interface OrderProductRequestDto {
-    productId?: string;
-    quantity?: number;
+  productId?: string;
+  quantity?: number;
 }

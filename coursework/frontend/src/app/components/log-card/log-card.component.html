@@ -1,0 +1,35 @@
+<div (click)="cardClick()" class="card cursor-pointer" style="height: 100%;">
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="card-header">
+    <div class="mb-2" style="display: flex; justify-content: space-between;">
+      <h5 class="fw-bold card-text" style="flex: 1; white-space: normal; overflow-wrap: anywhere;"> {{ bill.id }} </h5>
+    </div>
+  </div>
+  <div class="card-body">
+    <p>
+      <strong>Guide: </strong> <span [ngClass]="bill.waiterId ? 'text-bg-success' : 'text-bg-danger'"
+                                     class="badge">
+                {{ bill.waiterId ? 'present' : 'absent' }} </span>
+    </p>
+
+    <p>
+      <strong>Discount name: </strong> <span [ngClass]="bill.guestId ? 'text-bg-success' : 'text-bg-danger'"
+                                             class="badge">
+                {{ bill.guestId ? 'present' : 'absent' }} </span>
+    </p>
+    <p>
+      <strong>Equipment Request: </strong> <span [ngClass]="bill.orderId ? 'text-bg-success' : 'text-bg-danger'"
+                                                 class="badge">
+                {{ bill.orderId ? 'present' : 'absent' }} </span>
+    </p>
+
+    <p><strong>Status: </strong> <span [ngClass]="bill.active ? 'text-bg-success' : 'text-bg-danger'" class="badge">
+                {{ bill.active ? 'active' : 'closed' }} </span></p>
+    <p>
+      <strong>Created At: </strong> {{ bill.createdAt }}
+    </p>
+    <p><strong>Total: </strong> {{ bill.price }} </p>
+    <p><strong>Total with discount: </strong> {{ bill.priceWithDiscount }} </p>
+  </div>
+</div>

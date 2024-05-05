@@ -1,10 +1,10 @@
 <ng-component *ngIf="(pageState$ | async) as pageState">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <p-button (click)="toggle()" label="Show Overlay"></p-button>
-    <p-overlay [(visible)]="overlayVisible"
-        [responsive]="{ breakpoint: '640px', direction: 'bottom', contentStyleClass: 'h-20rem' }"
-        contentStyleClass="p-4 surface-overlay shadow-2 border-round">
-        Content
-    </p-overlay>
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <p-button (click)="toggle()" label="Show Overlay"></p-button>
+  <p-overlay [(visible)]="overlayVisible"
+             [responsive]="{ breakpoint: '640px', direction: 'bottom', contentStyleClass: 'h-20rem' }"
+             contentStyleClass="p-4 surface-overlay shadow-2 border-round">
+    Content
+  </p-overlay>
 </ng-component>

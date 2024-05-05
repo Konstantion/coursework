@@ -13,12 +13,60 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Types;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
 @Repository
 public class CallDatabaseAdapter implements CallPort {
+    public static final String FIND_BY_ID_QUERY = """
+            SELECT * FROM public.call
+            WHERE id = :id;
+            """;
+    public static final String FIND_ALL_QUERY = """
+            SELECT * FROM public.call;
+            """;
+    public static final String SAVE_QUERY = """
+            INSERT INTO public.call (expedition_id, purpose, opened_at)
+            VALUES (:expeditionId, :purpose, :openedAt);
+            """;
+    public static final String UPDATE_QUERY = """
+            UPDATE public.call
+               SET expedition_id = :expeditionId,
+                   purpose = :purpose,
+                   opened_at = :openedAt
+            WHERE id = :id;
+            """;
+    public static final String FIND_WAITER_ID_BY_CALL_ID = """
+            SELECT guide_id FROM public.call_guide
+            WHERE call_id = :callId;
+            """;
+    public static final String DELETE_WAITER_ID_BY_CALL_ID = """
+            DELETE FROM public.call_guide
+            WHERE call_id = :callId;
+            """;
+    public static final String SAVE_WAITER_ID = """
+            INSERT INTO public.call_guide (call_id, guide_id)
+            VALUES (:callId, :guideId);
+            """;
+    public static final String DELETE_QUERY = """
+            DELETE FROM public.call
+            WHERE id = :id;
+            """;
+    public static final String FIND_BY_TABLE_ID_AND_PURPOSE_QUERY = """
+            SELECT * FROM public.call
+            WHERE expedition_id = :expeditionId
+            AND purpose = :purpose;
+            """;
+    public static final String DELETE_ALL_QUERY = """
+            DELETE FROM public.call
+            WHERE true;
+            """;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<Call> callRowMapper;
 
@@ -27,58 +75,6 @@ public class CallDatabaseAdapter implements CallPort {
         this.callRowMapper = callRowMapper;
     }
 
-    public static final String FIND_BY_ID_QUERY = """
-            SELECT * FROM public.call
-            WHERE id = :id;
-            """;
-
-    public static final String FIND_ALL_QUERY = """
-            SELECT * FROM public.call;
-            """;
-
-    public static final String SAVE_QUERY = """
-            INSERT INTO public.call (table_id, purpose, opened_at)
-            VALUES (:tableId, :purpose, :openedAt);
-            """;
-
-    public static final String UPDATE_QUERY = """
-            UPDATE public.call
-               SET table_id = :tableId,
-                   purpose = :purpose,
-                   opened_at = :openedAt
-            WHERE id = :id;
-            """;
-    public static final String FIND_WAITER_ID_BY_CALL_ID = """
-            SELECT waiter_id FROM public.call_waiter
-            WHERE call_id = :callId;
-            """;
-
-    public static final String DELETE_WAITER_ID_BY_CALL_ID = """
-            DELETE FROM public.call_waiter
-            WHERE call_id = :callId;
-            """;
-
-    public static final String SAVE_WAITER_ID = """
-            INSERT INTO public.call_waiter (call_id, waiter_id)
-            VALUES (:callId, :waiterId);
-            """;
-
-    public static final String DELETE_QUERY = """
-            DELETE FROM public.call
-            WHERE id = :id;
-            """;
-
-    public static final String FIND_BY_TABLE_ID_AND_PURPOSE_QUERY = """
-            SELECT * FROM public.call
-            WHERE table_id = :tableId
-            AND purpose = :purpose;
-            """;
-
-    public static final String DELETE_ALL_QUERY = """
-            DELETE FROM public.call
-            WHERE true;
-            """;
-
     @Override
     public List<Call> findAll() {
         List<Call> calls = jdbcTemplate.query(
@@ -86,7 +82,7 @@ public class CallDatabaseAdapter implements CallPort {
                 callRowMapper
         );
 
-        calls.forEach(call -> call.setWaitersId(fetchWaitersId(call.getId())));
+        calls.forEach(call -> call.setGuidesId(fetchWaitersId(call.getId())));
 
         return calls;
     }
@@ -103,7 +99,7 @@ public class CallDatabaseAdapter implements CallPort {
         ).stream().findFirst().orElse(null);
 
         if (nonNull(call)) {
-            call.setWaitersId(fetchWaitersId(call.getId()));
+            call.setGuidesId(fetchWaitersId(call.getId()));
         }
 
         return Optional.ofNullable(call);
@@ -143,9 +139,9 @@ public class CallDatabaseAdapter implements CallPort {
     }
 
     @Override
-    public Optional<Call> findByTableIdAndPurpose(UUID tableId, Purpose purpose) {
+    public Optional<Call> findByTableIdAndPurpose(UUID expeditionId, Purpose purpose) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("tableId", tableId)
+                .addValue("expeditionId", expeditionId)
                 .addValue("purpose", purpose.name());
 
         Call call = jdbcTemplate.query(
@@ -155,7 +151,7 @@ public class CallDatabaseAdapter implements CallPort {
         ).stream().findFirst().orElse(null);
 
         if (nonNull(call)) {
-            call.setWaitersId(fetchWaitersId(call.getId()));
+            call.setGuidesId(fetchWaitersId(call.getId()));
         }
 
         return Optional.ofNullable(call);
@@ -207,13 +203,13 @@ public class CallDatabaseAdapter implements CallPort {
     }
 
     private void saveWaiters(Call call) {
-        call.getWaitersId().forEach(id -> saveWaiterId(call.getId(), id));
+        call.getGuidesId().forEach(id -> saveWaiterId(call.getId(), id));
     }
 
-    private void saveWaiterId(UUID callId, UUID waiterId) {
+    private void saveWaiterId(UUID callId, UUID guideId) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("callId", callId)
-                .addValue("waiterId", waiterId);
+                .addValue("guideId", guideId);
         jdbcTemplate.update(
                 SAVE_WAITER_ID,
                 parameterSource

@@ -1,5 +1,5 @@
 export interface CategoryDto {
-    id: string;
-    name: string;
-    creatorId: string;
+  id: string;
+  name: string;
+  creatorId: string;
 }

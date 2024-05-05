@@ -1,167 +1,182 @@
 <ng-container *ngIf="(pageState$ | async) as pageState">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <div class="container border my-3 rounded" style="height: 100hv;">
-        <div class="container">
-            <p-toast></p-toast>
-            <p-confirmPopup></p-confirmPopup>
-            <h1 class="text-center">User: <i> {{ pageState.user.username }} </i></h1>
-            <div class="row">
-                <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
-                    <app-spinner></app-spinner>
-                </ng-container>
-                <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
-                    <div class="col-6">
-                        <p><strong>First name:</strong> {{ pageState.user.firstName }}</p>
-                        <p><strong>Last name:</strong> {{ pageState.user.lastName }}</p>
-                        <p><strong>Email:</strong> {{ pageState.user.username }}</p>
-                        <p><strong>Phone number:</strong> {{ pageState.user.phoneNumber }}</p>
-                        <p><strong>Age:</strong> {{ pageState.user.age }}</p>
-                        <p><strong>Created at:</strong> {{ pageState.user.createdAt }}</p>
-
-                        <p><strong>Status: </strong> <span class="badge"
-                                [ngClass]="pageState.user.active ? 'text-bg-success' : 'text-bg-danger'">
-                                {{ pageState.user.active ? 'active' : 'inactive' }} </span></p>
-                        <p><strong>Roles: </strong> <span *ngFor="let role of pageState.user.roles" class="badge mx-1"
-                                [ngClass]="'text-bg-secondary'">
-                                {{ role }} </span></p>
-                        <p><strong>Permissions: </strong> <span *ngFor="let permission of pageState.user.permissions"
-                                class="badge mx-1" [ngClass]="'text-bg-secondary'">
-                                {{ replaceUnderscore(permission, ' ') }} </span></p>
-                        <div class="mb-3">
-                            <button (click)="onActivate()"
-                                class="btn btn-success me-3 w-25 border-1 border-dark">Activate</button>
-                            <button (click)="onDeactivate()"
-                                class="btn btn-warning me-3 w-25 border-1 border-dark">Deactivate</button>
-                        </div>
-                        <div class="mb-3">
-                            <button class="btn btn-primary me-3 w-25 border-1 border-dark"
-                                (click)="onUpdate()">Update</button>
-                            <button class="btn btn-danger me-3 w-25 border-1 border-dark"
-                                (click)="onDelete()">Delete</button>
-                        </div>
-                        <div class="mb-3">
-                            <button class="btn btn-primary me-3 w-25 border-1 border-dark" (click)="onRole()">Manage
-                                Role</button>
-                            <button class="btn btn-primary me-3 w-50 border-1 border-dark"
-                                (click)="onPermission()">Manage Permission</button>
-                        </div>
-                    </div>
-                </ng-container>
-            </div>
-        </div>
-    </div>
-    <!--Role modal-->
-    <ng-container *ngIf="roleModal">
-        <app-modal [closeOnClick]="false" [showModal]="roleModal" (closeModel)="closeRole()">
-            <div class="mb-3">
-                <p-dropdown autoWidth="false" [style]="{'width':'100%'}" [options]="roleMap" [(ngModel)]="selectedRole"
-                    optionLabel="name" optionValue="role" [filter]="true" filterBy="name" [showClear]="true"
-                    placeholder="Select a permission">
-                </p-dropdown>
-            </div>
-            <button (click)="addRole()" [disabled]="selectedRole === null" class="btn btn-primary me-2">Add
-                permission</button>
-            <button (click)="removeRole()" [disabled]="selectedRole === null" class="btn btn-primary me-2">Remove
-                permission</button>
-            <button (click)="closeRole()" class="btn btn-secondary">Close</button>
-        </app-modal>
-    </ng-container>
-    <!--Permission modal-->
-    <ng-container *ngIf="permissionModal">
-        <app-modal [closeOnClick]="false" [showModal]="permissionModal" (closeModel)="closePermission()">
-            <div class="mb-3">
-                <p-dropdown autoWidth="false" [style]="{'width':'100%'}" [options]="permissionMap"
-                    [(ngModel)]="selectedPermission" optionLabel="name" optionValue="permission" [filter]="true"
-                    filterBy="name" [showClear]="true" placeholder="Select a permission">
-                </p-dropdown>
-            </div>
-            <button (click)="addPermission()" [disabled]="selectedPermission === null" class="btn btn-primary me-2">Add
-                permission</button>
-            <button (click)="removePermission()" [disabled]="selectedPermission === null"
-                class="btn btn-primary me-2">Remove permission</button>
-            <button (click)="closePermission()" class="btn btn-secondary">Close</button>
-        </app-modal>
-    </ng-container>
-    <!--Update updateData modal-->
-    <ng-container *ngIf="showUpdateModal">
-        <ng-container *ngIf="(updateState$ | async) as uState">
-            <app-modal [closeOnClick]="false" [showModal]="showUpdateModal" (closeModel)="closeUpdate()">
-
-                <div class="mb-3">
-                    <label for="firstName" class="form-label">First Name</label>
-                    <input [ngClass]="uState.invalid && uState.violations.firstName ? 'is-invalid' : null" type="text"
-                        class="form-control" id="firstName" [(ngModel)]="updateData.firstName" name="firstName">
-                    <div *ngIf="uState.invalid && uState.violations.firstName">
-                        <div class="text-red-500">
-                            {{ uState.violations.firstName }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input [ngClass]="uState.invalid && uState.violations.lastName ? 'is-invalid' : null" type="text"
-                        class="form-control" id="lastName" [(ngModel)]="updateData.lastName" name="lastName">
-                    <div *ngIf="uState.invalid && uState.violations.lastName">
-                        <div class="text-red-500">
-                            {{ uState.violations.lastName }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input [ngClass]="uState.invalid && uState.violations.email ? 'is-invalid' : null" type="text"
-                        class="form-control" id="email" [(ngModel)]="updateData.email" name="email">
-                    <div *ngIf="uState.invalid && uState.violations.email">
-                        <div class="text-red-500">
-                            {{ uState.violations.email }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <span class="block mb-2">Phone Number</span>
-                    <p-inputMask autoWidth="false" [style]="{'width':'100%'}"
-                        [ngClass]="uState.invalid && uState.violations.phoneNumber ? 'ng-invalid ng-dirty' : null"
-                        mask="999-999-9999" [(ngModel)]="updateData.phoneNumber"
-                        placeholder="999-999-9999"></p-inputMask>
-                    <div *ngIf="uState.invalid && uState.violations.phoneNumber">
-                        <div class="text-red-500">
-                            {{ uState.violations.phoneNumber }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="age" class="form-label">Age</label>
-                    <input [ngClass]="uState.invalid && uState.violations.age ? 'is-invalid' : null" type="number"
-                        class="form-control" id="age" [(ngModel)]="updateData.age" name="age">
-                    <div *ngIf="uState.invalid && uState.violations.age">
-                        <div class="text-red-500">
-                            {{ uState.violations.age }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input [ngClass]="uState.invalid && uState.violations.password ? 'is-invalid' : null"
-                        type="password" class="form-control" id="password" [(ngModel)]="updateData.password"
-                        name="password">
-                    <div *ngIf="uState.invalid && uState.violations.password">
-                        <div class="text-red-500">
-                            {{ uState.violations.password }}
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <p> if you <b>don't want to change </b>the value of a variable, leave its <b>input empty</b>! </p>
-                </div>
-                <button (click)="update()" class="btn btn-primary me-2">Update User</button>
-                <button (click)="closeUpdate()" class="btn btn-secondary">Close</button>
-            </app-modal>
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="container border my-3 rounded" style="height: 100hv;">
+    <div class="container">
+      <p-toast></p-toast>
+      <p-confirmPopup></p-confirmPopup>
+      <h1 class="text-center">User: <i> {{ pageState.user.username }} </i></h1>
+      <div class="row">
+        <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
+          <app-spinner></app-spinner>
         </ng-container>
+        <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
+          <div class="col-6">
+            <p><strong>First name:</strong> {{ pageState.user.firstName }}</p>
+            <p><strong>Last name:</strong> {{ pageState.user.lastName }}</p>
+            <p><strong>Email:</strong> {{ pageState.user.username }}</p>
+            <p><strong>Phone number:</strong> {{ pageState.user.phoneNumber }}</p>
+            <p><strong>Age:</strong> {{ pageState.user.age }}</p>
+            <p><strong>Created at:</strong> {{ pageState.user.createdAt }}</p>
+
+            <p><strong>Status: </strong> <span [ngClass]="pageState.user.active ? 'text-bg-success' : 'text-bg-danger'"
+                                               class="badge">
+                                {{ pageState.user.active ? 'active' : 'inactive' }} </span></p>
+            <p><strong>Roles: </strong> <span *ngFor="let role of pageState.user.roles" [ngClass]="'text-bg-secondary'"
+                                              class="badge mx-1">
+                                {{ role }} </span></p>
+            <p><strong>Permissions: </strong> <span *ngFor="let permission of pageState.user.permissions"
+                                                    [ngClass]="'text-bg-secondary'" class="badge mx-1">
+                                {{ replaceUnderscore(permission, ' ') }} </span></p>
+            <div class="mb-3">
+              <button (click)="onActivate()"
+                      class="btn btn-success me-3 w-25 border-1 border-dark">Activate
+              </button>
+              <button (click)="onDeactivate()"
+                      class="btn btn-warning me-3 w-25 border-1 border-dark">Deactivate
+              </button>
+            </div>
+            <div class="mb-3">
+              <button (click)="onUpdate()"
+                      class="btn btn-primary me-3 w-25 border-1 border-dark">Update
+              </button>
+              <button (click)="onDelete()"
+                      class="btn btn-danger me-3 w-25 border-1 border-dark">Delete
+              </button>
+            </div>
+            <div class="mb-3">
+              <button (click)="onRole()" class="btn btn-primary me-3 w-25 border-1 border-dark">Manage
+                Role
+              </button>
+              <button (click)="onPermission()"
+                      class="btn btn-primary me-3 w-50 border-1 border-dark">Manage Permission
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <!--Role modal-->
+  <ng-container *ngIf="roleModal">
+    <app-modal (closeModel)="closeRole()" [closeOnClick]="false" [showModal]="roleModal">
+      <div class="mb-3">
+        <p-dropdown [(ngModel)]="selectedRole" [filter]="true" [options]="roleMap" [showClear]="true"
+                    [style]="{'width':'100%'}" autoWidth="false" filterBy="name" optionLabel="name" optionValue="role"
+                    placeholder="Select a permission">
+        </p-dropdown>
+      </div>
+      <button (click)="addRole()" [disabled]="selectedRole === null" class="btn btn-primary me-2">Add
+        permission
+      </button>
+      <button (click)="removeRole()" [disabled]="selectedRole === null" class="btn btn-primary me-2">Remove
+        permission
+      </button>
+      <button (click)="closeRole()" class="btn btn-secondary">Close</button>
+    </app-modal>
+  </ng-container>
+  <!--Permission modal-->
+  <ng-container *ngIf="permissionModal">
+    <app-modal (closeModel)="closePermission()" [closeOnClick]="false" [showModal]="permissionModal">
+      <div class="mb-3">
+        <p-dropdown [(ngModel)]="selectedPermission" [filter]="true" [options]="permissionMap"
+                    [showClear]="true" [style]="{'width':'100%'}" autoWidth="false" filterBy="name"
+                    optionLabel="name" optionValue="permission" placeholder="Select a permission">
+        </p-dropdown>
+      </div>
+      <button (click)="addPermission()" [disabled]="selectedPermission === null" class="btn btn-primary me-2">Add
+        permission
+      </button>
+      <button (click)="removePermission()" [disabled]="selectedPermission === null"
+              class="btn btn-primary me-2">Remove permission
+      </button>
+      <button (click)="closePermission()" class="btn btn-secondary">Close</button>
+    </app-modal>
+  </ng-container>
+  <!--Update updateData modal-->
+  <ng-container *ngIf="showUpdateModal">
+    <ng-container *ngIf="(updateState$ | async) as uState">
+      <app-modal (closeModel)="closeUpdate()" [closeOnClick]="false" [showModal]="showUpdateModal">
+
+        <div class="mb-3">
+          <label class="form-label" for="firstName">First Name</label>
+          <input [(ngModel)]="updateData.firstName"
+                 [ngClass]="uState.invalid && uState.violations.firstName ? 'is-invalid' : null"
+                 class="form-control" id="firstName" name="firstName" type="text">
+          <div *ngIf="uState.invalid && uState.violations.firstName">
+            <div class="text-red-500">
+              {{ uState.violations.firstName }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="lastName">Last Name</label>
+          <input [(ngModel)]="updateData.lastName"
+                 [ngClass]="uState.invalid && uState.violations.lastName ? 'is-invalid' : null"
+                 class="form-control" id="lastName" name="lastName" type="text">
+          <div *ngIf="uState.invalid && uState.violations.lastName">
+            <div class="text-red-500">
+              {{ uState.violations.lastName }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="email">Email</label>
+          <input [(ngModel)]="updateData.email"
+                 [ngClass]="uState.invalid && uState.violations.email ? 'is-invalid' : null"
+                 class="form-control" id="email" name="email" type="text">
+          <div *ngIf="uState.invalid && uState.violations.email">
+            <div class="text-red-500">
+              {{ uState.violations.email }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="block mb-2">Phone Number</span>
+          <p-inputMask [(ngModel)]="updateData.phoneNumber"
+                       [ngClass]="uState.invalid && uState.violations.phoneNumber ? 'ng-invalid ng-dirty' : null"
+                       [style]="{'width':'100%'}"
+                       autoWidth="false" mask="999-999-9999"
+                       placeholder="999-999-9999"></p-inputMask>
+          <div *ngIf="uState.invalid && uState.violations.phoneNumber">
+            <div class="text-red-500">
+              {{ uState.violations.phoneNumber }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="age">Age</label>
+          <input [(ngModel)]="updateData.age" [ngClass]="uState.invalid && uState.violations.age ? 'is-invalid' : null"
+                 class="form-control" id="age" name="age" type="number">
+          <div *ngIf="uState.invalid && uState.violations.age">
+            <div class="text-red-500">
+              {{ uState.violations.age }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="password">Password</label>
+          <input [(ngModel)]="updateData.password"
+                 [ngClass]="uState.invalid && uState.violations.password ? 'is-invalid' : null" class="form-control"
+                 id="password" name="password"
+                 type="password">
+          <div *ngIf="uState.invalid && uState.violations.password">
+            <div class="text-red-500">
+              {{ uState.violations.password }}
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <p> if you <b>don't want to change </b>the value of a variable, leave its <b>input empty</b>! </p>
+        </div>
+        <button (click)="update()" class="btn btn-primary me-2">Update User</button>
+        <button (click)="closeUpdate()" class="btn btn-secondary">Close</button>
+      </app-modal>
     </ng-container>
+  </ng-container>
 </ng-container>

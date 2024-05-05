@@ -1,12 +1,17 @@
 package com.konstantion.controllers.bill;
 
-import com.konstantion.bill.BillService;
 import com.konstantion.dto.bill.converter.BillMapper;
 import com.konstantion.dto.bill.dto.BillDto;
+import com.konstantion.log.LogService;
 import com.konstantion.response.ResponseDto;
 import com.konstantion.user.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +26,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/admin-api/bills")
 public record AdminBillController(
-        BillService billService
+        LogService billService
 ) {
     private static final BillMapper billMapper = BillMapper.INSTANCE;
 

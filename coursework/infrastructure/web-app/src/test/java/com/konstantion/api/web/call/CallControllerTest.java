@@ -7,10 +7,10 @@ import com.konstantion.call.CallPort;
 import com.konstantion.call.Purpose;
 import com.konstantion.dto.call.converter.CallMapper;
 import com.konstantion.dto.call.dto.CallDto;
+import com.konstantion.expedition.Expedition;
+import com.konstantion.expedition.ExpeditionPort;
 import com.konstantion.jwt.JwtService;
 import com.konstantion.response.ResponseDto;
-import com.konstantion.table.Table;
-import com.konstantion.table.TablePort;
 import com.konstantion.testcontainers.configuration.DatabaseContainer;
 import com.konstantion.testcontainers.configuration.DatabaseTestConfiguration;
 import com.konstantion.user.Permission;
@@ -38,7 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.CALLS;
+import static com.konstantion.utils.EntityNameConstants.ENTITY;
+import static com.konstantion.utils.EntityNameConstants.USER;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -48,9 +50,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ContextConfiguration(classes = {DatabaseTestConfiguration.class})
 @ActiveProfiles("test")
 class CallControllerTest {
+    private static final String API_URL = "/web-api/calls";
     @ClassRule
     @Container
     public static PostgreSQLContainer<DatabaseContainer> postgresSQLContainer = DatabaseContainer.getInstance();
+    Faker faker;
     @Autowired
     private WebTestClient webTestClient;
     @Autowired
@@ -58,15 +62,13 @@ class CallControllerTest {
     @Autowired
     private UserPort userPort;
     @Autowired
-    private TablePort tablePort;
+    private ExpeditionPort expeditionPort;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtService jwtService;
     private String jwtToken;
     private User waiter;
-    Faker faker;
-    private static final String API_URL = "/web-api/calls";
 
     @BeforeEach
     void setUp() {
@@ -87,27 +89,27 @@ class CallControllerTest {
     void cleanUp() {
         callPort.deleteAll();
         userPort.deleteAll();
-        tablePort.deleteAll();
+        expeditionPort.deleteAll();
     }
 
     @Test
     void shouldReturnUserCallsWhenGetCallsByUser() {
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(true)
                 .name("test")
                 .password("test")
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         Call callWaiter = Call.builder()
-                .purpose(Purpose.CALL_WAITER)
-                .tableId(table.getId())
-                .waitersId(Sets.newHashSet(waiter.getId()))
+                .purpose(Purpose.CALL_GUIDE)
+                .expeditionId(table.getId())
+                .guidesId(Sets.newHashSet(waiter.getId()))
                 .build();
         Call callBill = Call.builder()
                 .purpose(Purpose.CALL_BILL)
-                .tableId(table.getId())
-                .waitersId(Sets.newHashSet(waiter.getId()))
+                .expeditionId(table.getId())
+                .guidesId(Sets.newHashSet(waiter.getId()))
                 .build();
         callPort.save(callWaiter);
         callPort.save(callBill);
@@ -134,17 +136,17 @@ class CallControllerTest {
 
     @Test
     void shouldCloseCallWhenCloseCall() {
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(true)
                 .name("test")
                 .password("test")
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         Call callWaiter = Call.builder()
-                .purpose(Purpose.CALL_WAITER)
-                .tableId(table.getId())
-                .waitersId(Sets.newHashSet(waiter.getId()))
+                .purpose(Purpose.CALL_GUIDE)
+                .expeditionId(table.getId())
+                .guidesId(Sets.newHashSet(waiter.getId()))
                 .build();
         callPort.save(callWaiter);
 
@@ -169,17 +171,17 @@ class CallControllerTest {
                 .build();
         userPort.save(user);
 
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(true)
                 .name("test")
                 .password("test")
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         Call callWaiter = Call.builder()
-                .purpose(Purpose.CALL_WAITER)
-                .tableId(table.getId())
-                .waitersId(Sets.newHashSet(user.getId()))
+                .purpose(Purpose.CALL_GUIDE)
+                .expeditionId(table.getId())
+                .guidesId(Sets.newHashSet(user.getId()))
                 .build();
         callPort.save(callWaiter);
 
@@ -206,17 +208,17 @@ class CallControllerTest {
         Map<String, Object> extraClaim = Map.of(ENTITY, USER);
         String adminJwt = jwtService.generateToken(extraClaim, user);
 
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(true)
                 .name("test")
                 .password("test")
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         Call callWaiter = Call.builder()
-                .purpose(Purpose.CALL_WAITER)
-                .tableId(table.getId())
-                .waitersId(Sets.newHashSet(waiter.getId()))
+                .purpose(Purpose.CALL_GUIDE)
+                .expeditionId(table.getId())
+                .guidesId(Sets.newHashSet(waiter.getId()))
                 .build();
         callPort.save(callWaiter);
 

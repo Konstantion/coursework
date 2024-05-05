@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { UserDto } from 'src/app/models/dto/user/user-dto';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {UserDto} from 'src/app/models/dto/user/user-dto';
 
 @Component({
   selector: 'app-user-card',

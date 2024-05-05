@@ -46,23 +46,23 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @ContextConfiguration(classes = {DatabaseTestConfiguration.class})
 @ActiveProfiles("test")
 class UserAuthenticationControllerTest {
+    private static final String API_URL = "/web-api/authentication";
     @ClassRule
     @Container
     public static PostgreSQLContainer<DatabaseContainer> postgresSQLContainer = DatabaseContainer.getInstance();
     @Autowired
+    ObjectMapper objectMapper;
+    Faker faker;
+    @Autowired
     private WebTestClient webTestClient;
     @Autowired
     private UserPort userPort;
-    @Autowired
-    ObjectMapper objectMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtService jwtService;
     @Autowired
     private JwtConfig jwtConfig;
-    Faker faker;
-    private static final String API_URL = "/web-api/authentication";
 
     @BeforeEach
     void setUp() {

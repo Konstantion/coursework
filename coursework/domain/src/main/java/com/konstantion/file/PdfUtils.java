@@ -1,13 +1,19 @@
 package com.konstantion.file;
 
-import com.itextpdf.text.*;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.konstantion.bill.Bill;
+import com.konstantion.equipment.Equipment;
+import com.konstantion.expedition.Expedition;
+import com.konstantion.gear.Gear;
 import com.konstantion.guest.Guest;
-import com.konstantion.order.Order;
-import com.konstantion.product.Product;
-import com.konstantion.table.Table;
+import com.konstantion.log.Log;
 import com.konstantion.user.User;
 
 import java.time.format.DateTimeFormatter;
@@ -29,10 +35,10 @@ public class PdfUtils {
     }
 
     public static void fillBillDocumentPdf(
-            Bill bill,
-            Order order,
-            Map<Product, Long> products,
-            Table table,
+            Log log,
+            Equipment equipment,
+            Map<Gear, Long> products,
+            Expedition table,
             User waiter,
             Guest guest,
             Document document
@@ -44,7 +50,7 @@ public class PdfUtils {
 
         // Add subtitle
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        Paragraph subtitle = new Paragraph(format("OPENED AT: %s", formatter.format(order.getCreatedAt())), HEADER_FONT);
+        Paragraph subtitle = new Paragraph(format("OPENED AT: %s", formatter.format(equipment.getCreatedAt())), HEADER_FONT);
         subtitle.setAlignment(Element.ALIGN_LEFT);
         document.add(subtitle);
 
@@ -90,7 +96,7 @@ public class PdfUtils {
 
         // Add products total
         productsTable.addCell(createCell("TOTAL", 3, Element.ALIGN_RIGHT, WHITE));
-        productsTable.addCell(createCell(format("%.2f", bill.getPrice()), Element.ALIGN_RIGHT, WHITE));
+        productsTable.addCell(createCell(format("%.2f", log.getPrice()), Element.ALIGN_RIGHT, WHITE));
 
         // Add discount
         productsTable.addCell(createCell("DISCOUNT", 3, Element.ALIGN_RIGHT, WHITE));
@@ -99,7 +105,7 @@ public class PdfUtils {
 
         // Add total with discount
         productsTable.addCell(createCell("TOTAL WITH DISCOUNT", 3, Element.ALIGN_RIGHT, WHITE));
-        productsTable.addCell(createCell(format("%.2f", bill.getPriceWithDiscount()), Element.ALIGN_RIGHT, WHITE));
+        productsTable.addCell(createCell(format("%.2f", log.getPriceWithDiscount()), Element.ALIGN_RIGHT, WHITE));
 
         document.add(productsTable);
     }

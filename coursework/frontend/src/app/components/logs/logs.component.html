@@ -1,0 +1,23 @@
+<ng-container *ngIf="(pageState$ | async) as pageState">
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="container mt-2">
+    <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
+      <p-progressSpinner></p-progressSpinner>
+    </ng-container>
+    <ng-container *ngIf="isAdmin">
+      <p-toggleButton [(ngModel)]="onlyInactive" offLabel="All" onLabel="Inactive" onLabel="Inactive"
+                      style="width: 10vh;"></p-toggleButton>
+    </ng-container>
+    <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
+      <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
+        <ng-container *ngFor="let log of pageState.bills">
+          <ng-container *ngIf="onlyInactive ? !log.active : true">
+            <app-log-card (onClick)="onCard($event)" [bill]="log"></app-log-card>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+
+  </div>
+</ng-container>

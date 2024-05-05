@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public interface GuestPort {
     List<Guest> findAll();
+
     Optional<Guest> findById(UUID uuid);
 
     Guest save(Guest guest);
@@ -13,5 +14,6 @@ public interface GuestPort {
     void delete(Guest guest);
 
     Optional<Guest> findByName(String name);
+
     void deleteAll();
 }

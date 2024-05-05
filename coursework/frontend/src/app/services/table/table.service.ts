@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, catchError, of, tap } from 'rxjs';
-import { CreateTableRequestDto } from 'src/app/models/dto/table/create-table-request-dto';
-import { TableWaiterRequestDto } from 'src/app/models/dto/table/table-waiter-request-dto';
-import { OrderResponse } from 'src/app/models/responses/order-response';
-import { TableResponse } from 'src/app/models/responses/table-response';
-import { UserResponse } from 'src/app/models/responses/user-response';
-import { environment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, tap} from 'rxjs';
+import {CreateTableRequestDto} from 'src/app/models/dto/table/create-table-request-dto';
+import {TableWaiterRequestDto} from 'src/app/models/dto/table/table-waiter-request-dto';
+import {OrderResponse} from 'src/app/models/responses/order-response';
+import {TableResponse} from 'src/app/models/responses/table-response';
+import {UserResponse} from 'src/app/models/responses/user-response';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,8 @@ export class TableService {
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
   activeTables$ = <Observable<TableResponse>>this.http.get<TableResponse>(`${this.tableUrl}`)
     .pipe(

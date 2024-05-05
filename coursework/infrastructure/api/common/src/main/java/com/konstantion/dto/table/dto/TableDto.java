@@ -1,6 +1,6 @@
 package com.konstantion.dto.table.dto;
 
-import com.konstantion.table.TableType;
+import com.konstantion.expedition.ExpeditionType;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -10,7 +10,7 @@ public record TableDto(
         UUID id,
         String name,
         Integer capacity,
-        TableType tableType,
+        ExpeditionType tableType,
         UUID hallId,
         UUID orderId,
         Set<UUID> waitersId,

@@ -1,3 +1,3 @@
 export interface CreateHallRequestDto {
-    name?: string
+  name?: string
 }

@@ -13,7 +13,11 @@ import com.konstantion.user.Role;
 import com.konstantion.user.User;
 import com.konstantion.user.UserPort;
 import org.junit.ClassRule;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
@@ -31,7 +35,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.ENTITY;
+import static com.konstantion.utils.EntityNameConstants.USER;
+import static com.konstantion.utils.EntityNameConstants.USERS;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -43,23 +49,22 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserControllerTest {
+    private static final UserMapper userMapper = UserMapper.INSTANCE;
+    private static final String API_URL = "/web-api/users";
     @ClassRule
     @Container
     public static PostgreSQLContainer<DatabaseContainer> postgresSQLContainer = DatabaseContainer.getInstance();
+    @Autowired
+    ObjectMapper objectMapper;
+    Faker faker;
     @Autowired
     private WebTestClient webTestClient;
     @Autowired
     private UserPort userPort;
     @Autowired
-    ObjectMapper objectMapper;
-    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtService jwtService;
-
-    private static final UserMapper userMapper = UserMapper.INSTANCE;
-    Faker faker;
-    private static final String API_URL = "/web-api/users";
 
     @BeforeEach
     void setUp() {

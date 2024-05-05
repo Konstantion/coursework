@@ -1,11 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { CreateHallRequestDto } from 'src/app/models/dto/hall/create-hall-request-dto';
-import { HallDto } from 'src/app/models/dto/hall/hall-dto';
-import { HallResponse } from 'src/app/models/responses/hall-response';
-import { TableResponse } from 'src/app/models/responses/table-response';
-import { environment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, tap} from 'rxjs';
+import {CreateHallRequestDto} from 'src/app/models/dto/hall/create-hall-request-dto';
+import {HallResponse} from 'src/app/models/responses/hall-response';
+import {TableResponse} from 'src/app/models/responses/table-response';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,8 @@ export class HallService {
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
   hall$ = (id: string) => <Observable<HallResponse>>this.http.get<HallResponse>(`${this.hallUrl}/${id}`)
     .pipe(

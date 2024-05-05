@@ -41,28 +41,6 @@ public record MultipartFileValidations() implements ValidationUtil {
             {(byte) 0x4D, (byte) 0x4D, (byte) 0x00, (byte) 0x2A}
     };
 
-    Optional<FieldError> isFileValid(MultipartFile file) {
-        Set<String> errorSet = new HashSet<>();
-        if (isNull(file) || file.getOriginalFilename().isEmpty()) {
-            errorSet.add("File shouldn't be empty");
-            return setToOptional(errorSet, file, FILE);
-        }
-
-        if (file.getSize() > 10 * BYTES_IN_MEGABYTE) {
-            errorSet.add("File size should be less than 10 MB");
-        }
-
-        if (!file.getContentType().startsWith("image/")) {
-            errorSet.add("File should be of type image");
-        }
-
-        if (!deviousBitsCheck(file)) {
-            errorSet.add("I know that it's not an image :), stop!");
-        }
-
-        return setToOptional(errorSet, file, FILE);
-    }
-
     /**
      * Checks bits signature of the file
      */
@@ -91,5 +69,27 @@ public record MultipartFileValidations() implements ValidationUtil {
         }
 
         return true;
+    }
+
+    Optional<FieldError> isFileValid(MultipartFile file) {
+        Set<String> errorSet = new HashSet<>();
+        if (isNull(file) || file.getOriginalFilename().isEmpty()) {
+            errorSet.add("File shouldn't be empty");
+            return setToOptional(errorSet, file, FILE);
+        }
+
+        if (file.getSize() > 10 * BYTES_IN_MEGABYTE) {
+            errorSet.add("File size should be less than 10 MB");
+        }
+
+        if (!file.getContentType().startsWith("image/")) {
+            errorSet.add("File should be of type image");
+        }
+
+        if (!deviousBitsCheck(file)) {
+            errorSet.add("I know that it's not an image :), stop!");
+        }
+
+        return setToOptional(errorSet, file, FILE);
     }
 }

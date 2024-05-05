@@ -6,18 +6,25 @@ import com.konstantion.dto.table.converter.TableMapper;
 import com.konstantion.dto.table.dto.TableDto;
 import com.konstantion.dto.user.converter.UserMapper;
 import com.konstantion.dto.user.dto.UserDto;
-import com.konstantion.order.OrderService;
+import com.konstantion.equipment.EquipmentService;
+import com.konstantion.expedition.ExpeditionService;
 import com.konstantion.response.ResponseDto;
-import com.konstantion.table.TableService;
 import com.konstantion.user.User;
 import com.konstantion.utils.HashMaps;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.ORDER;
+import static com.konstantion.utils.EntityNameConstants.TABLE;
+import static com.konstantion.utils.EntityNameConstants.TABLES;
+import static com.konstantion.utils.EntityNameConstants.USERS;
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.OK;
@@ -25,8 +32,8 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/web-api/tables")
 public record TableController(
-        TableService tableService,
-        OrderService orderService
+        ExpeditionService expeditionService,
+        EquipmentService equipmentService
 ) {
     private static final TableMapper tableMapper = TableMapper.INSTANCE;
     private static final OrderMapper orderMapper = OrderMapper.INSTANCE;
@@ -35,7 +42,7 @@ public record TableController(
 
     @GetMapping()
     public ResponseDto getAllActiveTables() {
-        List<TableDto> dtos = tableMapper.toDto(tableService.getAll());
+        List<TableDto> dtos = tableMapper.toDto(expeditionService.getAll());
 
         return ResponseDto.builder()
                 .status(OK)
@@ -50,7 +57,7 @@ public record TableController(
     public ResponseDto getTableById(
             @PathVariable("id") UUID id
     ) {
-        TableDto dto = tableMapper.toDto(tableService.getById(id));
+        TableDto dto = tableMapper.toDto(expeditionService.getById(id));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -65,7 +72,7 @@ public record TableController(
     public ResponseDto getOrderByTableId(
             @PathVariable("id") UUID id
     ) {
-        OrderDto dto = orderMapper.toDto(tableService.getOrderByTableId(id));
+        OrderDto dto = orderMapper.toDto(expeditionService.getOrderByTableId(id));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -81,7 +88,7 @@ public record TableController(
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal User user
     ) {
-        OrderDto dto = orderMapper.toDto(orderService.open(id, user));
+        OrderDto dto = orderMapper.toDto(equipmentService.open(id, user));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -97,7 +104,7 @@ public record TableController(
             @PathVariable("id") UUID id
     ) {
         List<UserDto> dtos = userMapper.toDto(
-                tableService.getWaitersByTableId(id)
+                expeditionService.getWaitersByTableId(id)
         );
 
         return ResponseDto.builder()

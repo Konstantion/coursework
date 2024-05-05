@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { CreateBillRequestDto } from 'src/app/models/dto/bill/create-bill-request-dto';
-import { BillResponse } from 'src/app/models/responses/bill-response';
-import { environment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, tap} from 'rxjs';
+import {CreateBillRequestDto} from 'src/app/models/dto/bill/create-bill-request-dto';
+import {BillResponse} from 'src/app/models/responses/bill-response';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,8 @@ export class BillService {
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
 
   createBill$ = (requestDto: CreateBillRequestDto) => <Observable<BillResponse>>this.http.post(`${this.billUrl}`, requestDto)
@@ -39,7 +40,7 @@ export class BillService {
       tap(console.log)
     )
 
-  generatePdfByBillId$ = (id: string) => <Observable<Blob>>this.http.get(`${this.billUrl}/${id}/generate-pdf`, { responseType: 'blob' })
+  generatePdfByBillId$ = (id: string) => <Observable<Blob>>this.http.get(`${this.billUrl}/${id}/generate-pdf`, {responseType: 'blob'})
     .pipe(
       tap(console.log)
     )

@@ -4,8 +4,8 @@ import com.konstantion.call.CallService;
 import com.konstantion.dto.call.converter.CallMapper;
 import com.konstantion.dto.call.dto.CallDto;
 import com.konstantion.dto.call.dto.CreateCallRequestDto;
+import com.konstantion.expedition.Expedition;
 import com.konstantion.response.ResponseDto;
-import com.konstantion.table.Table;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 import static com.konstantion.call.Purpose.CALL_BILL;
-import static com.konstantion.call.Purpose.CALL_WAITER;
+import static com.konstantion.call.Purpose.CALL_GUIDE;
 import static java.util.Map.of;
 
 @RestController
@@ -27,10 +27,10 @@ public record TableCallController(
 
     @GetMapping("/waiter")
     public ResponseDto callWaiter(
-            @AuthenticationPrincipal Table table
+            @AuthenticationPrincipal Expedition table
     ) {
         CreateCallRequestDto createCallRequest = new CreateCallRequestDto(
-                CALL_WAITER,
+                CALL_GUIDE,
                 table.getId()
         );
 
@@ -49,7 +49,7 @@ public record TableCallController(
 
     @GetMapping("/bill")
     public ResponseDto callBill(
-            @AuthenticationPrincipal Table table
+            @AuthenticationPrincipal Expedition table
     ) {
         CreateCallRequestDto createCallRequest = new CreateCallRequestDto(
                 CALL_BILL,

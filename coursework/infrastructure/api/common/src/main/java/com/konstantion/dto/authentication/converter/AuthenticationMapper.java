@@ -4,14 +4,16 @@ import com.konstantion.authentication.model.AuthenticationResponse;
 import com.konstantion.dto.authentication.dto.AuthenticationResponseDto;
 import com.konstantion.dto.table.dto.TableDto;
 import com.konstantion.dto.user.dto.UserDto;
-import com.konstantion.table.Table;
+import com.konstantion.expedition.Expedition;
 import com.konstantion.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Map;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.ENTITY;
+import static com.konstantion.utils.EntityNameConstants.TABLE;
+import static com.konstantion.utils.EntityNameConstants.USER;
 
 @Mapper
 public interface AuthenticationMapper {
@@ -19,7 +21,7 @@ public interface AuthenticationMapper {
 
     default AuthenticationResponseDto toDto(AuthenticationResponse authenticationResponse) {
         if (authenticationResponse.type().equals(USER)
-            && authenticationResponse.userDetails() instanceof User user) {
+                && authenticationResponse.userDetails() instanceof User user) {
 
             return new AuthenticationResponseDto<>(
                     authenticationResponse.token(),
@@ -36,7 +38,7 @@ public interface AuthenticationMapper {
                             user.getPermissions()
                     )));
         } else if (authenticationResponse.type().equals(TABLE)
-                   && authenticationResponse.userDetails() instanceof Table table) {
+                && authenticationResponse.userDetails() instanceof Expedition table) {
             return new AuthenticationResponseDto<>(
                     authenticationResponse.token(),
                     Map.of(authenticationResponse.type(),
@@ -44,10 +46,10 @@ public interface AuthenticationMapper {
                                     table.getId(),
                                     table.getName(),
                                     table.getCapacity(),
-                                    table.getTableType(),
-                                    table.getHallId(),
-                                    table.getOrderId(),
-                                    table.getWaitersId(),
+                                    table.getExpeditionType(),
+                                    table.getCampId(),
+                                    table.getEquipmentId(),
+                                    table.getGuidesId(),
                                     table.getCreatedAt(),
                                     table.getDeletedAt(),
                                     table.getActive()

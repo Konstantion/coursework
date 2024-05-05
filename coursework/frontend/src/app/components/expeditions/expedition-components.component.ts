@@ -17,28 +17,25 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {HallResponse} from 'src/app/models/responses/hall-response';
 
 @Component({
-  selector: 'app-tables',
+  selector: 'app-expeditions',
   templateUrl: './expedition-components.component.html',
   styleUrls: ['./expedition-components.component.css'],
   providers: [ConfirmationService, MessageService]
 })
 export class ExpeditionComponents implements OnInit {
   @Input() isAdmin: boolean;
-
-  private hallsSubject = new BehaviorSubject<HallDto[]>(null);
-  private tablesSubject = new BehaviorSubject<TableDto[]>(null);
-  private hallIdSubject = new BehaviorSubject<string>('');
-
   createTableState$: Observable<CreateTableState> = of({});
   createHallState$: Observable<CreateHallState> = of({});
   pageState$: Observable<TablesPageState>;
-  hallIdStatus$ = this.hallIdSubject.asObservable();
-
   showTableModal = false;
   showHallModal = false;
   createTableRequest: CreateTableRequestDto = {tableType: 'COMMON'};
   createHallRequest: CreateHallRequestDto = {};
   readonly DataState = DataState;
+  private hallsSubject = new BehaviorSubject<HallDto[]>(null);
+  private tablesSubject = new BehaviorSubject<TableDto[]>(null);
+  private hallIdSubject = new BehaviorSubject<string>('');
+  hallIdStatus$ = this.hallIdSubject.asObservable();
 
   constructor(
     private hallService: HallService,

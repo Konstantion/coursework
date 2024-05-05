@@ -5,7 +5,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RoleUtils {
-    private RoleUtils() {}
+    private RoleUtils() {
+    }
 
     public static Set<String> generateSetOfCombinationWithPrefixWordAndCollectionEnum(CharSequence prefixWord,
                                                                                       Collection<? extends Enum> collection,

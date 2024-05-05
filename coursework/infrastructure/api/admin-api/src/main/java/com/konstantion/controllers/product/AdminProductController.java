@@ -4,12 +4,20 @@ import com.konstantion.dto.product.converter.ProductMapper;
 import com.konstantion.dto.product.dto.CreateProductRequestDto;
 import com.konstantion.dto.product.dto.ProductDto;
 import com.konstantion.dto.product.dto.UpdateProductRequestDto;
-import com.konstantion.product.ProductService;
+import com.konstantion.gear.GearService;
 import com.konstantion.response.ResponseDto;
 import com.konstantion.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +33,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/admin-api/products")
 public record AdminProductController(
-        ProductService productService
+        GearService gearService
 ) {
     private static final ProductMapper productMapper = ProductMapper.INSTANCE;
 
@@ -39,7 +47,7 @@ public record AdminProductController(
             @RequestParam("ascending") Optional<Boolean> ascending
     ) {
         Page<ProductDto> productsDto = productMapper.toDto(
-                productService.getAll(
+                gearService.getAll(
                         productMapper.toGetProductsRequest(
                                 pageNumber.orElse(1),
                                 pageSize.orElse(6),
@@ -66,7 +74,7 @@ public record AdminProductController(
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal User user
     ) {
-        ProductDto productDto = productMapper.toDto(productService.activate(id, user));
+        ProductDto productDto = productMapper.toDto(gearService.activate(id, user));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -82,7 +90,7 @@ public record AdminProductController(
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal User user
     ) {
-        ProductDto productDto = productMapper.toDto(productService.deactivate(id, user));
+        ProductDto productDto = productMapper.toDto(gearService.deactivate(id, user));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -99,7 +107,7 @@ public record AdminProductController(
             @AuthenticationPrincipal User user
     ) {
         ProductDto productDto = productMapper.toDto(
-                productService.create(
+                gearService.create(
                         productMapper.toCreateProductRequest(requestDto),
                         user
                 )
@@ -121,7 +129,7 @@ public record AdminProductController(
             @AuthenticationPrincipal User user
     ) {
         ProductDto productDto = productMapper.toDto(
-                productService.update(
+                gearService.update(
                         id,
                         productMapper.toUpdateProductRequest(requestDto),
                         user
@@ -142,7 +150,7 @@ public record AdminProductController(
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal User user
     ) {
-        ProductDto productDto = productMapper.toDto(productService.delete(id, user));
+        ProductDto productDto = productMapper.toDto(gearService.delete(id, user));
 
         return ResponseDto.builder()
                 .status(OK)

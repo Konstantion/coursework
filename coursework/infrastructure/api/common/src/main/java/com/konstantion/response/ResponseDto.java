@@ -10,7 +10,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonInclude(NON_NULL)
 public record ResponseDto<T>(LocalDateTime timeStamp, int statusCode, HttpStatus status, String reason, String message,
-                          String developerMessage, Map<String, T> data) {
+                             String developerMessage, Map<String, T> data) {
     public static ResponseBuilder builder() {
         return new ResponseBuilder();
     }

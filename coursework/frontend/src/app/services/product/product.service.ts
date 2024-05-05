@@ -1,10 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { CreateProductRequestDto } from 'src/app/models/dto/product/create-product-dto';
-import { ProductResponse } from 'src/app/models/responses/product-response';
-import { FindProductsState } from 'src/app/models/state/crud/find-products-state';
-import { environment } from 'src/environments/environment';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, tap} from 'rxjs';
+import {CreateProductRequestDto} from 'src/app/models/dto/product/create-product-dto';
+import {ProductResponse} from 'src/app/models/responses/product-response';
+import {FindProductsState} from 'src/app/models/state/crud/find-products-state';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,8 @@ export class ProductService {
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
   activeProducts$ = (state: FindProductsState) => {
 
@@ -27,7 +28,7 @@ export class ProductService {
     if (state.category) params = params.append('category', state.category);
 
 
-    return <Observable<ProductResponse>>this.http.get(this.productUrl, { params }).pipe(tap(console.log))
+    return <Observable<ProductResponse>>this.http.get(this.productUrl, {params}).pipe(tap(console.log))
   }
 
   products$ = (state: FindProductsState) => {
@@ -39,7 +40,7 @@ export class ProductService {
     if (state.category) params = params.append('category', state.category);
 
 
-    return <Observable<ProductResponse>>this.http.get(this.adminProductUrl, { params }).pipe(tap(console.log))
+    return <Observable<ProductResponse>>this.http.get(this.adminProductUrl, {params}).pipe(tap(console.log))
   }
 
   productById$ = (id: string) => <Observable<ProductResponse>>this.http.get(`${this.productUrl}/${id}`)

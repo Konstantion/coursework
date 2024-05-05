@@ -16,7 +16,11 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.konstantion.exception.utils.ExceptionMessages.NOT_ENOUGH_AUTHORITIES;
-import static com.konstantion.user.Permission.*;
+import static com.konstantion.user.Permission.CHANGE_GUEST_STATE;
+import static com.konstantion.user.Permission.CREATE_GUEST;
+import static com.konstantion.user.Permission.DELETE_GUEST;
+import static com.konstantion.user.Permission.SUPER_USER;
+import static com.konstantion.user.Permission.UPDATE_GUEST;
 import static com.konstantion.utils.ObjectUtils.requireNonNullOrElseNullable;
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
@@ -48,7 +52,7 @@ public record GuestServiceImpl(
     @Override
     public Guest create(CreateGuestRequest request, User user) {
         if (user.hasNoPermission(CREATE_GUEST)
-            && user.hasNoPermission(SUPER_USER)) {
+                && user.hasNoPermission(SUPER_USER)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 
@@ -74,7 +78,7 @@ public record GuestServiceImpl(
     @Override
     public Guest update(UUID id, UpdateGuestRequest request, User user) {
         if (user.hasNoPermission(UPDATE_GUEST)
-            && user.hasNoPermission(SUPER_USER)) {
+                && user.hasNoPermission(SUPER_USER)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 
@@ -105,7 +109,7 @@ public record GuestServiceImpl(
     @Override
     public Guest activate(UUID id, User user) {
         if (user.hasNoPermission(CHANGE_GUEST_STATE)
-            && user.hasNoPermission(SUPER_USER)) {
+                && user.hasNoPermission(SUPER_USER)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
         Guest guest = getByIdOrThrow(id);
@@ -125,7 +129,7 @@ public record GuestServiceImpl(
     @Override
     public Guest deactivate(UUID id, User user) {
         if (user.hasNoPermission(CHANGE_GUEST_STATE)
-            && user.hasNoPermission(SUPER_USER)) {
+                && user.hasNoPermission(SUPER_USER)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
         Guest guest = getByIdOrThrow(id);
@@ -145,7 +149,7 @@ public record GuestServiceImpl(
     @Override
     public Guest delete(UUID id, User user) {
         if (user.hasNoPermission(DELETE_GUEST)
-            && user.hasNoPermission(SUPER_USER)) {
+                && user.hasNoPermission(SUPER_USER)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 

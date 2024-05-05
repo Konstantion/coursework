@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public interface CallPort {
     List<Call> findAll();
+
     Optional<Call> findById(UUID id);
 
     Call save(Call call);
@@ -13,5 +14,6 @@ public interface CallPort {
     void delete(Call call);
 
     Optional<Call> findByTableIdAndPurpose(UUID tableId, Purpose purpose);
+
     void deleteAll();
 }

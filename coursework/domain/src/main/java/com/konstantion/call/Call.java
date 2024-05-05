@@ -18,9 +18,9 @@ import java.util.UUID;
 @Setter
 public class Call {
     private UUID id;
-    private UUID tableId;
+    private UUID expeditionId;
     @Builder.Default
-    private Set<UUID> waitersId = new HashSet<>();
+    private Set<UUID> guidesId = new HashSet<>();
     private Purpose purpose;
     private LocalDateTime openedAt;
 
@@ -32,11 +32,11 @@ public class Call {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Call call)) return false;
-        return Objects.equal(id, call.id) && Objects.equal(tableId, call.tableId) && Objects.equal(waitersId, call.waitersId) && purpose == call.purpose && Objects.equal(openedAt, call.openedAt);
+        return Objects.equal(id, call.id) && Objects.equal(expeditionId, call.expeditionId) && Objects.equal(guidesId, call.guidesId) && purpose == call.purpose && Objects.equal(openedAt, call.openedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, tableId, waitersId, purpose, openedAt);
+        return Objects.hashCode(id, expeditionId, guidesId, purpose, openedAt);
     }
 }

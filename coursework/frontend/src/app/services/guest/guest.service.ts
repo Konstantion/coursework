@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { CreateGuestRequestDto } from 'src/app/models/dto/guest/create-guest-request-dto';
-import { UpdateGuestRequestDto } from 'src/app/models/dto/guest/update-guest-request-dto';
-import { GuestResponse } from 'src/app/models/responses/guest-response';
-import { environment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, tap} from 'rxjs';
+import {CreateGuestRequestDto} from 'src/app/models/dto/guest/create-guest-request-dto';
+import {UpdateGuestRequestDto} from 'src/app/models/dto/guest/update-guest-request-dto';
+import {GuestResponse} from 'src/app/models/responses/guest-response';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,21 +14,21 @@ export class GuestService {
   private readonly guestUrl = `${environment.api.baseUrl}/${environment.api.guestUrl}`;
   private readonly adminGuestUrl = `${environment.api.baseUrl}/${environment.api.adminGuestUrl}`;
 
-  constructor(
-    private http: HttpClient
-  ) { }
-
-  guestById$ = (id: string) => <Observable<GuestResponse>>this.http.get(`${this.guestUrl}/${id}`)
+  guests$ = <Observable<GuestResponse>>this.http.get(`${this.adminGuestUrl}`)
     .pipe(
       tap(console.log)
     )
-
   activeGuests$ = <Observable<GuestResponse>>this.http.get(`${this.guestUrl}`)
     .pipe(
       tap(console.log)
     )
 
-    guests$ = <Observable<GuestResponse>>this.http.get(`${this.adminGuestUrl}`)
+  constructor(
+    private http: HttpClient
+  ) {
+  }
+
+  guestById$ = (id: string) => <Observable<GuestResponse>>this.http.get(`${this.guestUrl}/${id}`)
     .pipe(
       tap(console.log)
     )

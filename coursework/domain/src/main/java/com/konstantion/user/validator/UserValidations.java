@@ -9,7 +9,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import static com.konstantion.utils.validator.ValidationConstants.*;
+import static com.konstantion.utils.validator.ValidationConstants.AGE_FIELD;
+import static com.konstantion.utils.validator.ValidationConstants.EMAIL_FIELD;
+import static com.konstantion.utils.validator.ValidationConstants.EMAIL_UNICODE_CHARACTERS_REGEX;
+import static com.konstantion.utils.validator.ValidationConstants.FIRST_NAME_FIELD;
+import static com.konstantion.utils.validator.ValidationConstants.LAST_NAME_FIELD;
+import static com.konstantion.utils.validator.ValidationConstants.PASSWORD_COPY_FIELD;
+import static com.konstantion.utils.validator.ValidationConstants.PASSWORD_FIELD;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isAlpha;
 import static org.apache.commons.lang3.StringUtils.isBlank;

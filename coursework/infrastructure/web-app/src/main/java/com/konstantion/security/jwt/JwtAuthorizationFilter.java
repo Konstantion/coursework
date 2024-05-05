@@ -1,9 +1,9 @@
 package com.konstantion.security.jwt;
 
+import com.konstantion.expedition.ExpeditionService;
+import com.konstantion.expedition.authentication.TableAuthenticationToken;
 import com.konstantion.jwt.JwtService;
 import com.konstantion.security.jwt.config.JwtConfig;
-import com.konstantion.table.TableService;
-import com.konstantion.table.authentication.TableAuthenticationToken;
 import com.konstantion.user.UserService;
 import com.konstantion.user.authentication.UserAuthenticationToken;
 import io.jsonwebtoken.Claims;
@@ -25,32 +25,31 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.ENTITY;
+import static com.konstantion.utils.EntityNameConstants.TABLE;
+import static com.konstantion.utils.EntityNameConstants.USER;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private final JwtConfig jwtConfig;
-    private final JwtService jwtService;
-    private final UserService userService;
-    private final TableService tableService;
-
     private static final String BEARER_TOKEN_NOT_FOUND_MESSAGE =
             "Bearer token not found";
-
     private static final Function<Claims, String> EXTRACT_ENTITY_FUNCTION =
             claim -> claim.getOrDefault(ENTITY, USER).toString();
-
     private static final Runnable EXPIRED_OR_INVALID_JWT_TOKEN_ACTION = () -> {
         throw new BadCredentialsException("Expired or invalid JWT token");
     };
+    private final JwtConfig jwtConfig;
+    private final JwtService jwtService;
+    private final UserService userService;
+    private final ExpeditionService expeditionService;
 
-    public JwtAuthorizationFilter(JwtConfig jwtConfig, JwtService jwtService, UserService userService, TableService tableService) {
+    public JwtAuthorizationFilter(JwtConfig jwtConfig, JwtService jwtService, UserService userService, ExpeditionService expeditionService) {
         this.jwtConfig = jwtConfig;
         this.jwtService = jwtService;
         this.userService = userService;
-        this.tableService = tableService;
+        this.expeditionService = expeditionService;
     }
 
     @Override
@@ -96,7 +95,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private boolean enableToAuthorize(String username) {
         return nonNull(username)
-               && isNull(SecurityContextHolder
+                && isNull(SecurityContextHolder
                 .getContext()
                 .getAuthentication());
     }
@@ -104,7 +103,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private Optional<UserDetails> getUserDetails(String username, String type) {
         return switch (type) {
             case USER -> Optional.ofNullable(userService.loadUserByUsername(username));
-            case TABLE -> Optional.ofNullable(tableService.loadUserByUsername(username));
+            case TABLE -> Optional.ofNullable(expeditionService.loadUserByUsername(username));
             default -> Optional.empty();
         };
     }

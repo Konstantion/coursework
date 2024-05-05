@@ -1,59 +1,62 @@
 <ng-container *ngIf="authorizedUser !== null">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border">
-        <div class="container-fluid">
-            <a class="navbar-brand mb-2" href="#">Speleologists' Hub</a>
-            <div class="navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item cursor-pointer" (click)="onTables()">
-                        <a class="nav-link cursor-pointer">Expeditions</a>
-                    </li>
-                    <li class="nav-item cursor-pointer" (click)="onProducts()">
-                        <a class="nav-link">Gear</a>
-                    </li>
-                    <li class="nav-item cursor-pointer" (click)="onOrders()">
-                        <a class="nav-link">Equipment Requests</a>
-                    </li>
-                    <li class="nav-item cursor-pointer" (click)="onBills()">
-                        <a class="nav-link">Supply Log</a>
-                    </li>
-                    <ng-container *ngIf="authorizedUser.authenticated.user.roles.includes('ADMIN')">
-                        <li class="nav-item cursor-pointer" (click)="onAdmin()">
-                            <a class="nav-link">Admin</a>
-                        </li>
-                    </ng-container>
-                    <li class="nav-item cursor-pointer" (click)="calls.length !== 0 ? onCalls() : null">
-                        <a class="nav-link">Alerts <span *ngIf="calls.length !== 0" class="badge bg-secondary">
-                                {{calls.length !== 0 ? calls.length : ''}}</span></a>
-                        <p-overlay [(visible)]="overlayVisible"
-                            [responsive]="{ breakpoint: '640px', direction: 'bottom', contentStyleClass: 'h-20rem' }"
-                            contentStyleClass="p-4 surface-overlay shadow-2 border-round">
-                            <ng-container *ngFor="let call of calls">
-                                <div class="card-body">
-                                    <p class="card-text mt-2">
-                                        Call - Table: <span class="badge bg-success" (click)="onTable(call.table)"> {{
-                                            call.table.name }}</span>
-                                        Purpose: <span class="badge bg-success">
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light border">
+    <div class="container-fluid">
+      <a class="navbar-brand mb-2" href="#">Speleologists' Hub</a>
+      <div class="navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li (click)="onTables()" class="nav-item cursor-pointer">
+            <a class="nav-link cursor-pointer">Expeditions</a>
+          </li>
+          <li (click)="onProducts()" class="nav-item cursor-pointer">
+            <a class="nav-link">Gear</a>
+          </li>
+          <li (click)="onOrders()" class="nav-item cursor-pointer">
+            <a class="nav-link">Equipment Requests</a>
+          </li>
+          <li (click)="onBills()" class="nav-item cursor-pointer">
+            <a class="nav-link">Supply Log</a>
+          </li>
+          <ng-container *ngIf="authorizedUser.authenticated.user.roles.includes('ADMIN')">
+            <li (click)="onAdmin()" class="nav-item cursor-pointer">
+              <a class="nav-link">Admin</a>
+            </li>
+          </ng-container>
+          <li (click)="calls.length !== 0 ? onCalls() : null" class="nav-item cursor-pointer">
+            <a class="nav-link">Alerts <span *ngIf="calls.length !== 0" class="badge bg-secondary">
+                                {{ calls.length !== 0 ? calls.length : '' }}</span></a>
+            <p-overlay [(visible)]="overlayVisible"
+                       [responsive]="{ breakpoint: '640px', direction: 'bottom', contentStyleClass: 'h-20rem' }"
+                       contentStyleClass="p-4 surface-overlay shadow-2 border-round">
+              <ng-container *ngFor="let call of calls">
+                <div class="card-body">
+                  <p class="card-text mt-2">
+                    Call - Table: <span (click)="onTable(call.table)" class="badge bg-success"> {{
+                      call.table.name
+                    }}</span>
+                    Purpose: <span class="badge bg-success">
                                             {{ replaceUnderscore(call.purpose) }} </span>
-                                        <button class="btn btn-primary mx-2" (click)="onCall(call.id)">Close</button>
-                                    </p>
+                    <button (click)="onCall(call.id)" class="btn btn-primary mx-2">Close</button>
+                  </p>
 
-                                </div>
-                            </ng-container>
-                        </p-overlay>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <div class="navbar-text me-3">Welcome, <span (click)="onUser()" class="cursor-pointer"> {{
-                                authorizedUser.authenticated.user.username }}</span>!</div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" (click)="onLogout()" href="#login">Logout</a>
-                    </li>
-                </ul>
+                </div>
+              </ng-container>
+            </p-overlay>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <div class="navbar-text me-3">Welcome, <span (click)="onUser()" class="cursor-pointer"> {{
+                authorizedUser.authenticated.user.username
+              }}</span>!
             </div>
-        </div>
-    </nav>
+          </li>
+          <li class="nav-item">
+            <a (click)="onLogout()" class="nav-link" href="#login">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 </ng-container>

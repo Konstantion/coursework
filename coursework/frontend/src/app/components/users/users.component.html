@@ -1,111 +1,118 @@
 <ng-container *ngIf="(pageState$ | async) as pageState">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <div class="container mt-2">
-        <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
-            <p-progressSpinner></p-progressSpinner>
-        </ng-container>
-        <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
-            <ng-container *ngIf="isAdmin">
-                <p-toggleButton class="me-2" style="width: 10vh;" onLabel="Inactive" [(ngModel)]="onlyInactive"
-                    onLabel="Inactive" offLabel="All"></p-toggleButton>
-                <p-button label="Create" (onClick)="onCreate()"></p-button>
-            </ng-container>
-            <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
-                <ng-container *ngFor="let user of pageState.users">
-                    <ng-container *ngIf="onlyInactive ? !user.active : true">
-                        <app-user-card (onClick)="onCard($event)" [user]="user"></app-user-card>
-                    </ng-container>
-                </ng-container>
-            </div>
-        </ng-container>
-    </div>
-    <ng-container *ngIf="create">
-        <ng-container *ngIf="(createState$ | async) as cSate">
-            <app-modal [closeOnClick]="false" [showModal]="create" (closeModel)="onClose()">
-
-                <div class="mb-3">
-                    <label for="firstName" class="form-label">First Name</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.firstName ? 'is-invalid' : null" type="text"
-                        class="form-control" id="firstName" [(ngModel)]="createUserData.firstName" name="firstName">
-                    <div *ngIf="cSate.invalid && cSate.violations.firstName">
-                        <div class="text-red-500">
-                            {{ cSate.violations.firstName }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.lastName ? 'is-invalid' : null" type="text"
-                        class="form-control" id="lastName" [(ngModel)]="createUserData.lastName" name="lastName">
-                    <div *ngIf="cSate.invalid && cSate.violations.lastName">
-                        <div class="text-red-500">
-                            {{ cSate.violations.lastName }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.email ? 'is-invalid' : null" type="text"
-                        class="form-control" id="email" [(ngModel)]="createUserData.email" name="email">
-                    <div *ngIf="cSate.invalid && cSate.violations.email">
-                        <div class="text-red-500">
-                            {{ cSate.violations.email }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <span class="block mb-2">Phone Number</span>
-                    <p-inputMask autoWidth="false" [style]="{'width':'100%'}"
-                        [ngClass]="cSate.invalid && cSate.violations.phoneNumber ? 'ng-invalid ng-dirty' : null"
-                        mask="999-999-9999" [(ngModel)]="createUserData.phoneNumber"
-                        placeholder="999-999-9999"></p-inputMask>
-                    <div *ngIf="cSate.invalid && cSate.violations.phoneNumber">
-                        <div class="text-red-500">
-                            {{ cSate.violations.phoneNumber }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="age" class="form-label">Age</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.age ? 'is-invalid' : null" type="number"
-                        class="form-control" id="age" [(ngModel)]="createUserData.age" name="age">
-                    <div *ngIf="cSate.invalid && cSate.violations.age">
-                        <div class="text-red-500">
-                            {{ cSate.violations.age }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.password ? 'is-invalid' : null" type="password"
-                        class="form-control" id="password" [(ngModel)]="createUserData.password" name="password">
-                    <div *ngIf="cSate.invalid && cSate.violations.password">
-                        <div class="text-red-500">
-                            {{ cSate.violations.password }}
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password copy</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.passwordCopy ? 'is-invalid' : null"
-                        type="password" class="form-control" id="password" [(ngModel)]="createUserData.passwordCopy"
-                        name="password">
-                    <div *ngIf="cSate.invalid && cSate.violations.passwordCopy">
-                        <div class="text-red-500">
-                            {{ cSate.violations.passwordCopy }}
-                        </div>
-                    </div>
-                </div>
-                <button (click)="createAdmin()" class="btn btn-primary me-2">Admin</button>
-                <button (click)="createWaiter()" class="btn btn-primary me-2">Waiter</button>
-                <button (click)="onClose()" class="btn btn-secondary">Close</button>
-            </app-modal>
-        </ng-container>
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="container mt-2">
+    <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
+      <p-progressSpinner></p-progressSpinner>
     </ng-container>
+    <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
+      <ng-container *ngIf="isAdmin">
+        <p-toggleButton [(ngModel)]="onlyInactive" class="me-2" offLabel="All" onLabel="Inactive"
+                        onLabel="Inactive" style="width: 10vh;"></p-toggleButton>
+        <p-button (onClick)="onCreate()" label="Create"></p-button>
+      </ng-container>
+      <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
+        <ng-container *ngFor="let user of pageState.users">
+          <ng-container *ngIf="onlyInactive ? !user.active : true">
+            <app-user-card (onClick)="onCard($event)" [user]="user"></app-user-card>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="create">
+    <ng-container *ngIf="(createState$ | async) as cSate">
+      <app-modal (closeModel)="onClose()" [closeOnClick]="false" [showModal]="create">
+
+        <div class="mb-3">
+          <label class="form-label" for="firstName">First Name</label>
+          <input [(ngModel)]="createUserData.firstName"
+                 [ngClass]="cSate.invalid && cSate.violations.firstName ? 'is-invalid' : null"
+                 class="form-control" id="firstName" name="firstName" type="text">
+          <div *ngIf="cSate.invalid && cSate.violations.firstName">
+            <div class="text-red-500">
+              {{ cSate.violations.firstName }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="lastName">Last Name</label>
+          <input [(ngModel)]="createUserData.lastName"
+                 [ngClass]="cSate.invalid && cSate.violations.lastName ? 'is-invalid' : null"
+                 class="form-control" id="lastName" name="lastName" type="text">
+          <div *ngIf="cSate.invalid && cSate.violations.lastName">
+            <div class="text-red-500">
+              {{ cSate.violations.lastName }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="email">Email</label>
+          <input [(ngModel)]="createUserData.email"
+                 [ngClass]="cSate.invalid && cSate.violations.email ? 'is-invalid' : null"
+                 class="form-control" id="email" name="email" type="text">
+          <div *ngIf="cSate.invalid && cSate.violations.email">
+            <div class="text-red-500">
+              {{ cSate.violations.email }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="block mb-2">Phone Number</span>
+          <p-inputMask [(ngModel)]="createUserData.phoneNumber"
+                       [ngClass]="cSate.invalid && cSate.violations.phoneNumber ? 'ng-invalid ng-dirty' : null"
+                       [style]="{'width':'100%'}"
+                       autoWidth="false" mask="999-999-9999"
+                       placeholder="999-999-9999"></p-inputMask>
+          <div *ngIf="cSate.invalid && cSate.violations.phoneNumber">
+            <div class="text-red-500">
+              {{ cSate.violations.phoneNumber }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="age">Age</label>
+          <input [(ngModel)]="createUserData.age"
+                 [ngClass]="cSate.invalid && cSate.violations.age ? 'is-invalid' : null"
+                 class="form-control" id="age" name="age" type="number">
+          <div *ngIf="cSate.invalid && cSate.violations.age">
+            <div class="text-red-500">
+              {{ cSate.violations.age }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="password">Password</label>
+          <input [(ngModel)]="createUserData.password"
+                 [ngClass]="cSate.invalid && cSate.violations.password ? 'is-invalid' : null"
+                 class="form-control" id="password" name="password" type="password">
+          <div *ngIf="cSate.invalid && cSate.violations.password">
+            <div class="text-red-500">
+              {{ cSate.violations.password }}
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="password">Password copy</label>
+          <input [(ngModel)]="createUserData.passwordCopy"
+                 [ngClass]="cSate.invalid && cSate.violations.passwordCopy ? 'is-invalid' : null" class="form-control"
+                 id="password" name="password"
+                 type="password">
+          <div *ngIf="cSate.invalid && cSate.violations.passwordCopy">
+            <div class="text-red-500">
+              {{ cSate.violations.passwordCopy }}
+            </div>
+          </div>
+        </div>
+        <button (click)="createAdmin()" class="btn btn-primary me-2">Admin</button>
+        <button (click)="createWaiter()" class="btn btn-primary me-2">Guide</button>
+        <button (click)="onClose()" class="btn btn-secondary">Close</button>
+      </app-modal>
+    </ng-container>
+  </ng-container>
 </ng-container>

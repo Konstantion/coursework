@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { CallResponse } from 'src/app/models/responses/call-response';
-import { environment } from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, tap} from 'rxjs';
+import {CallResponse} from 'src/app/models/responses/call-response';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,8 @@ export class CallService {
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
   activeCalls$ = <Observable<CallResponse>>this.http.get(`${this.callUrl}`)
     .pipe(

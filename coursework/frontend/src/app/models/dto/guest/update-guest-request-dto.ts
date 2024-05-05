@@ -1,5 +1,5 @@
 export interface UpdateGuestRequestDto {
-    name?: string;
-    phoneNumber?: string;
-    discountPercent?: number;
-  }
+  name?: string;
+  phoneNumber?: string;
+  discountPercent?: number;
+}

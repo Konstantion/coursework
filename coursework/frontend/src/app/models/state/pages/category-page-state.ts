@@ -1,7 +1,7 @@
-import { CategoryDto } from "../../dto/category/category-dto";
-import { DataState } from "../enum/data-state";
+import {CategoryDto} from "../../dto/category/category-dto";
+import {DataState} from "../enum/data-state";
 
 export interface CategoryPageState {
-    dataState?: DataState;
-    category?: CategoryDto;
+  dataState?: DataState;
+  category?: CategoryDto;
 }

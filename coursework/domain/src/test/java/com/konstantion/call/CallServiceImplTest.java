@@ -4,8 +4,8 @@ import com.konstantion.call.model.CreateCallRequest;
 import com.konstantion.exception.BadRequestException;
 import com.konstantion.exception.ForbiddenException;
 import com.konstantion.exception.NonExistingIdException;
-import com.konstantion.table.Table;
-import com.konstantion.table.TablePort;
+import com.konstantion.expedition.Expedition;
+import com.konstantion.expedition.ExpeditionPort;
 import com.konstantion.user.Permission;
 import com.konstantion.user.Role;
 import com.konstantion.user.User;
@@ -35,7 +35,7 @@ class CallServiceImplTest {
     @Mock
     CallPort callPort;
     @Mock
-    TablePort tablePort;
+    ExpeditionPort expeditionPort;
     @Mock
     SimpMessagingTemplate simpMessagingTemplate;
     @InjectMocks
@@ -80,7 +80,7 @@ class CallServiceImplTest {
 
         when(callPort.findAll()).thenReturn(
                 List.of(
-                        Call.builder().waitersId(Set.of(userId)).build(),
+                        Call.builder().guidesId(Set.of(userId)).build(),
                         Call.builder().build()
                 ));
         when(user.getId()).thenReturn(userId);
@@ -92,7 +92,7 @@ class CallServiceImplTest {
 
     @Test
     void shouldThrowNonExistingIdWhenCreateWithNonExistingTable() {
-        when(tablePort.findById(any(UUID.class))).thenReturn(Optional.empty());
+        when(expeditionPort.findById(any(UUID.class))).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> callService.createCall(request))
                 .isInstanceOf(NonExistingIdException.class);
@@ -100,7 +100,7 @@ class CallServiceImplTest {
 
     @Test
     void shouldThrowBadRequestWhenCreateCallWithParametersThenAlreadyExist() {
-        when(tablePort.findById(any(UUID.class))).thenReturn(Optional.of(Table.builder().build()));
+        when(expeditionPort.findById(any(UUID.class))).thenReturn(Optional.of(Expedition.builder().build()));
         when(callPort.findByTableIdAndPurpose(any(UUID.class), any(Purpose.class))).thenReturn(Optional.of(Call.builder().build()));
 
         assertThatThrownBy(() -> callService.createCall(request))
@@ -109,7 +109,7 @@ class CallServiceImplTest {
 
     @Test
     void shouldCreateWhenCreateCallWithValidParameters() {
-        when(tablePort.findById(any(UUID.class))).thenReturn(Optional.of(Table.builder().build()));
+        when(expeditionPort.findById(any(UUID.class))).thenReturn(Optional.of(Expedition.builder().build()));
         when(callPort.findByTableIdAndPurpose(any(UUID.class), any(Purpose.class))).thenReturn(Optional.empty());
 
         Call actualCall = callService.createCall(request);
@@ -147,7 +147,7 @@ class CallServiceImplTest {
         when(user.hasNoPermission(Permission.SUPER_USER)).thenReturn(true);
         when(user.hasNoPermission(Role.ADMIN)).thenReturn(true);
         when(user.getId()).thenReturn(UUID.randomUUID());
-        when(callPort.findById(any(UUID.class))).thenReturn(Optional.of(Call.builder().waitersId(Set.of(randomUUID)).build()));
+        when(callPort.findById(any(UUID.class))).thenReturn(Optional.of(Call.builder().guidesId(Set.of(randomUUID)).build()));
 
         assertThatThrownBy(() -> callService.closeCall(randomUUID, user))
                 .isInstanceOf(BadRequestException.class);
@@ -160,7 +160,7 @@ class CallServiceImplTest {
         when(user.hasNoPermission(Permission.SUPER_USER)).thenReturn(true);
         when(user.hasNoPermission(Role.ADMIN)).thenReturn(true);
         when(user.getId()).thenReturn(randomUUID);
-        when(callPort.findById(any(UUID.class))).thenReturn(Optional.of(Call.builder().waitersId(Set.of(randomUUID)).build()));
+        when(callPort.findById(any(UUID.class))).thenReturn(Optional.of(Call.builder().guidesId(Set.of(randomUUID)).build()));
 
         Call call = callService.closeCall(randomUUID, user);
 

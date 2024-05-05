@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { BehaviorSubject, of, startWith, map, catchError } from 'rxjs';
-import { Permission } from 'src/app/models/dto/user/permission';
-import { Role } from 'src/app/models/dto/user/role';
-import { UpdateUserRequestDto } from 'src/app/models/dto/user/update-user-request-dto';
-import { DataState } from 'src/app/models/state/enum/data-state';
-import { UserPageState } from 'src/app/models/state/pages/user-page-state';
-import { UpdateUserState } from 'src/app/models/state/crud/update-user-state';
-import { ObjectUtils } from 'src/app/models/util/object-utils';
-import { UserService } from 'src/app/services/user/user.service';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {BehaviorSubject, catchError, map, of, startWith} from 'rxjs';
+import {Permission} from 'src/app/models/dto/user/permission';
+import {Role} from 'src/app/models/dto/user/role';
+import {UpdateUserRequestDto} from 'src/app/models/dto/user/update-user-request-dto';
+import {DataState} from 'src/app/models/state/enum/data-state';
+import {UserPageState} from 'src/app/models/state/pages/user-page-state';
+import {UpdateUserState} from 'src/app/models/state/crud/update-user-state';
+import {ObjectUtils} from 'src/app/models/util/object-utils';
+import {UserService} from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-user',
@@ -18,39 +18,35 @@ import { UserService } from 'src/app/services/user/user.service';
   providers: [ConfirmationService, MessageService]
 })
 export class UserComponent implements OnInit {
+  roleMap = Object.values(Role).map(role => {
+    let name = role.toString();
+    return {role, name}
+  });
+  permissionMap = Object.values(Permission).map(permission => {
+    let name = this.replacePermissionUnderscore(permission, ' ');
+    return {permission, name}
+  });
+  permissionModal = false;
+  roleModal = false;
+  showUpdateModal = false;
+  updateData: UpdateUserRequestDto = {};
+  selectedPermission: Permission = null;
+  selectedRole: Role = null;
+  readonly DataState = DataState;
+  private userId = '';
+  private userPageSubject = new BehaviorSubject<UserPageState>({})
+  pageState$ = this.userPageSubject.asObservable();
+  private updateUserSubject = new BehaviorSubject<UpdateUserState>({});
+  updateState$ = this.updateUserSubject.asObservable();
+
   constructor(
     private userService: UserService,
     private activeRoute: ActivatedRoute,
     private router: Router,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
-  ) { }
-
-  private userId = '';
-  private userPageSubject = new BehaviorSubject<UserPageState>({})
-  private updateUserSubject = new BehaviorSubject<UpdateUserState>({});
-  roleMap = Object.values(Role).map(role => {
-    let name = role.toString();
-    return { role, name }
-  });
-
-  permissionMap = Object.values(Permission).map(permission => {
-    let name = this.replacePermissionUnderscore(permission, ' ');
-    return { permission, name }
-  });
-
-  permissionModal = false;
-  roleModal = false;
-  showUpdateModal = false;
-
-  updateData: UpdateUserRequestDto = {};
-  selectedPermission: Permission = null;
-  selectedRole: Role = null;
-
-  pageState$ = this.userPageSubject.asObservable();
-  updateState$ = this.updateUserSubject.asObservable();
-
-  readonly DataState = DataState;
+  ) {
+  }
 
   ngOnInit(): void {
     this.userId = this.activeRoute.snapshot.paramMap.get('id');
@@ -62,7 +58,7 @@ export class UserComponent implements OnInit {
         state.dataState = DataState.LOADED_STATE;
         this.userPageSubject.next(state);
       }),
-      startWith(() => this.userPageSubject.next({ dataState: DataState.LOADING_STATE })),
+      startWith(() => this.userPageSubject.next({dataState: DataState.LOADING_STATE})),
       catchError(error => this.handleError(error))
     ).subscribe();
   }
@@ -70,11 +66,11 @@ export class UserComponent implements OnInit {
   handleError(error: any) {
     let errorResponse = error.error;
     if (error.status === 403) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'Not enough authorities' });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: 'Not enough authorities'});
     } else if (error.status === 400) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: errorResponse.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: errorResponse.message});
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: error.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: error.message});
     }
     return of();
   }
@@ -167,11 +163,11 @@ export class UserComponent implements OnInit {
 
   onUpdate() {
     this.showUpdateModal = true;
-    this.updateData = { ...this.userPageSubject.value.user, email: this.userPageSubject.value.user.username };
+    this.updateData = {...this.userPageSubject.value.user, email: this.userPageSubject.value.user.username};
   }
 
   update() {
-    this.updateUserSubject.next({ dataState: DataState.LOADING_STATE });
+    this.updateUserSubject.next({dataState: DataState.LOADING_STATE});
     this.userService.updateUser$(this.userId, ObjectUtils.replaceEmptyWithNull(this.updateData)).pipe(
       map(response => {
         const state = this.userPageSubject.value;
@@ -182,14 +178,14 @@ export class UserComponent implements OnInit {
       catchError(error => {
         if (error.status === 422) {
           const response = error.error;
-          this.updateUserSubject.next({ invalid: true, violations: response.data })
+          this.updateUserSubject.next({invalid: true, violations: response.data})
           return of({});
         } else {
           return this.handleError(error);
         }
       })
     ).subscribe();
-  }  
+  }
 
   addRole() {
     this.userService.addRoleToUserById$(this.userId, this.selectedRole).pipe(

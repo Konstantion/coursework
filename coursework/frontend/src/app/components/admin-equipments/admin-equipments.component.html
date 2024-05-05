@@ -1,0 +1,20 @@
+<ng-container *ngIf="(pageState$ | async) as pageState">
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="container mt-2">
+    <ng-container *ngIf="pageState.tablesState === DataState.LOADING_STATE">
+      <p-progressSpinner></p-progressSpinner>
+    </ng-container>
+    <p-toggleButton [(ngModel)]="onlyInactive" class="me-2" offLabel="All" onLabel="Inactive"
+                    onLabel="Inactive" style="width: 10vh;"></p-toggleButton>
+    <ng-container *ngIf="pageState.tablesState === DataState.LOADED_STATE">
+      <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
+        <ng-container *ngFor="let table of pageState.tables">
+          <ng-container *ngIf="onlyInactive ? !table.active : true">
+            <app-equipment-card [table]="table"></app-equipment-card>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>

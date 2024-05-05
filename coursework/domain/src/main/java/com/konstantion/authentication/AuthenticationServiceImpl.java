@@ -1,10 +1,10 @@
 package com.konstantion.authentication;
 
 import com.konstantion.authentication.model.AuthenticationResponse;
+import com.konstantion.expedition.authentication.TableAuthenticationToken;
+import com.konstantion.expedition.model.LoginTableRequest;
+import com.konstantion.expedition.validator.ExpeditionValidator;
 import com.konstantion.jwt.JwtService;
-import com.konstantion.table.authentication.TableAuthenticationToken;
-import com.konstantion.table.model.LoginTableRequest;
-import com.konstantion.table.validator.TableValidator;
 import com.konstantion.user.authentication.UserAuthenticationToken;
 import com.konstantion.user.model.LoginUserRequest;
 import com.konstantion.user.validator.UserValidator;
@@ -15,13 +15,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.ENTITY;
+import static com.konstantion.utils.EntityNameConstants.TABLE;
+import static com.konstantion.utils.EntityNameConstants.USER;
 
 @Component
 public record AuthenticationServiceImpl(
         JwtService jwtService,
         AuthenticationManager authenticationManager,
-        TableValidator tableValidator,
+        ExpeditionValidator tableValidator,
         UserValidator userValidator
 ) implements AuthenticationService {
     @Override

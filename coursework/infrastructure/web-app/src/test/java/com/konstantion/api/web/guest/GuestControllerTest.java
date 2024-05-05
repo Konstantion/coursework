@@ -33,7 +33,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.List;
 import java.util.Map;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.ENTITY;
+import static com.konstantion.utils.EntityNameConstants.GUEST;
+import static com.konstantion.utils.EntityNameConstants.GUESTS;
+import static com.konstantion.utils.EntityNameConstants.USER;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -43,9 +46,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ContextConfiguration(classes = {DatabaseTestConfiguration.class})
 @ActiveProfiles("test")
 class GuestControllerTest {
+    private static final String API_URL = "/web-api/guests";
     @ClassRule
     @Container
     public static PostgreSQLContainer<DatabaseContainer> postgresSQLContainer = DatabaseContainer.getInstance();
+    Faker faker;
     @Autowired
     private WebTestClient webTestClient;
     @Autowired
@@ -57,8 +62,6 @@ class GuestControllerTest {
     @Autowired
     private JwtService jwtService;
     private String jwtToken;
-    Faker faker;
-    private static final String API_URL = "/web-api/guests";
 
     @BeforeEach
     void setUp() {

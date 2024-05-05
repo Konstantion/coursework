@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { Observable } from 'rxjs';
-import { AuthenticationResponseDto } from 'src/app/models/dto/authentication/authentication-response-dto';
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {Observable} from 'rxjs';
+import {AuthenticationResponseDto} from 'src/app/models/dto/authentication/authentication-response-dto';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AccessGuardService implements CanActivate{
+export class AccessGuardService implements CanActivate {
 
   constructor(
     private router: Router
-  ) { }
+  ) {
+  }
 
   canActivate(
     route: ActivatedRouteSnapshot,

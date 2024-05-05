@@ -20,6 +20,38 @@ import static java.util.Objects.nonNull;
 
 @Repository
 public class GuestDatabaseAdapter implements GuestPort {
+    public static final String FIND_BY_ID_QUERY = """
+            SELECT * FROM public.guest
+            WHERE id = :id;
+            """;
+    public static final String FIND_BY_ID_NAME = """
+            SELECT * FROM public.guest
+            WHERE name = :name;
+            """;
+    public static final String DELETE_QUERY = """
+            DELETE FROM public.guest
+            WHERE id = :id;
+            """;
+    public static final String SAVE_QUERY = """
+            INSERT INTO public.guest (name, phone_number, discount_percent, created_at, active)
+            VALUES (:name, :phoneNumber, :discountPercent, :createdAt, :active);
+            """;
+    public static final String UPDATE_QUERY = """
+            UPDATE public.guest
+                SET name = :name,
+                phone_number = :phoneNumber,
+                discount_percent = :discountPercent,
+                created_at = :createdAt,
+                active = :active
+            WHERE id = :id;
+            """;
+    public static final String FIND_ALL_QUERY = """
+            SELECT * FROM public.guest;
+            """;
+    public static final String DELETE_ALL_QUERY = """
+            DELETE FROM public.guest
+            WHERE true;
+            """;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<Guest> guestRowMapper;
 
@@ -27,45 +59,6 @@ public class GuestDatabaseAdapter implements GuestPort {
         this.jdbcTemplate = jdbcTemplate;
         this.guestRowMapper = guestRowMapper;
     }
-
-    public static final String FIND_BY_ID_QUERY = """
-            SELECT * FROM public.guest
-            WHERE id = :id;
-            """;
-
-    public static final String FIND_BY_ID_NAME = """
-            SELECT * FROM public.guest
-            WHERE name = :name;
-            """;
-
-    public static final String DELETE_QUERY = """
-            DELETE FROM public.guest
-            WHERE id = :id;
-            """;
-
-    public static final String SAVE_QUERY = """
-            INSERT INTO public.guest (name, phone_number, discount_percent, created_at, active)
-            VALUES (:name, :phoneNumber, :discountPercent, :createdAt, :active);
-            """;
-
-    public static final String UPDATE_QUERY = """
-            UPDATE public.guest
-                SET name = :name,
-                phone_number = :phoneNumber,
-                discount_percent = :discountPercent,
-                created_at = :createdAt,                
-                active = :active
-            WHERE id = :id;
-            """;
-
-    public static final String FIND_ALL_QUERY = """
-            SELECT * FROM public.guest;
-            """;
-
-    public static final String DELETE_ALL_QUERY = """
-            DELETE FROM public.guest
-            WHERE true;
-            """;
 
     @Override
     public List<Guest> findAll() {

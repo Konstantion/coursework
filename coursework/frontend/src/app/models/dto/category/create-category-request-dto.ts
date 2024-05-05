@@ -1,3 +1,3 @@
 export interface CreateCategoryRequestDto {
-    name?: string;
+  name?: string;
 }

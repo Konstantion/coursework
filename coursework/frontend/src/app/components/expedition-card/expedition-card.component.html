@@ -1,25 +1,25 @@
-<div class="card cursor-pointer" (click)="onCardClick()">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <div class="card-header">
-        <h5 class="card-title"> {{ table.name }}</h5>
-    </div>
-    <div class="card-body">
-        <p class="card-text">Capacity: {{ table.capacity }}</p>
-        <p>
-            <span class="badge" [ngClass]="table.tableType === 'VIP' ? 'text-bg-warning' : 'text-bg-info'">
+<div (click)="onCardClick()" class="card cursor-pointer">
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="card-header">
+    <h5 class="card-title"> {{ table.name }}</h5>
+  </div>
+  <div class="card-body">
+    <p class="card-text">Capacity: {{ table.capacity }}</p>
+    <p>
+            <span [ngClass]="table.tableType === 'VIP' ? 'text-bg-warning' : 'text-bg-info'" class="badge">
                 {{ table.tableType }} </span>
-        </p>
-        <p>
-            <span class="badge me-2" [ngClass]="table.active ? 'text-bg-success' : 'text-bg-danger'">
+    </p>
+    <p>
+            <span [ngClass]="table.active ? 'text-bg-success' : 'text-bg-danger'" class="badge me-2">
                 {{ table.active ? 'active' : 'inactive' }} </span>
-        </p>
-        <p class="card-text">Equipment: <span class="badge"
-                [ngClass]="table.orderId ? 'text-bg-success' : 'text-bg-danger'">
+    </p>
+    <p class="card-text">Equipment: <span [ngClass]="table.orderId ? 'text-bg-success' : 'text-bg-danger'"
+                                          class="badge">
                 {{ table.orderId ? 'present' : 'absent' }} </span></p>
-        <p class="card-text">Camp: <span class="badge" [ngClass]="table.hallId ? 'text-bg-success' : 'text-bg-danger'">
+    <p class="card-text">Camp: <span [ngClass]="table.hallId ? 'text-bg-success' : 'text-bg-danger'" class="badge">
                 {{ table.hallId ? 'present' : 'absent' }} </span></p>
-        <p class="card-text">Created At: {{ table.createdAt }}</p>
-        <p class="card-text">Deactivated At: {{ table.deletedAt }}</p>
-    </div>
+    <p class="card-text">Created At: {{ table.createdAt }}</p>
+    <p class="card-text">Deactivated At: {{ table.deletedAt }}</p>
+  </div>
 </div>

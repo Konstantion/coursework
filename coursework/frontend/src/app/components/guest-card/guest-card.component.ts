@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { GuestDto } from 'src/app/models/dto/guest/guest-dto';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {GuestDto} from 'src/app/models/dto/guest/guest-dto';
 
 @Component({
   selector: 'app-guest-card',
@@ -10,12 +10,13 @@ import { GuestDto } from 'src/app/models/dto/guest/guest-dto';
 })
 export class GuestCardComponent {
   @Input() guest: GuestDto;
- 
+
   @Output() onClick = new EventEmitter<string>();
 
-  constructor() { }
+  constructor() {
+  }
 
   cardClick() {
     this.onClick.emit(this.guest.id);
-  } 
+  }
 }

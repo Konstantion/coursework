@@ -1,4 +1,4 @@
-import { DateTimeFormatter, LocalDateTime } from 'js-joda';
+import {DateTimeFormatter, LocalDateTime} from 'js-joda';
 
 export class ObjectUtils {
   private constructor() {

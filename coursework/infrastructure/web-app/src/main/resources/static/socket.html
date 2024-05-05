@@ -1,39 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WebSocket Example</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-  <script type="text/javascript">
-    $(function () {
-      let socket = new WebSocket("ws://localhost:8080/web-api/calls-websocket");
-      let stompClient = Stomp.over(socket);
-      stompClient.connect({}, function (frame) {
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/calls', function (message) {
-          let call = JSON.parse(message.body);
-          console.log("Received call:", call);
-          $('#calls').append('<li id="call-' + call.id + '"><b>' + call.id + '</b> - ' + call.purpose + ' <button class="delete" data-call-id="' + call.id + '">Delete</button></li>');
-        });
-      });
+    <title>WebSocket Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            let socket = new WebSocket("ws://localhost:8080/web-api/calls-websocket");
+            let stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/calls', function (message) {
+                    let call = JSON.parse(message.body);
+                    console.log("Received call:", call);
+                    $('#calls').append('<li id="call-' + call.id + '"><b>' + call.id + '</b> - ' + call.purpose + ' <button class="delete" data-call-id="' + call.id + '">Delete</button></li>');
+                });
+            });
 
-      $(document).on('click', '.delete', function () {
-        let callId = $(this).data('call-id');
-        console.log('Deleting call:', callId);
-        $.ajax({
-          url: '/web-api/calls/' + callId,
-          type: 'DELETE',
-          success: function () {
-            console.log('Call deleted:', callId);
-            $('#call-' + callId).remove();
-          },
-          error: function () {
-            console.log('Failed to delete call:', callId);
-          }
+            $(document).on('click', '.delete', function () {
+                let callId = $(this).data('call-id');
+                console.log('Deleting call:', callId);
+                $.ajax({
+                    url: '/web-api/calls/' + callId,
+                    type: 'DELETE',
+                    success: function () {
+                        console.log('Call deleted:', callId);
+                        $('#call-' + callId).remove();
+                    },
+                    error: function () {
+                        console.log('Failed to delete call:', callId);
+                    }
+                });
+            });
         });
-      });
-    });
-  </script>
+    </script>
 </head>
 <body>
 <h1>WebSocket Example</h1>

@@ -10,12 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static com.konstantion.exception.utils.ExceptionMessages.NOT_ENOUGH_AUTHORITIES;
 import static com.konstantion.exception.utils.ExceptionUtils.nonExistingIdSupplier;
-import static com.konstantion.user.Permission.*;
+import static com.konstantion.user.Permission.CREATE_CATEGORY;
+import static com.konstantion.user.Permission.SUPER_USER;
+import static com.konstantion.user.Permission.UPDATE_CATEGORY;
 import static java.util.Objects.requireNonNullElse;
 
 @Component
@@ -35,7 +36,7 @@ public record CategoryServiceImpl(
     @Override
     public Category create(CreateCategoryRequest request, User user) {
         if (user.hasNoPermission(SUPER_USER)
-            && user.hasNoPermission(CREATE_CATEGORY)) {
+                && user.hasNoPermission(CREATE_CATEGORY)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 
@@ -54,7 +55,7 @@ public record CategoryServiceImpl(
     @Override
     public Category deleteById(UUID id, User user) {
         if (user.hasNoPermission(SUPER_USER)
-            && user.hasNoPermission(CREATE_CATEGORY)) {
+                && user.hasNoPermission(CREATE_CATEGORY)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
         Category category = getByIdOrThrow(id);
@@ -67,7 +68,7 @@ public record CategoryServiceImpl(
     @Override
     public Category update(UUID id, UpdateCategoryRequest request, User user) {
         if (user.hasNoPermission(SUPER_USER)
-            && user.hasNoPermission(UPDATE_CATEGORY)) {
+                && user.hasNoPermission(UPDATE_CATEGORY)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
         categoryValidator.validate(request).validOrTrow();

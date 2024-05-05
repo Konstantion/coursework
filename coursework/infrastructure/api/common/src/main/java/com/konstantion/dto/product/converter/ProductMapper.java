@@ -3,10 +3,10 @@ package com.konstantion.dto.product.converter;
 import com.konstantion.dto.product.dto.CreateProductRequestDto;
 import com.konstantion.dto.product.dto.ProductDto;
 import com.konstantion.dto.product.dto.UpdateProductRequestDto;
-import com.konstantion.product.Product;
-import com.konstantion.product.model.CreateProductRequest;
-import com.konstantion.product.model.GetProductsRequest;
-import com.konstantion.product.model.UpdateProductRequest;
+import com.konstantion.gear.Gear;
+import com.konstantion.gear.model.CreateProductRequest;
+import com.konstantion.gear.model.GetProductsRequest;
+import com.konstantion.gear.model.UpdateProductRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
@@ -21,9 +21,9 @@ import static java.util.Objects.isNull;
 public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
-    ProductDto toDto(Product entity);
+    ProductDto toDto(Gear entity);
 
-    List<ProductDto> toDto(List<Product> entities);
+    List<ProductDto> toDto(List<Gear> entities);
 
     CreateProductRequest toCreateProductRequest(CreateProductRequestDto productRequestDto);
 
@@ -45,7 +45,7 @@ public interface ProductMapper {
         );
     }
 
-    default Page<ProductDto> toDto(Page<Product> entities) {
+    default Page<ProductDto> toDto(Page<Gear> entities) {
         if (isNull(entities)) {
             return null;
         }

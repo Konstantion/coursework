@@ -1,3 +1,3 @@
-export interface LoginUserRequestDto {   
-   password?: string
+export interface LoginUserRequestDto {
+  password?: string
 }

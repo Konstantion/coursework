@@ -19,20 +19,20 @@ public class JwtConfig {
         return secretKey;
     }
 
-    public String getTokenPrefix() {
-        return tokenPrefix;
-    }
-
-    public Integer getTokenExpirationAfterDays() {
-        return tokenExpirationAfterDays;
-    }
-
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
     }
 
+    public String getTokenPrefix() {
+        return tokenPrefix;
+    }
+
     public void setTokenPrefix(String tokenPrefix) {
         this.tokenPrefix = tokenPrefix;
+    }
+
+    public Integer getTokenExpirationAfterDays() {
+        return tokenExpirationAfterDays;
     }
 
     public void setTokenExpirationAfterDays(Integer tokenExpirationAfterDays) {

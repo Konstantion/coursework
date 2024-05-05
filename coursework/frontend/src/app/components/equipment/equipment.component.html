@@ -1,0 +1,182 @@
+<ng-container *ngIf="(pageState$ | async) as pageState">
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="container border my-3 rounded" style="height: 100vh;">
+    <div class="container">
+      <h1 class="text-center">Equipment Request: <i> {{ pageState.order.id }} </i></h1>
+      <div class="row">
+        <ng-container *ngIf="pageState.orderState === DataState.LOADED_STATE">
+          <div class="col-6">
+            <p class="card-text cursor-pointer"><strong>Creator: </strong><span
+              [ngClass]="pageState.user ? 'text-bg-success' : 'text-bg-danger'"
+              class="badge">
+                                {{ pageState.user.username ? pageState.user.username : 'absent' }} </span>
+            </p>
+            <p><strong>Created At: </strong> {{ pageState.order.createdAt }}</p>
+            <p><strong>Closed At: </strong> {{ pageState.order.closedAt }}</p>
+            <p (click)="onTableClick()" [ngClass]="pageState.table ? 'cursor-pointer' : null"
+               class="card-text cursor-pointer"><strong>Expedition: </strong><span
+              [ngClass]="pageState.table ? 'text-bg-success' : 'text-bg-danger'"
+              class="badge">
+                                {{ pageState.table.name ? pageState.table.name : 'absent' }} </span>
+            </p>
+            <p (click)="onBill()" class="card-text cursor-pointer"><strong>Log: </strong><span
+              [ngClass]="pageState.order.billId ? 'text-bg-success' : 'text-bg-danger'" class="badge">
+                                {{ pageState.order.billId ? 'present' : 'absent' }} </span>
+            </p>
+            <p><strong>Status: </strong> <span [ngClass]="pageState.order.active ? 'text-bg-success' : 'text-bg-danger'"
+                                               class="badge">
+                                {{ pageState.order.active ? 'active' : 'closed' }} </span></p>
+            <div class="mb-3">
+              <button (click)="onClose()"
+                      class="btn btn-warning me-3 w-25 border-1 border-dark">Close
+              </button>
+              <button (click)="onDelete()"
+                      class="btn btn-danger me-3 w-25 border-1 border-dark">Delete
+              </button>
+            </div>
+            <div class="mb-3">
+              <button (click)="onAddProduct()" class="btn btn-primary me-3 w-25 border-1 border-dark">Add
+                gear
+              </button>
+              <button (click)="onRemoveProduct()"
+                      class="btn btn-primary me-3 w-25 border-1 border-dark">Remove gear
+              </button>
+            </div>
+            <div class="mb-3">
+              <button (click)="onCreate()" class="btn btn-primary me-3 w-25 border-1 border-dark">Create
+                log
+              </button>
+              <button (click)="onTransfer()"
+                      class="btn btn-primary me-3 w-25 border-1 border-dark">Transfer
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="container my-3">
+      <ng-container *ngIf="pageState.productsState === DataState.LOADING_STATE">
+        <div class="d-flex justify-content-center align-items-center">
+          <p-progressSpinner></p-progressSpinner>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="pageState.productsState === DataState.LOADED_STATE && pageState.products.size !== 0">
+        <h2 class="text-center">Equipment gears</h2>
+        <div class="row row-cols-2 row-cols-md-3 g-4">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Gear Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let product of pageState.products | keyvalue">
+              <tr (click)="onRow(product.key.id)" class="cursor-pointer">
+                <td> {{ product.key.name }}</td>
+                <td> {{ product.value }}</td>
+                <td> {{ product.key.price }}</td>
+                <td> {{ product.key.price * product.value }}</td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <!--Add product modal-->
+  <ng-container *ngIf="addModal">
+    <app-modal (closeModel)="onCloseAdd()" [closeOnClick]=false [height]="'80vh'" [showModal]="addModal"
+               [width]="'90vw'">
+      <div class="my-2" style="height: 30vh;">
+        <app-gears (productClick)="onProductClick($event)" [border]="true" [size]="4"></app-gears>
+      </div>
+      <div class="col-lg-3 my-2">
+        <label class="form-label" for="quantity">Quantity</label>
+        <input [(ngModel)]="orderProductData.quantity" class="form-control" id="quantity" max="10000"
+               name="quantity" type="number">
+        <div class="my-2">
+          <button (click)="addProduct()" class="btn btn-primary mx-1">Add</button>
+          <button (click)="onCloseAdd()" class="btn btn-secondary mx-1">Close</button>
+        </div>
+      </div>
+
+    </app-modal>
+  </ng-container>
+  <!--Remove product modal-->
+  <ng-container *ngIf="removeModal">
+    <app-modal (closeModel)="onCloseRemove()" [closeOnClick]=false [showModal]="removeModal">
+      <div class="my-2">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Gear Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total price</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let product of pageState.products | keyvalue">
+            <tr (click)="removeSelect(product.key)"
+                [ngClass]="product.key.id === orderProductData.productId ? 'border border-primary rounded-4 border-3' : null">
+
+              <td> {{ product.key.name }}</td>
+              <td> {{ product.value }}</td>
+              <td> {{ product.key.price }}</td>
+              <td> {{ product.key.price * product.value }}</td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="my-2">
+        <label class="form-label" for="quantity">Quantity</label>
+        <input [(ngModel)]="orderProductData.quantity" class="form-control" id="price" max="10000"
+               name="quantity" type="number">
+      </div>
+      <div class="my-2">
+        <button (click)="removeProduct()" class="btn btn-primary mx-1">Remove</button>
+        <button (click)="onCloseRemove()" class="btn btn-secondary mx-1">Close</button>
+      </div>
+    </app-modal>
+  </ng-container>
+  <!--Transfer table modal-->
+  <ng-container *ngIf="transferModal">
+    <app-modal (closeModel)="onCloseTransfer()" [closeOnClick]=false [showModal]="transferModal">
+      <div class="my-2">
+        <select [(ngModel)]="transferToId" class="form-select custom-select border-dark mb-3" name="parameter">
+          <ng-container *ngFor="let table of tables">
+            <option [value]="table.id"><b>{{ table.name }}</b> | <span
+              [ngClass]="table.orderId ? 'text-bg-danger' : 'text-bg-success'"
+              class="badge"> {{
+                table.orderId ?
+                  'order present' : 'order absent'
+              }}</span></option>
+          </ng-container>
+        </select>
+      </div>
+      <div class="my-2">
+        <button (click)="transfer()" class="btn btn-primary mx-1">Transfer</button>
+        <button (click)="onCloseTransfer()" class="btn btn-secondary mx-1">Close</button>
+      </div>
+    </app-modal>
+  </ng-container>
+  <!--Create bill modal-->
+  <ng-container *ngIf="createModal">
+    <app-modal (closeModel)="onCreate()" [closeOnClick]=false [showModal]="createModal">
+      <div class="mb-3">
+        <p-dropdown [(ngModel)]="guestId" [filter]="true" [options]="guests" [showClear]="true"
+                    [style]="{'width':'100%'}" autoWidth="false" filterBy="name" optionLabel="name" optionValue="id"
+                    placeholder="Select discount">
+        </p-dropdown>
+      </div>
+      <button (click)="createBill()" class="btn btn-primary me-2">Create log</button>
+      <button (click)="closeCreate()" class="btn btn-primary me-2">Close</button>
+    </app-modal>
+  </ng-container>
+</ng-container>

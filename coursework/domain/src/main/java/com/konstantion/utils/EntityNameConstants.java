@@ -1,7 +1,6 @@
 package com.konstantion.utils;
 
 public class EntityNameConstants {
-    private EntityNameConstants(){}
     public static final String AUTHENTICATION = "authentication";
     public static final String ENTITY = "entity";
     public static final String JWT_TOKEN = "jwtToken";
@@ -23,4 +22,7 @@ public class EntityNameConstants {
     public static final String ORDERS = "orders";
     public static final String USER = "user";
     public static final String USERS = "users";
+
+    private EntityNameConstants() {
+    }
 }

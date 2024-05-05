@@ -1,3 +1,3 @@
 export interface LoginTableRequestDto {
-    password?: string
+  password?: string
 }

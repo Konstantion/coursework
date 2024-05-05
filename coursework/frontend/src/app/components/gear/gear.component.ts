@@ -13,12 +13,23 @@ import {CategoryService} from 'src/app/services/category/category.service';
 import {ProductService} from 'src/app/services/product/product.service';
 
 @Component({
-  selector: 'app-product',
+  selector: 'app-gear',
   templateUrl: './gear.component.html',
   styleUrls: ['./gear.component.css'],
   providers: [ConfirmationService, MessageService]
 })
 export class GearComponent implements OnInit {
+  showUpdateModal = false;
+  categories: CategoryDto[] = [];
+  productData: CreateProductRequestDto = {};
+  updateProductData: CreateProductRequestDto = {};
+  readonly DataState = DataState
+  private productId: string;
+  private productPageSubject = new BehaviorSubject<ProductPageState>({});
+  pageState$ = this.productPageSubject.asObservable();
+  private createSubject = new BehaviorSubject<CreateProductState>({});
+  createState$ = this.createSubject.asObservable();
+
   constructor(
     private activeRoute: ActivatedRoute,
     private router: Router,
@@ -28,22 +39,6 @@ export class GearComponent implements OnInit {
     private messageService: MessageService
   ) {
   }
-
-  private productId: string;
-  private productPageSubject = new BehaviorSubject<ProductPageState>({});
-  private createSubject = new BehaviorSubject<CreateProductState>({});
-
-
-  createState$ = this.createSubject.asObservable();
-  pageState$ = this.productPageSubject.asObservable();
-
-  showUpdateModal = false;
-  categories: CategoryDto[] = [];
-
-  productData: CreateProductRequestDto = {};
-  updateProductData: CreateProductRequestDto = {};
-
-  readonly DataState = DataState
 
   ngOnInit(): void {
     this.productId = this.activeRoute.snapshot.paramMap.get('id');

@@ -6,11 +6,11 @@ import com.konstantion.dto.table.converter.TableMapper;
 import com.konstantion.dto.table.dto.TableDto;
 import com.konstantion.dto.user.converter.UserMapper;
 import com.konstantion.dto.user.dto.UserDto;
+import com.konstantion.equipment.EquipmentPort;
+import com.konstantion.expedition.Expedition;
+import com.konstantion.expedition.ExpeditionPort;
 import com.konstantion.jwt.JwtService;
-import com.konstantion.order.OrderPort;
 import com.konstantion.response.ResponseDto;
-import com.konstantion.table.Table;
-import com.konstantion.table.TablePort;
 import com.konstantion.testcontainers.configuration.DatabaseContainer;
 import com.konstantion.testcontainers.configuration.DatabaseTestConfiguration;
 import com.konstantion.user.Permission;
@@ -18,7 +18,11 @@ import com.konstantion.user.Role;
 import com.konstantion.user.User;
 import com.konstantion.user.UserPort;
 import org.junit.ClassRule;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
@@ -37,8 +41,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.konstantion.table.TableType.COMMON;
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.expedition.ExpeditionType.COMMON;
+import static com.konstantion.utils.EntityNameConstants.ENTITY;
+import static com.konstantion.utils.EntityNameConstants.ORDER;
+import static com.konstantion.utils.EntityNameConstants.TABLE;
+import static com.konstantion.utils.EntityNameConstants.TABLES;
+import static com.konstantion.utils.EntityNameConstants.USER;
+import static com.konstantion.utils.EntityNameConstants.USERS;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -49,13 +58,16 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TableControllerTest {
+    private static final TableMapper tableMapper = TableMapper.INSTANCE;
+    private static final String API_URL = "/web-api/tables";
     @ClassRule
     @Container
     public static PostgreSQLContainer<DatabaseContainer> postgresSQLContainer = DatabaseContainer.getInstance();
+    Faker faker;
     @Autowired
     private WebTestClient webTestClient;
     @Autowired
-    private TablePort tablePort;
+    private ExpeditionPort expeditionPort;
     @Autowired
     private UserPort userPort;
     @Autowired
@@ -63,12 +75,9 @@ class TableControllerTest {
     @Autowired
     private JwtService jwtService;
     @Autowired
-    private OrderPort orderPort;
+    private EquipmentPort equipmentPort;
     private User waiter;
     private String jwtToken;
-    private static final TableMapper tableMapper = TableMapper.INSTANCE;
-    Faker faker;
-    private static final String API_URL = "/web-api/tables";
 
     @BeforeEach
     void setUp() {
@@ -87,9 +96,9 @@ class TableControllerTest {
 
     @AfterEach
     void cleanUp() {
-        tablePort.deleteAll();
+        expeditionPort.deleteAll();
         userPort.deleteAll();
-        orderPort.deleteAll();
+        equipmentPort.deleteAll();
     }
 
     @Test
@@ -102,27 +111,27 @@ class TableControllerTest {
 
     @Test
     void shouldReturnActiveTablesWhenGetAllActiveTables() {
-        Table first = Table.builder()
+        Expedition first = Expedition.builder()
                 .active(true)
                 .name("first")
                 .password("first")
-                .tableType(COMMON)
+                .expeditionType(COMMON)
                 .build();
-        Table second = Table.builder()
+        Expedition second = Expedition.builder()
                 .active(false)
                 .name("second")
                 .password("second")
-                .tableType(COMMON)
+                .expeditionType(COMMON)
                 .build();
-        Table third = Table.builder()
+        Expedition third = Expedition.builder()
                 .active(true)
                 .name("third")
                 .password("third")
-                .tableType(COMMON)
+                .expeditionType(COMMON)
                 .build();
-        tablePort.save(first);
-        tablePort.save(second);
-        tablePort.save(third);
+        expeditionPort.save(first);
+        expeditionPort.save(second);
+        expeditionPort.save(third);
 
         EntityExchangeResult<ResponseDto<List<TableDto>>> result = webTestClient.get()
                 .uri(API_URL)
@@ -143,13 +152,13 @@ class TableControllerTest {
 
     @Test
     void shouldReturnTableByIdWhenGetTableById() {
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(true)
                 .name("test")
                 .password("test")
-                .tableType(COMMON)
+                .expeditionType(COMMON)
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         EntityExchangeResult<ResponseDto<TableDto>> result = webTestClient.get()
                 .uri(API_URL + "/{id}", table.getId())
@@ -169,13 +178,13 @@ class TableControllerTest {
 
     @Test
     void shouldReturnBadRequestWhenGetTableByIdWithNonExistingId() {
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(true)
                 .name("test")
                 .password("test")
-                .tableType(COMMON)
+                .expeditionType(COMMON)
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         webTestClient.get()
                 .uri(API_URL + "/{id}", UUID.randomUUID())
@@ -186,13 +195,13 @@ class TableControllerTest {
 
     @Test
     void shouldReturnNullWhenGetOrderByTableIdWithTableWithoutOrder() {
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(true)
                 .name("test")
                 .password("test")
-                .tableType(COMMON)
+                .expeditionType(COMMON)
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         EntityExchangeResult<ResponseDto<OrderDto>> result = webTestClient.get()
                 .uri(API_URL + "/{id}/order", table.getId())
@@ -211,13 +220,13 @@ class TableControllerTest {
 
     @Test
     void shouldCreateOrderWhenOpenTableOrder() {
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(true)
                 .name("test")
                 .password("test")
-                .tableType(COMMON)
+                .expeditionType(COMMON)
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         EntityExchangeResult<ResponseDto<OrderDto>> result = webTestClient.post()
                 .uri(API_URL + "/{id}/order", table.getId())
@@ -230,11 +239,11 @@ class TableControllerTest {
 
         OrderDto orderDto = result.getResponseBody()
                 .data().get(ORDER);
-        Table dbTable = tablePort.findById(table.getId()).get();
+        Expedition dbTable = expeditionPort.findById(table.getId()).get();
 
         assertThat(orderDto).isNotNull()
                 .extracting(OrderDto::id).isNotNull()
-                .isEqualTo(dbTable.getOrderId());
+                .isEqualTo(dbTable.getEquipmentId());
 
         assertThat(orderDto.tableId())
                 .isEqualTo(dbTable.getId());
@@ -242,13 +251,13 @@ class TableControllerTest {
 
     @Test
     void shouldReturnBadRequestWhenOpenTableOrderWithTableThatHasOrder() {
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(true)
                 .name("test")
                 .password("test")
-                .tableType(COMMON)
+                .expeditionType(COMMON)
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         webTestClient.post()
                 .uri(API_URL + "/{id}/order", table.getId())
@@ -265,13 +274,13 @@ class TableControllerTest {
 
     @Test
     void shouldReturnBadRequestWhenOpenTableOrderWithInactiveTable() {
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(false)
                 .name("test")
                 .password("test")
-                .tableType(COMMON)
+                .expeditionType(COMMON)
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         webTestClient.post()
                 .uri(API_URL + "/{id}/order", table.getId())
@@ -282,14 +291,14 @@ class TableControllerTest {
 
     @Test
     void shouldReturnTableWaitersWhenGetWaitersByTableId() {
-        Table table = Table.builder()
+        Expedition table = Expedition.builder()
                 .active(false)
                 .name("test")
                 .password("test")
-                .tableType(COMMON)
-                .waitersId(Set.of(waiter.getId()))
+                .expeditionType(COMMON)
+                .guidesId(Set.of(waiter.getId()))
                 .build();
-        tablePort.save(table);
+        expeditionPort.save(table);
 
         EntityExchangeResult<ResponseDto<List<UserDto>>> result = webTestClient.get()
                 .uri(API_URL + "/{id}/waiters", table.getId())

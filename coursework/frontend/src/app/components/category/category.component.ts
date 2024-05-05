@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { BehaviorSubject, catchError, map, of } from 'rxjs';
-import { CreateCategoryRequestDto } from 'src/app/models/dto/category/create-category-request-dto';
-import { CreateCategoryState } from 'src/app/models/state/crud/create-category-state';
-import { DataState } from 'src/app/models/state/enum/data-state';
-import { CategoryPageState } from 'src/app/models/state/pages/category-page-state';
-import { CategoryService } from 'src/app/services/category/category.service';
+import {Component} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {BehaviorSubject, catchError, map, of} from 'rxjs';
+import {CreateCategoryRequestDto} from 'src/app/models/dto/category/create-category-request-dto';
+import {CreateCategoryState} from 'src/app/models/state/crud/create-category-state';
+import {DataState} from 'src/app/models/state/enum/data-state';
+import {CategoryPageState} from 'src/app/models/state/pages/category-page-state';
+import {CategoryService} from 'src/app/services/category/category.service';
 
 @Component({
   selector: 'app-category',
@@ -15,25 +15,23 @@ import { CategoryService } from 'src/app/services/category/category.service';
   providers: [ConfirmationService, MessageService]
 })
 export class CategoryComponent {
+  updateCategoryData: CreateCategoryRequestDto = {};
+  update = false;
+  readonly DataState = DataState;
+  private categoryId = '';
+  private categoryPageSubject = new BehaviorSubject<CategoryPageState>({});
+  pageState$ = this.categoryPageSubject.asObservable();
+  private updateCategorySubject = new BehaviorSubject<CreateCategoryState>({});
+  updateState$ = this.updateCategorySubject.asObservable();
+
   constructor(
     private categoryService: CategoryService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router,
     private activeRoute: ActivatedRoute
-  ) { }
-
-  private categoryId = '';
-  private categoryPageSubject = new BehaviorSubject<CategoryPageState>({});
-  private updateCategorySubject = new BehaviorSubject<CreateCategoryState>({});
-
-  pageState$ = this.categoryPageSubject.asObservable();
-  updateState$ = this.updateCategorySubject.asObservable();
-
-  updateCategoryData: CreateCategoryRequestDto = {};
-  update = false;
-
-  readonly DataState = DataState;
+  ) {
+  }
 
   ngOnInit(): void {
     this.categoryId = this.activeRoute.snapshot.paramMap.get('id');
@@ -51,7 +49,7 @@ export class CategoryComponent {
   }
 
   onUpdate() {
-    this.updateCategoryData = { ...this.categoryPageSubject.value.category };
+    this.updateCategoryData = {...this.categoryPageSubject.value.category};
     this.updateCategorySubject.next({});
     this.update = true;
   }
@@ -97,7 +95,7 @@ export class CategoryComponent {
       catchError(error => {
         if (error.status === 422) {
           const response = error.error;
-          this.updateCategorySubject.next({ invalid: true, violations: response.data })
+          this.updateCategorySubject.next({invalid: true, violations: response.data})
           return of({});
         } else {
           return this.handleError(error);
@@ -114,11 +112,11 @@ export class CategoryComponent {
   handleError(error: any) {
     let errorResponse = error.error;
     if (error.status === 403) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'Not enough authorities' });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: 'Not enough authorities'});
     } else if (error.status === 400) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: errorResponse.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: errorResponse.message});
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: error.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: error.message});
     }
     return of();
   }

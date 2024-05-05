@@ -3,8 +3,8 @@ package com.konstantion.call;
 import com.konstantion.call.model.CreateCallRequest;
 import com.konstantion.exception.BadRequestException;
 import com.konstantion.exception.ForbiddenException;
-import com.konstantion.table.Table;
-import com.konstantion.table.TablePort;
+import com.konstantion.expedition.Expedition;
+import com.konstantion.expedition.ExpeditionPort;
 import com.konstantion.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ import static java.time.LocalDateTime.now;
 @Component
 public record CallServiceImpl(
         CallPort callPort,
-        TablePort tablePort,
+        ExpeditionPort expeditionPort,
         SimpMessagingTemplate simpMessagingTemplate
 ) implements CallService {
     private static final Logger logger = LoggerFactory.getLogger(CallServiceImpl.class);
@@ -41,7 +41,7 @@ public record CallServiceImpl(
     public List<Call> getAllByUser(User user) {
         List<Call> calls = callPort.findAll()
                 .stream()
-                .filter(call -> call.getWaitersId().contains(user.getId()))
+                .filter(call -> call.getGuidesId().contains(user.getId()))
                 .toList();
         logger.info("All calls for user with id {} successfully returned", user.getId());
         return calls;
@@ -52,8 +52,8 @@ public record CallServiceImpl(
         UUID tableId = request.tableId();
         Purpose purpose = request.purpose();
 
-        Table table = tablePort.findById(tableId)
-                .orElseThrow(nonExistingIdSupplier(Table.class, tableId));
+        Expedition table = expeditionPort.findById(tableId)
+                .orElseThrow(nonExistingIdSupplier(Expedition.class, tableId));
 
         callPort.findByTableIdAndPurpose(tableId, purpose).ifPresent(call -> {
             throw new BadRequestException(format("Call with purpose %s for table %s already exist", purpose, tableId));
@@ -61,8 +61,8 @@ public record CallServiceImpl(
 
         Call call = Call.builder()
                 .purpose(purpose)
-                .tableId(tableId)
-                .waitersId(table.getWaitersId())
+                .expeditionId(tableId)
+                .guidesId(table.getGuidesId())
                 .openedAt(now())
                 .build();
 
@@ -77,14 +77,14 @@ public record CallServiceImpl(
     @Override
     public Call closeCall(UUID callId, User user) {
         if (user.hasNoPermission(CLOSE_CALL)
-            && user.hasNoPermission(SUPER_USER)) {
+                && user.hasNoPermission(SUPER_USER)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 
         Call call = getByIdOrThrow(callId);
 
-        if (!call.getWaitersId().contains(user.getId())
-            && user.hasNoPermission(ADMIN)) {
+        if (!call.getGuidesId().contains(user.getId())
+                && user.hasNoPermission(ADMIN)) {
             throw new BadRequestException(format("Call with id %s doesn't related with user with id %s", callId, user.getId()));
         }
 

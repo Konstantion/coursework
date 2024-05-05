@@ -33,19 +33,24 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.List;
 import java.util.Map;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.CATEGORIES;
+import static com.konstantion.utils.EntityNameConstants.CATEGORY;
+import static com.konstantion.utils.EntityNameConstants.ENTITY;
+import static com.konstantion.utils.EntityNameConstants.USER;
 import static java.lang.String.format;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @Testcontainers
 @ContextConfiguration(classes = {DatabaseTestConfiguration.class})
 @ActiveProfiles("test")
 class CategoryControllerTest {
+    private static final String API_URL = "/web-api/categories";
     @ClassRule
     @Container
     public static PostgreSQLContainer<DatabaseContainer> postgresSQLContainer = DatabaseContainer.getInstance();
+    Faker faker;
     @Autowired
     private WebTestClient webTestClient;
     @Autowired
@@ -57,8 +62,6 @@ class CategoryControllerTest {
     @Autowired
     private JwtService jwtService;
     private String jwtToken;
-    Faker faker;
-    private static final String API_URL = "/web-api/categories";
 
     @BeforeEach
     void setUp() {

@@ -1,19 +1,23 @@
 package com.konstantion.controllers.hall;
 
+import com.konstantion.camp.CampService;
 import com.konstantion.dto.hall.converter.HallMapper;
 import com.konstantion.dto.hall.dto.HallDto;
 import com.konstantion.dto.table.converter.TableMapper;
 import com.konstantion.dto.table.dto.TableDto;
-import com.konstantion.hall.HallService;
 import com.konstantion.response.ResponseDto;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import static com.konstantion.utils.EntityNameConstants.*;
+import static com.konstantion.utils.EntityNameConstants.HALL;
+import static com.konstantion.utils.EntityNameConstants.HALLS;
+import static com.konstantion.utils.EntityNameConstants.TABLES;
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.OK;
@@ -21,7 +25,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/web-api/halls")
 public record HallController(
-        HallService hallService
+        CampService campService
 ) {
     private static final HallMapper hallMapper = HallMapper.INSTANCE;
     private static final TableMapper tableMapper = TableMapper.INSTANCE;
@@ -30,7 +34,7 @@ public record HallController(
     public ResponseDto getHallById(
             @PathVariable("id") UUID id
     ) {
-        HallDto dto = hallMapper.toDto(hallService.getById(id));
+        HallDto dto = hallMapper.toDto(campService.getById(id));
 
         return ResponseDto.builder()
                 .message(format("Hall with id %s", id))
@@ -43,7 +47,7 @@ public record HallController(
 
     @GetMapping()
     public ResponseDto getAllActiveHalls() {
-        List<HallDto> dtos = hallMapper.toDto(hallService.getAll());
+        List<HallDto> dtos = hallMapper.toDto(campService.getAll());
 
         return ResponseDto.builder()
                 .message("All active halls")
@@ -58,7 +62,7 @@ public record HallController(
     public ResponseDto getTablesByHallId(
             @PathVariable("id") UUID id
     ) {
-        List<TableDto> dtos = tableMapper.toDto(hallService.getTablesByHallId(id));
+        List<TableDto> dtos = tableMapper.toDto(campService.getTablesByHallId(id));
         return ResponseDto.builder()
                 .message(format("Tables for hall with id %s", id))
                 .timeStamp(now())

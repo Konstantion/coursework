@@ -25,11 +25,15 @@ import java.util.Set;
 import java.util.UUID;
 
 import static com.konstantion.user.Permission.SUPER_USER;
-import static com.konstantion.user.Role.*;
+import static com.konstantion.user.Role.ADMIN;
+import static com.konstantion.user.Role.GUIDE;
+import static com.konstantion.user.Role.TABLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 class UserServiceImplTest {
@@ -94,14 +98,14 @@ class UserServiceImplTest {
     void shouldReturnUsersWhenGetAll() {
         when(userPort.findAll())
                 .thenReturn(List.of(
-                        User.builder().active(true).roles(Set.of(WAITER)).build(),
-                        User.builder().active(false).roles(Set.of(WAITER)).build(),
+                        User.builder().active(true).roles(Set.of(GUIDE)).build(),
+                        User.builder().active(false).roles(Set.of(GUIDE)).build(),
                         User.builder().active(true).roles(Set.of(ADMIN)).build()
                 ));
 
         List<User> activeUsers = userService.getAll();
         List<User> allUsers = userService.getAll(false);
-        List<User> allWaiters = userService.getAll(false, WAITER);
+        List<User> allWaiters = userService.getAll(false, GUIDE);
 
         assertThat(activeUsers)
                 .hasSize(2);
@@ -109,7 +113,7 @@ class UserServiceImplTest {
                 .hasSize(3);
         assertThat(allWaiters)
                 .hasSize(2)
-                .allMatch(user -> user.getRoles().contains(WAITER));
+                .allMatch(user -> user.getRoles().contains(GUIDE));
     }
 
     @Test
@@ -193,7 +197,7 @@ class UserServiceImplTest {
 
         assertThat(waiter)
                 .isNotNull()
-                .matches(user -> user.getFirstName().equals("firstName") && user.getRoles().contains(WAITER));
+                .matches(user -> user.getFirstName().equals("firstName") && user.getRoles().contains(GUIDE));
         assertThat(admin)
                 .isNotNull()
                 .matches(user -> user.getLastName().equals("lastName") && user.getRoles().contains(ADMIN));
@@ -216,15 +220,15 @@ class UserServiceImplTest {
         UUID randomId = UUID.randomUUID();
         when(userPort.findById(any(UUID.class)))
                 .thenReturn(Optional.of(User.builder().active(true).permissions(Sets.newHashSet()).build()))
-                .thenReturn(Optional.of(User.builder().active(true).permissions(Sets.newHashSet(Permission.CALL_WAITER)).build()));
+                .thenReturn(Optional.of(User.builder().active(true).permissions(Sets.newHashSet(Permission.CALL_GUIDE)).build()));
 
-        User addedPermission = userService.addPermission(randomId, Permission.CALL_WAITER, user);
-        User hadPermission = userService.addPermission(randomId, Permission.CALL_WAITER, user);
+        User addedPermission = userService.addPermission(randomId, Permission.CALL_GUIDE, user);
+        User hadPermission = userService.addPermission(randomId, Permission.CALL_GUIDE, user);
 
         assertThat(addedPermission.getPermissions())
-                .contains(Permission.CALL_WAITER);
+                .contains(Permission.CALL_GUIDE);
         assertThat(hadPermission.getPermissions())
-                .contains(Permission.CALL_WAITER);
+                .contains(Permission.CALL_GUIDE);
 
         verify(userPort, times(1)).save(addedPermission);
     }
@@ -234,15 +238,15 @@ class UserServiceImplTest {
         UUID randomId = UUID.randomUUID();
         when(userPort.findById(any(UUID.class)))
                 .thenReturn(Optional.of(User.builder().active(true).permissions(Sets.newHashSet()).build()))
-                .thenReturn(Optional.of(User.builder().active(true).permissions(Sets.newHashSet(Permission.CALL_WAITER)).build()));
+                .thenReturn(Optional.of(User.builder().active(true).permissions(Sets.newHashSet(Permission.CALL_GUIDE)).build()));
 
-        User hadNotPermission = userService.removePermission(randomId, Permission.CALL_WAITER, user);
-        User removedPermission = userService.removePermission(randomId, Permission.CALL_WAITER, user);
+        User hadNotPermission = userService.removePermission(randomId, Permission.CALL_GUIDE, user);
+        User removedPermission = userService.removePermission(randomId, Permission.CALL_GUIDE, user);
 
         assertThat(hadNotPermission.getPermissions())
-                .doesNotContain(Permission.CALL_WAITER);
+                .doesNotContain(Permission.CALL_GUIDE);
         assertThat(removedPermission.getPermissions())
-                .doesNotContain(Permission.CALL_WAITER);
+                .doesNotContain(Permission.CALL_GUIDE);
 
         verify(userPort, times(1)).save(removedPermission);
     }
@@ -252,15 +256,15 @@ class UserServiceImplTest {
         UUID randomId = UUID.randomUUID();
         when(userPort.findById(any(UUID.class)))
                 .thenReturn(Optional.of(User.builder().active(true).roles(Sets.newHashSet()).build()))
-                .thenReturn(Optional.of(User.builder().active(true).roles(Sets.newHashSet(WAITER)).build()));
+                .thenReturn(Optional.of(User.builder().active(true).roles(Sets.newHashSet(GUIDE)).build()));
 
-        User addedRole = userService.addRole(randomId, WAITER, user);
-        User hadRole = userService.addRole(randomId, WAITER, user);
+        User addedRole = userService.addRole(randomId, GUIDE, user);
+        User hadRole = userService.addRole(randomId, GUIDE, user);
 
         assertThat(addedRole.getRoles())
-                .contains(WAITER);
+                .contains(GUIDE);
         assertThat(hadRole.getRoles())
-                .contains(WAITER);
+                .contains(GUIDE);
 
         verify(userPort, times(1)).save(addedRole);
     }
@@ -270,15 +274,15 @@ class UserServiceImplTest {
         UUID randomId = UUID.randomUUID();
         when(userPort.findById(any(UUID.class)))
                 .thenReturn(Optional.of(User.builder().active(true).roles(Sets.newHashSet()).build()))
-                .thenReturn(Optional.of(User.builder().active(true).roles(Sets.newHashSet(WAITER)).build()));
+                .thenReturn(Optional.of(User.builder().active(true).roles(Sets.newHashSet(GUIDE)).build()));
 
-        User hadNotRole = userService.removeRole(randomId, WAITER, user);
-        User removedRole = userService.removeRole(randomId, WAITER, user);
+        User hadNotRole = userService.removeRole(randomId, GUIDE, user);
+        User removedRole = userService.removeRole(randomId, GUIDE, user);
 
         assertThat(hadNotRole.getPermissions())
-                .doesNotContain(Permission.CALL_WAITER);
+                .doesNotContain(Permission.CALL_GUIDE);
         assertThat(removedRole.getPermissions())
-                .doesNotContain(Permission.CALL_WAITER);
+                .doesNotContain(Permission.CALL_GUIDE);
 
         verify(userPort, times(1)).save(removedRole);
     }

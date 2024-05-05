@@ -1,36 +1,37 @@
 <ng-container *ngIf="(pageState$ | async) as pageState">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <div class="container mt-2">
-        <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
-            <p-progressSpinner></p-progressSpinner>
-        </ng-container>
-        <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
-            <p-button label="Create" (onClick)="onCreate()"></p-button>
-            <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
-                <ng-container *ngFor="let category of pageState.categories">
-                    <app-category-card (onClick)="onCard($event)" [category]="category"></app-category-card>
-                </ng-container>
-            </div>
-        </ng-container>
-    </div>
-    <ng-container *ngIf="create">
-        <ng-container *ngIf="(createState$ | async) as cSate">
-            <app-modal [closeOnClick]="false" [showModal]="create" (closeModel)="onClose()">
-
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.name ? 'is-invalid' : null" type="text"
-                        class="form-control" id="name" [(ngModel)]="createCategoryData.name" name="name">
-                    <div *ngIf="cSate.invalid && cSate.violations.name">
-                        <div class="text-red-500">
-                            {{ cSate.violations.name }}
-                        </div>
-                    </div>
-                </div>
-                <button (click)="createCategory()" class="btn btn-primary me-2">Create</button>
-                <button (click)="onClose()" class="btn btn-secondary">Close</button>
-            </app-modal>
-        </ng-container>
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="container mt-2">
+    <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
+      <p-progressSpinner></p-progressSpinner>
     </ng-container>
+    <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
+      <p-button (onClick)="onCreate()" label="Create"></p-button>
+      <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
+        <ng-container *ngFor="let category of pageState.categories">
+          <app-category-card (onClick)="onCard($event)" [category]="category"></app-category-card>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="create">
+    <ng-container *ngIf="(createState$ | async) as cSate">
+      <app-modal (closeModel)="onClose()" [closeOnClick]="false" [showModal]="create">
+
+        <div class="mb-3">
+          <label class="form-label" for="name">Name</label>
+          <input [(ngModel)]="createCategoryData.name"
+                 [ngClass]="cSate.invalid && cSate.violations.name ? 'is-invalid' : null"
+                 class="form-control" id="name" name="name" type="text">
+          <div *ngIf="cSate.invalid && cSate.violations.name">
+            <div class="text-red-500">
+              {{ cSate.violations.name }}
+            </div>
+          </div>
+        </div>
+        <button (click)="createCategory()" class="btn btn-primary me-2">Create</button>
+        <button (click)="onClose()" class="btn btn-secondary">Close</button>
+      </app-modal>
+    </ng-container>
+  </ng-container>
 </ng-container>

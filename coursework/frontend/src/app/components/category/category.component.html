@@ -1,50 +1,54 @@
 <ng-container *ngIf="(pageState$ | async) as pageState">
-    <div class="container border my-3 rounded" style="height: 100hv;">
-        <div class="container">
-            <p-toast></p-toast>
-            <p-confirmPopup></p-confirmPopup>
-            <h1 class="text-center">Category: <i> {{ pageState.category.name }} </i></h1>
-            <div class="row">
-                <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
-                    <app-spinner></app-spinner>
-                </ng-container>
-                <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
-                    <div class="col-6">
-                        <p><strong>Name:</strong> {{ pageState.category.name }} </p>
-                        <p [ngClass]="pageState.category.creatorId ? 'cursor-pointer' : null" (click)="onCreator()">
-                            <strong>Creator: </strong> <span class="badge"
-                                [ngClass]="pageState.category.creatorId ? 'text-bg-success' : 'text-bg-danger'">
-                                {{ pageState.category.creatorId ? 'present' : 'absent' }} </span></p>
-                        <div class="mb-3">
-                            <button class="btn btn-primary me-3 w-25 border-1 border-dark"
-                                (click)="onUpdate()">Update</button>
-                            <button class="btn btn-danger me-3 w-25 border-1 border-dark"
-                                (click)="onDelete()">Delete</button>
-                        </div>
-                    </div>
-                </ng-container>
-            </div>
-        </div>
-    </div>
-    <ng-container *ngIf="update">
-        <ng-container *ngIf="(updateState$ | async) as cSate">
-            <app-modal [closeOnClick]="false" [showModal]="update" (closeModel)="onClose()">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.name ? 'is-invalid' : null" type="text"
-                        class="form-control" id="name" [(ngModel)]="updateCategoryData.name" name="name">
-                    <div *ngIf="cSate.invalid && cSate.violations.name">
-                        <div class="text-red-500">
-                            {{ cSate.violations.name }}
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <p> if you <b>don't want to change </b>the value of a variable, leave its <b>input empty</b>! </p>
-                </div>
-                <button (click)="updateCategory()" class="btn btn-primary me-2">Update</button>
-                <button (click)="onClose()" class="btn btn-secondary">Close</button>
-            </app-modal>
+  <div class="container border my-3 rounded" style="height: 100hv;">
+    <div class="container">
+      <p-toast></p-toast>
+      <p-confirmPopup></p-confirmPopup>
+      <h1 class="text-center">Category: <i> {{ pageState.category.name }} </i></h1>
+      <div class="row">
+        <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
+          <app-spinner></app-spinner>
         </ng-container>
+        <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
+          <div class="col-6">
+            <p><strong>Name:</strong> {{ pageState.category.name }} </p>
+            <p (click)="onCreator()" [ngClass]="pageState.category.creatorId ? 'cursor-pointer' : null">
+              <strong>Creator: </strong> <span
+              [ngClass]="pageState.category.creatorId ? 'text-bg-success' : 'text-bg-danger'"
+              class="badge">
+                                {{ pageState.category.creatorId ? 'present' : 'absent' }} </span></p>
+            <div class="mb-3">
+              <button (click)="onUpdate()"
+                      class="btn btn-primary me-3 w-25 border-1 border-dark">Update
+              </button>
+              <button (click)="onDelete()"
+                      class="btn btn-danger me-3 w-25 border-1 border-dark">Delete
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="update">
+    <ng-container *ngIf="(updateState$ | async) as cSate">
+      <app-modal (closeModel)="onClose()" [closeOnClick]="false" [showModal]="update">
+        <div class="mb-3">
+          <label class="form-label" for="name">Name</label>
+          <input [(ngModel)]="updateCategoryData.name"
+                 [ngClass]="cSate.invalid && cSate.violations.name ? 'is-invalid' : null"
+                 class="form-control" id="name" name="name" type="text">
+          <div *ngIf="cSate.invalid && cSate.violations.name">
+            <div class="text-red-500">
+              {{ cSate.violations.name }}
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <p> if you <b>don't want to change </b>the value of a variable, leave its <b>input empty</b>! </p>
+        </div>
+        <button (click)="updateCategory()" class="btn btn-primary me-2">Update</button>
+        <button (click)="onClose()" class="btn btn-secondary">Close</button>
+      </app-modal>
     </ng-container>
+  </ng-container>
 </ng-container>

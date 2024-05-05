@@ -1,9 +1,9 @@
-import { HttpStatusCode } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { LoginUserRequestDto } from 'src/app/models/dto/user/login-user-request-dto';
-import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import {HttpStatusCode} from '@angular/common/http';
+import {Component} from '@angular/core';
+import {Router} from '@angular/router';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {LoginUserRequestDto} from 'src/app/models/dto/user/login-user-request-dto';
+import {AuthenticationService} from 'src/app/services/authentication/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -15,14 +15,15 @@ export class LoginComponent {
   authenticationRequest: LoginUserRequestDto = {};
   errorMsg = '';
   validationState = {
-    isInvalid : false,
-    validationError : ''
+    isInvalid: false,
+    validationError: ''
   }
 
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   login() {
     this.errorMsg = '';
@@ -45,5 +46,5 @@ export class LoginComponent {
           this.errorMsg = errorResponse.error.message;
         }
       });
-  }  
+  }
 }

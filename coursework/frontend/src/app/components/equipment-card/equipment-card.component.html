@@ -1,0 +1,30 @@
+<div (click)="cardClick()" class="card cursor-pointer" style="height: 100%;">
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="card-header">
+    <div class="mb-2" style="display: flex; justify-content: space-between; max-width: 100%;">
+      <h5 class="fw-bold card-text" style="flex: 1; white-space: normal; overflow-wrap: anywhere;">{{ order.id }}</h5>
+    </div>
+  </div>
+  <div class="card-body">
+    <p class="card-text cursor-pointer"><strong>Creator: </strong><span
+      [ngClass]="order.userId ? 'text-bg-success' : 'text-bg-danger'"
+      class="badge">
+                                {{ order.userId ? 'present' : 'absent' }} </span>
+    </p>
+    <p><strong>Created At: {{ dateString() }} </strong></p>
+    <p><strong>Closed At: </strong> {{ order.closedAt }}</p>
+    <p class="card-text cursor-pointer"><strong>Expedition: </strong><span
+      [ngClass]="order.tableId ? 'text-bg-success' : 'text-bg-danger'"
+      class="badge">
+                                {{ table ? table.name : 'absent' }} </span>
+    </p>
+    <p class="card-text"><strong>Log: </strong><span [ngClass]="order.billId ? 'text-bg-success' : 'text-bg-danger'"
+                                                     class="badge">
+                                {{ order.billId ? 'present' : 'absent' }} </span>
+    </p>
+    <p><strong>Status: </strong> <span [ngClass]="order.active ? 'text-bg-success' : 'text-bg-danger'"
+                                       class="badge">
+                                {{ order.active ? 'active' : 'closed' }} </span></p>
+  </div>
+</div>

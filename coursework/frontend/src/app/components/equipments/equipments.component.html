@@ -1,0 +1,24 @@
+<ng-container *ngIf="(pageState$ | async) as pageState">
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="container mt-2">
+    <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
+      <p-progressSpinner></p-progressSpinner>
+    </ng-container>
+    <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
+      <ng-container *ngIf="isAdmin">
+        <p-toggleButton [(ngModel)]="onlyInactive" offLabel="All" onLabel="Inactive" onLabel="Inactive"
+                        style="width: 10vh;"></p-toggleButton>
+      </ng-container>
+      <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
+        <ng-container *ngFor="let equipment of pageState.orders">
+          <ng-container *ngIf="onlyInactive ? !equipment.active : true">
+            <app-equipment-card (onClick)="onCard($event)" [order]="equipment"
+                                [table]="pageState.tableNames.has(equipment.tableId) ? pageState.tableNames.get(equipment.tableId) : null"></app-equipment-card>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+
+  </div>
+</ng-container>

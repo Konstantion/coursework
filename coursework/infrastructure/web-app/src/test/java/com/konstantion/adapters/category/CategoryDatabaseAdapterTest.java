@@ -83,7 +83,7 @@ class CategoryDatabaseAdapterTest {
         assertThat(dbCategory).isPresent()
                 .get()
                 .matches(matched -> matched.getId().equals(id)
-                                        && matched.getName().equals("newName"));
+                        && matched.getName().equals("newName"));
     }
 
     @Test

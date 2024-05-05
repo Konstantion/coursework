@@ -1,30 +1,30 @@
 <div class="container-fluid mt-3">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <p-tabView>
-        <p-tabPanel header="Guests">
-            <app-guests [isAdmin]="true"></app-guests>
-        </p-tabPanel>
-        <p-tabPanel header="Products">
-            <app-products [isAdmin]="true"></app-products>
-        </p-tabPanel>
-        <p-tabPanel header="Orders">
-            <app-orders [isAdmin]="true"></app-orders>
-        </p-tabPanel>
-        <p-tabPanel header="Bills">
-            <app-bills [isAdmin]="true"></app-bills>
-        </p-tabPanel>
-        <p-tabPanel header="Users">
-            <app-users [isAdmin]="true"></app-users>
-        </p-tabPanel>
-        <p-tabPanel header="Halls" style="padding: 0;">
-            <app-tables class="mt-0" [isAdmin]="true"></app-tables>
-        </p-tabPanel>
-        <p-tabPanel header="Tables">
-            <app-admin-tables class="mt-0"></app-admin-tables>
-        </p-tabPanel>
-        <p-tabPanel header="Categories">
-            <app-categories class="mt-0"></app-categories>
-        </p-tabPanel>
-    </p-tabView>
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <p-tabView>
+    <p-tabPanel header="Discounts">
+      <app-guests [isAdmin]="true"></app-guests>
+    </p-tabPanel>
+    <p-tabPanel header="Gears">
+      <app-gears [isAdmin]="true"></app-gears>
+    </p-tabPanel>
+    <p-tabPanel header="Equimpents">
+      <app-equipments [isAdmin]="true"></app-equipments>
+    </p-tabPanel>
+    <p-tabPanel header="Logs">
+      <app-logs [isAdmin]="true"></app-logs>
+    </p-tabPanel>
+    <p-tabPanel header="Users">
+      <app-users [isAdmin]="true"></app-users>
+    </p-tabPanel>
+    <p-tabPanel header="Camps" style="padding: 0;">
+      <app-equipments [isAdmin]="true" class="mt-0"></app-equipments>
+    </p-tabPanel>
+    <p-tabPanel header="Expeditions">
+      <app-admin-equipments class="mt-0"></app-admin-equipments>
+    </p-tabPanel>
+    <p-tabPanel header="Categories">
+      <app-categories class="mt-0"></app-categories>
+    </p-tabPanel>
+  </p-tabView>
 </div>

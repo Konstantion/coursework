@@ -1,10 +1,11 @@
 package com.konstantion.dto.bill.converter;
 
-import com.konstantion.bill.Bill;
-import com.konstantion.bill.model.CreateBillRequest;
 import com.konstantion.dto.bill.dto.BillDto;
 import com.konstantion.dto.bill.dto.CreateBillRequestDto;
+import com.konstantion.log.Log;
+import com.konstantion.log.model.CreateBillRequest;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -13,9 +14,14 @@ import java.util.List;
 public interface BillMapper {
     BillMapper INSTANCE = Mappers.getMapper(BillMapper.class);
 
-    BillDto toDto(Bill bill);
 
-    List<BillDto> toDto(List<Bill> bill);
+    @Mapping(target = "waiterId", source = "guideId")
+    @Mapping(target = "orderId", source = "equipmentId")
+    BillDto toDto(Log log);
+
+    @Mapping(target = "waiterId", source = "guideId")
+    @Mapping(target = "orderId", source = "equipmentId")
+    List<BillDto> toDto(List<Log> log);
 
     CreateBillRequest toCreateBillRequest(CreateBillRequestDto dto);
 }

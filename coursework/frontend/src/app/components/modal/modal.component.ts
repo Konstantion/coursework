@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'app-modal',
@@ -12,13 +12,13 @@ export class ModalComponent {
   @Input() height: string;
   @Output() closeModel = new EventEmitter<void>();
 
-  handleMouseup(): void {  
+  handleMouseup(): void {
     if (this.closeOnClick) {
       this.showModal = false;
       this.closeModel.emit();
     }
   }
-  
+
   onClose(): void {
     this.showModal = false;
     this.closeModel.emit();

@@ -20,6 +20,31 @@ import static java.util.Objects.nonNull;
 
 @Repository
 public class CategoryDatabaseAdapter implements CategoryPort {
+    public static final String FIND_BY_ID_QUERY = """
+            SELECT * FROM public.category
+            WHERE id = :id;
+            """;
+    public static final String DELETE_QUERY = """
+            DELETE FROM public.category
+            WHERE id = :id;
+            """;
+    public static final String SAVE_QUERY = """
+            INSERT INTO public.category (name, creator_id)
+            VALUES (:name, :creatorId);
+            """;
+    public static final String UPDATE_QUERY = """
+            UPDATE public.category
+            SET name = :name,
+                creator_id = :creatorId
+            WHERE id = :id;
+            """;
+    public static final String FIND_ALL_QUERY = """
+            SELECT * FROM public.category;
+            """;
+    public static final String DELETE_ALL_QUERY = """
+            DELETE FROM public.category
+            WHERE true;
+            """;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RowMapper<Category> categoryRowMapper;
 
@@ -27,37 +52,6 @@ public class CategoryDatabaseAdapter implements CategoryPort {
         this.jdbcTemplate = jdbcTemplate;
         this.categoryRowMapper = categoryRowMapper;
     }
-
-    public static final String FIND_BY_ID_QUERY = """
-            SELECT * FROM public.category
-            WHERE id = :id;
-            """;
-
-    public static final String DELETE_QUERY = """
-            DELETE FROM public.category
-            WHERE id = :id;
-            """;
-
-    public static final String SAVE_QUERY = """
-            INSERT INTO public.category (name, creator_id)
-            VALUES (:name, :creatorId);
-            """;
-
-    public static final String UPDATE_QUERY = """
-            UPDATE public.category
-            SET name = :name,
-                creator_id = :creatorId
-            WHERE id = :id;                        
-            """;
-
-    public static final String FIND_ALL_QUERY = """
-            SELECT * FROM public.category;
-            """;
-
-    public static final String DELETE_ALL_QUERY = """
-            DELETE FROM public.category
-            WHERE true;
-            """;
 
     @Override
     public List<Category> findAll() {

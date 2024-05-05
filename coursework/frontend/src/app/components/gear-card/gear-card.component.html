@@ -1,18 +1,18 @@
 <div (click)="cardClick()" class="card cursor-pointer" style="height: 100%;">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <img class="card-img-top" [src]="arrayBufferToUrl(product.imageBytes)" alt="Product Image">
-    <div class="card-body">
-        <div class="mb-2" style="display: flex; justify-content: space-between;">
-            <h5 class="fw-bold card-text"> {{ product.name }} </h5>
-        </div>
-        <p class="card-text">₴ {{ product.price }} </p>
-
-        <p class="card-text">Category: {{ category ? category.name : '' }} </p>
-
-        <p class="card-text"> Status:
-            <span class="badge me-2" [ngClass]="product.active ? 'text-bg-success' : 'text-bg-danger'">
-                {{ product.active ? 'active' : 'inactive' }} </span>
-        </p>
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <img [src]="arrayBufferToUrl(product.imageBytes)" alt="Product Image" class="card-img-top">
+  <div class="card-body">
+    <div class="mb-2" style="display: flex; justify-content: space-between;">
+      <h5 class="fw-bold card-text"> {{ product.name }} </h5>
     </div>
+    <p class="card-text">₴ {{ product.price }} </p>
+
+    <p class="card-text">Category: {{ category ? category.name : '' }} </p>
+
+    <p class="card-text"> Status:
+      <span [ngClass]="product.active ? 'text-bg-success' : 'text-bg-danger'" class="badge me-2">
+                {{ product.active ? 'active' : 'inactive' }} </span>
+    </p>
+  </div>
 </div>

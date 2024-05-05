@@ -1,16 +1,15 @@
-import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
-import { CreateUserRequestDto } from 'src/app/models/dto/user/create-user-request-dto';
-import { UserDto } from 'src/app/models/dto/user/user-dto';
-import { UserResponse } from 'src/app/models/responses/user-response';
-import { UpdateUserState } from 'src/app/models/state/crud/update-user-state';
-import { DataState } from 'src/app/models/state/enum/data-state';
-import { UsersPageState } from 'src/app/models/state/pages/users-page-state';
-import { ObjectUtils } from 'src/app/models/util/object-utils';
-import { GuestService } from 'src/app/services/guest/guest.service';
-import { UserService } from 'src/app/services/user/user.service';
+import {Component, Input} from '@angular/core';
+import {Router} from '@angular/router';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {BehaviorSubject, catchError, map, Observable, of, startWith} from 'rxjs';
+import {CreateUserRequestDto} from 'src/app/models/dto/user/create-user-request-dto';
+import {UserDto} from 'src/app/models/dto/user/user-dto';
+import {UserResponse} from 'src/app/models/responses/user-response';
+import {UpdateUserState} from 'src/app/models/state/crud/update-user-state';
+import {DataState} from 'src/app/models/state/enum/data-state';
+import {UsersPageState} from 'src/app/models/state/pages/users-page-state';
+import {ObjectUtils} from 'src/app/models/util/object-utils';
+import {UserService} from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-users',
@@ -20,25 +19,22 @@ import { UserService } from 'src/app/services/user/user.service';
 })
 export class UsersComponent {
   @Input() isAdmin: boolean;
+  createUserData: CreateUserRequestDto = {};
+  onlyInactive = false;
+  create = false;
+  readonly DataState = DataState;
+  private usersPageSubject = new BehaviorSubject<UsersPageState>({});
+  pageState$ = this.usersPageSubject.asObservable();
+  private createUserSubject = new BehaviorSubject<UpdateUserState>({});
+  createState$ = this.createUserSubject.asObservable();
 
   constructor(
     private router: Router,
     private userService: UserService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
-  ) { }
-
-  private usersPageSubject = new BehaviorSubject<UsersPageState>({});
-  private createUserSubject = new BehaviorSubject<UpdateUserState>({});
-
-  pageState$ = this.usersPageSubject.asObservable();
-  createState$ = this.createUserSubject.asObservable();
-
-  createUserData: CreateUserRequestDto = {};
-  onlyInactive = false;
-  create = false;
-
-  readonly DataState = DataState;
+  ) {
+  }
 
   ngOnInit(): void {
     let observable: Observable<UserResponse>;
@@ -51,7 +47,7 @@ export class UsersComponent {
         state.users = response.data.users;
         state.dataState = DataState.LOADED_STATE;
       }),
-      startWith(this.usersPageSubject.next({ dataState: DataState.LOADING_STATE })),
+      startWith(this.usersPageSubject.next({dataState: DataState.LOADING_STATE})),
       catchError(error => this.handleError(error))
     ).subscribe();
   }
@@ -75,7 +71,7 @@ export class UsersComponent {
       catchError(error => {
         if (error.status === 422) {
           const response = error.error;
-          this.createUserSubject.next({ invalid: true, violations: response.data })
+          this.createUserSubject.next({invalid: true, violations: response.data})
           return of({});
         } else {
           return this.handleError(error);
@@ -97,7 +93,7 @@ export class UsersComponent {
       catchError(error => {
         if (error.status === 422) {
           const response = error.error;
-          this.createUserSubject.next({ invalid: true, violations: response.data })
+          this.createUserSubject.next({invalid: true, violations: response.data})
           return of({});
         } else {
           return this.handleError(error);
@@ -113,11 +109,11 @@ export class UsersComponent {
   handleError(error: any) {
     let errorResponse = error.error;
     if (error.status === 403) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'Not enough authorities' });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: 'Not enough authorities'});
     } else if (error.status === 400) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: errorResponse.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: errorResponse.message});
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: error.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: error.message});
     }
     return of();
   }

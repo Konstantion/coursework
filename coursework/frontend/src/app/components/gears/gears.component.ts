@@ -1,20 +1,20 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { BehaviorSubject, Observable, catchError, concatMap, map, of, tap } from 'rxjs';
-import { CategoryDto } from 'src/app/models/dto/category/category-dto';
-import { CreateProductRequestDto } from 'src/app/models/dto/product/create-product-dto';
-import { ProductDto } from 'src/app/models/dto/product/product-dto';
-import { CreateProductState } from 'src/app/models/state/crud/create-product-state';
-import { DataState } from 'src/app/models/state/enum/data-state';
-import { FindProductsState } from 'src/app/models/state/crud/find-products-state';
-import { ProductsPageState } from 'src/app/models/state/pages/products-page-state';
-import { CategoryService } from 'src/app/services/category/category.service';
-import { ProductService } from 'src/app/services/product/product.service';
-import { ProductResponse } from 'src/app/models/responses/product-response';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Router} from '@angular/router';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {BehaviorSubject, catchError, concatMap, map, Observable, of} from 'rxjs';
+import {CategoryDto} from 'src/app/models/dto/category/category-dto';
+import {CreateProductRequestDto} from 'src/app/models/dto/product/create-product-dto';
+import {ProductDto} from 'src/app/models/dto/product/product-dto';
+import {CreateProductState} from 'src/app/models/state/crud/create-product-state';
+import {DataState} from 'src/app/models/state/enum/data-state';
+import {FindProductsState} from 'src/app/models/state/crud/find-products-state';
+import {ProductsPageState} from 'src/app/models/state/pages/products-page-state';
+import {CategoryService} from 'src/app/services/category/category.service';
+import {ProductService} from 'src/app/services/product/product.service';
+import {ProductResponse} from 'src/app/models/responses/product-response';
 
 @Component({
-  selector: 'app-products',
+  selector: 'app-gears',
   templateUrl: './gears.component.html',
   styleUrls: ['./gears.component.css'],
   providers: [ConfirmationService, MessageService]
@@ -24,27 +24,10 @@ export class GearsComponent implements OnInit {
   @Input() size: number = null;
   @Input() isAdmin: boolean;
   @Output() productClick = new EventEmitter<string>();
-
-
-  constructor(
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService,
-    private productService: ProductService,
-    private categoryService: CategoryService,
-    private router: Router
-  ) { }
-
-  private pageSubject = new BehaviorSubject<ProductsPageState>({ dataState: DataState.LOADING_STATE });
-  private createSubject = new BehaviorSubject<CreateProductState>({});
-  private searchInputTimeout: any;
-
-  pageState$ = this.pageSubject.asObservable();
-  createState$ = this.createSubject.asObservable();
-
   productId = '';
   categories: CategoryDto[] = [];
   showCreateModal = false;
-  findProductsState: FindProductsState = { page: 1, size: 8, category: "", pattern: "" };
+  findProductsState: FindProductsState = {page: 1, size: 8, category: "", pattern: ""};
   productData: CreateProductRequestDto = {
     name: '',
     price: 0,
@@ -53,8 +36,21 @@ export class GearsComponent implements OnInit {
     description: '',
     categoryId: ''
   };
-
   readonly DataState = DataState;
+  private pageSubject = new BehaviorSubject<ProductsPageState>({dataState: DataState.LOADING_STATE});
+  pageState$ = this.pageSubject.asObservable();
+  private createSubject = new BehaviorSubject<CreateProductState>({});
+  createState$ = this.createSubject.asObservable();
+  private searchInputTimeout: any;
+
+  constructor(
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+    private productService: ProductService,
+    private categoryService: CategoryService,
+    private router: Router
+  ) {
+  }
 
   ngOnInit(): void {
     if (this.size) {
@@ -109,7 +105,7 @@ export class GearsComponent implements OnInit {
   }
 
   showModal() {
-    this.createSubject.next({ dataState: DataState.LOADED_STATE })
+    this.createSubject.next({dataState: DataState.LOADED_STATE})
     this.showCreateModal = true;
   }
 
@@ -122,7 +118,7 @@ export class GearsComponent implements OnInit {
       catchError(error => {
         if (error.status === 422) {
           const response = error.error;
-          this.createSubject.next({ invalid: true, violations: response.data })
+          this.createSubject.next({invalid: true, violations: response.data})
           return of({});
         } else {
           return this.handleError(error);
@@ -156,11 +152,11 @@ export class GearsComponent implements OnInit {
   handleError(error: any) {
     let errorResponse = error.error;
     if (error.status === 403) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'Not enough authorities' });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: 'Not enough authorities'});
     } else if (error.status === 400) {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: errorResponse.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: errorResponse.message});
     } else {
-      this.messageService.add({ severity: 'error', summary: 'Rejected', detail: error.message });
+      this.messageService.add({severity: 'error', summary: 'Rejected', detail: error.message});
     }
     return of();
   }

@@ -20,8 +20,14 @@ import java.util.UUID;
 
 import static com.konstantion.exception.utils.ExceptionMessages.NOT_ENOUGH_AUTHORITIES;
 import static com.konstantion.exception.utils.ExceptionUtils.nonExistingIdSupplier;
-import static com.konstantion.user.Permission.*;
-import static com.konstantion.user.Role.*;
+import static com.konstantion.user.Permission.CHANGE_USER_STATE;
+import static com.konstantion.user.Permission.CREATE_USER;
+import static com.konstantion.user.Permission.SUPER_USER;
+import static com.konstantion.user.Permission.getDefaultAdminPermission;
+import static com.konstantion.user.Permission.getDefaultWaiterPermission;
+import static com.konstantion.user.Role.ADMIN;
+import static com.konstantion.user.Role.getAdminRole;
+import static com.konstantion.user.Role.getWaiterRole;
 import static com.konstantion.utils.ObjectUtils.anyMatchCollection;
 import static com.konstantion.utils.ObjectUtils.requireNonNullOrElseNullable;
 import static java.lang.String.format;
@@ -61,7 +67,7 @@ public record UserServiceImpl(
     @Override
     public User createWaiter(CreateUserRequest request, User authorized) {
         if (authorized.hasNoPermission(CREATE_USER)
-            && authorized.hasNoPermission(SUPER_USER)) {
+                && authorized.hasNoPermission(SUPER_USER)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 
@@ -195,7 +201,7 @@ public record UserServiceImpl(
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 
-        if(userId.equals(authenticated.getId()) && role.equals(ADMIN)) {
+        if (userId.equals(authenticated.getId()) && role.equals(ADMIN)) {
             throw new BadRequestException("Outstanding Move! And how would you manage the application without this role :)");
         }
 
@@ -227,13 +233,13 @@ public record UserServiceImpl(
         List<User> dbUsers = userPort.findAll();
 
         if (!user.getEmail().equals(request.email())
-            && anyMatchCollection(dbUsers, User::getEmail, request.email(), Objects::equals)) {
+                && anyMatchCollection(dbUsers, User::getEmail, request.email(), Objects::equals)) {
             throw new BadRequestException(format("User with email %s already exist", request.email()));
         }
 
         if (nonNull(request.password())
-            && !passwordEncoder.matches(user.getPassword(), request.password())
-            && anyMatchCollection(dbUsers, User::getPassword, request.password(), passwordEncoder::matches)) {
+                && !passwordEncoder.matches(user.getPassword(), request.password())
+                && anyMatchCollection(dbUsers, User::getPassword, request.password(), passwordEncoder::matches)) {
             throw new BadRequestException("User with given password already exist");
         }
 
@@ -249,17 +255,17 @@ public record UserServiceImpl(
     @Override
     public User deactivate(UUID userId, User authenticated) {
         if (authenticated.hasNoPermission(CHANGE_USER_STATE)
-            && authenticated.hasNoPermission(SUPER_USER)) {
+                && authenticated.hasNoPermission(SUPER_USER)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 
-        if(userId.equals(authenticated.getId())) {
+        if (userId.equals(authenticated.getId())) {
             throw new BadRequestException("Deactivating yourself is not allowed :)");
         }
 
         User user = getUserById(userId);
 
-        if(user.hasPermission(SUPER_USER)) {
+        if (user.hasPermission(SUPER_USER)) {
             throw new BadRequestException("Deactivating  SUPER USER is not allowed");
         }
 
@@ -278,11 +284,11 @@ public record UserServiceImpl(
     @Override
     public User activate(UUID userId, User authenticated) {
         if (authenticated.hasNoPermission(CHANGE_USER_STATE)
-            && authenticated.hasNoPermission(SUPER_USER)) {
+                && authenticated.hasNoPermission(SUPER_USER)) {
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 
-        if(userId.equals(authenticated.getId())) {
+        if (userId.equals(authenticated.getId())) {
             throw new BadRequestException("Activating yourself is not allowed :)");
         }
 
@@ -306,13 +312,13 @@ public record UserServiceImpl(
             throw new ForbiddenException(NOT_ENOUGH_AUTHORITIES);
         }
 
-        if(userId.equals(authorized.getId())) {
+        if (userId.equals(authorized.getId())) {
             throw new BadRequestException("Chill body suicide is not an option :(");
         }
 
         User user = getUserById(userId);
 
-        if(user.hasPermission(SUPER_USER)) {
+        if (user.hasPermission(SUPER_USER)) {
             throw new BadRequestException("Deleting SUPER USER is not allowed");
         }
 

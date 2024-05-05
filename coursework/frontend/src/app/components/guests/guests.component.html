@@ -1,65 +1,68 @@
 <ng-container *ngIf="(pageState$ | async) as pageState">
-    <p-toast></p-toast>
-    <p-confirmPopup></p-confirmPopup>
-    <div class="container mt-2">
-        <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
-            <p-progressSpinner></p-progressSpinner>
-        </ng-container>
-        <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
-            <ng-container *ngIf="isAdmin">
-                <p-toggleButton class="me-2" style="width: 10vh;" onLabel="Inactive" [(ngModel)]="onlyInactive"
-                    onLabel="Inactive" offLabel="All"></p-toggleButton>
-                <p-button label="Create" (onClick)="onCreate()"></p-button>
-            </ng-container>
-            <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
-                <ng-container *ngFor="let guest of pageState.guests">
-                    <ng-container *ngIf="onlyInactive ? !guest.active : true">
-                        <app-guest-card (onClick)="onCard($event)" [guest]="guest"></app-guest-card>
-                    </ng-container>
-                </ng-container>
-            </div>
-        </ng-container>
-    </div>
-    <ng-container *ngIf="create">
-        <ng-container *ngIf="(createState$ | async) as cSate">
-            <app-modal [closeOnClick]="false" [showModal]="create" (closeModel)="onClose()">
-
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.name ? 'is-invalid' : null" type="text"
-                        class="form-control" id="name" [(ngModel)]="createGuestData.name" name="name">
-                    <div *ngIf="cSate.invalid && cSate.violations.name">
-                        <div class="text-red-500">
-                            {{ cSate.violations.name }}
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <span class="block mb-2">Phone Number</span>
-                    <p-inputMask autoWidth="false" [style]="{'width':'100%'}"
-                        [ngClass]="cSate.invalid && cSate.violations.phoneNumber ? 'ng-invalid ng-dirty' : null"
-                        mask="999-999-9999" [(ngModel)]="createGuestData.phoneNumber"
-                        placeholder="999-999-9999"></p-inputMask>
-                    <div *ngIf="cSate.invalid && cSate.violations.phoneNumber">
-                        <div class="text-red-500">
-                            {{ cSate.violations.phoneNumber }}
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="weight" class="form-label">Discount Percent</label>
-                    <input [ngClass]="cSate.invalid && cSate.violations.discountPercent ? 'is-invalid' : null"
-                        type="number" class="form-control" id="weight" [(ngModel)]="createGuestData.discountPercent"
-                        name="weight">
-                    <div *ngIf="cSate.invalid && cSate.violations.discountPercent">
-                        <div class="text-red-500">
-                            {{ cSate.violations.discountPercent }}
-                        </div>
-                    </div>
-                </div>
-                <button (click)="createGuest()" class="btn btn-primary me-2">Create</button>
-                <button (click)="onClose()" class="btn btn-secondary">Close</button>
-            </app-modal>
-        </ng-container>
+  <p-toast></p-toast>
+  <p-confirmPopup></p-confirmPopup>
+  <div class="container mt-2">
+    <ng-container *ngIf="pageState.dataState === DataState.LOADING_STATE">
+      <p-progressSpinner></p-progressSpinner>
     </ng-container>
+    <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
+      <ng-container *ngIf="isAdmin">
+        <p-toggleButton [(ngModel)]="onlyInactive" class="me-2" offLabel="All" onLabel="Inactive"
+                        onLabel="Inactive" style="width: 10vh;"></p-toggleButton>
+        <p-button (onClick)="onCreate()" label="Create"></p-button>
+      </ng-container>
+      <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
+        <ng-container *ngFor="let guest of pageState.guests">
+          <ng-container *ngIf="onlyInactive ? !guest.active : true">
+            <app-guest-card (onClick)="onCard($event)" [guest]="guest"></app-guest-card>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="create">
+    <ng-container *ngIf="(createState$ | async) as cSate">
+      <app-modal (closeModel)="onClose()" [closeOnClick]="false" [showModal]="create">
+
+        <div class="mb-3">
+          <label class="form-label" for="name">Name</label>
+          <input [(ngModel)]="createGuestData.name"
+                 [ngClass]="cSate.invalid && cSate.violations.name ? 'is-invalid' : null"
+                 class="form-control" id="name" name="name" type="text">
+          <div *ngIf="cSate.invalid && cSate.violations.name">
+            <div class="text-red-500">
+              {{ cSate.violations.name }}
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <span class="block mb-2">Phone Number</span>
+          <p-inputMask [(ngModel)]="createGuestData.phoneNumber"
+                       [ngClass]="cSate.invalid && cSate.violations.phoneNumber ? 'ng-invalid ng-dirty' : null"
+                       [style]="{'width':'100%'}"
+                       autoWidth="false" mask="999-999-9999"
+                       placeholder="999-999-9999"></p-inputMask>
+          <div *ngIf="cSate.invalid && cSate.violations.phoneNumber">
+            <div class="text-red-500">
+              {{ cSate.violations.phoneNumber }}
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="weight">Discount Percent</label>
+          <input [(ngModel)]="createGuestData.discountPercent"
+                 [ngClass]="cSate.invalid && cSate.violations.discountPercent ? 'is-invalid' : null"
+                 class="form-control" id="weight" name="weight"
+                 type="number">
+          <div *ngIf="cSate.invalid && cSate.violations.discountPercent">
+            <div class="text-red-500">
+              {{ cSate.violations.discountPercent }}
+            </div>
+          </div>
+        </div>
+        <button (click)="createGuest()" class="btn btn-primary me-2">Create</button>
+        <button (click)="onClose()" class="btn btn-secondary">Close</button>
+      </app-modal>
+    </ng-container>
+  </ng-container>
 </ng-container>

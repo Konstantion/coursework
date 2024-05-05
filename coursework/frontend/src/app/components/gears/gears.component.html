@@ -6,47 +6,49 @@
       <div class="col-lg-3" id="searchColl">
         <div class="input-group mb-3">
           <input (input)="updatePattern()" [(ngModel)]="findProductsState.pattern" class="form-control"
-                 id="searchInput" type="text" placeholder="Search gears...">
+                 id="searchInput" placeholder="Search gears..." type="text">
 
         </div>
         <select (change)="onSearch()" [(ngModel)]="findProductsState.category"
                 class="form-select custom-select border-dark mb-3" name="parameter">
-          <option value="" selected>All</option>
+          <option selected value="">All</option>
           <ng-container *ngFor="let category of pageState.categories">
             <option [value]="category.id"> {{ category.name }}</option>
           </ng-container>
         </select>
         <ng-container *ngIf="isAdmin">
           <button (click)="showModal()" class="btn btn-primary mb-3 border-1 border-dark"
-                  style="width: 100%;">Create Product
+                  style="width: 100%;">Create Gear
           </button>
         </ng-container>
         <div style="width: 100%;">
-          <nav style="width: inherit;" aria-label="Page navigation">
+          <nav aria-label="Page navigation" style="width: inherit;">
             <ul class="pagination  justify-content-center">
-              <li class="page-item cursor-pointer" [ngClass]="pageState.page.first ? 'disabled' : null"><a
-                (click)="previousPage()" class="page-link" [attr.aria-disabled]="true">
+              <li [ngClass]="pageState.page.first ? 'disabled' : null" class="page-item cursor-pointer"><a
+                (click)="previousPage()" [attr.aria-disabled]="true" class="page-link">
                 <svg
-                  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                  class="bi bi-arrow-left" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd"
-                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                  class="bi bi-arrow-left" fill="currentColor" height="16" viewBox="0 0 16 16"
+                  width="16" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+                    fill-rule="evenodd"/>
                 </svg>
               </a>
               </li>
               <ng-container *ngFor="let page of pageState.pages">
-                <li class="page-item cursor-pointer"
-                    [ngClass]="page === (pageState.page.number + 1) ? 'disabled' : null"
-                    aria-current="page"><a (click)="updatePage(page)" class="page-link"> {{ page }} </a>
+                <li [ngClass]="page === (pageState.page.number + 1) ? 'disabled' : null"
+                    aria-current="page"
+                    class="page-item cursor-pointer"><a (click)="updatePage(page)" class="page-link"> {{ page }} </a>
                 </li>
               </ng-container>
-              <li class="page-item cursor-pointer" [ngClass]="pageState.page.last ? 'disabled' : null"><a
-                (click)="nextPage()" class="page-link" [attr.aria-disabled]="true">
+              <li [ngClass]="pageState.page.last ? 'disabled' : null" class="page-item cursor-pointer"><a
+                (click)="nextPage()" [attr.aria-disabled]="true" class="page-link">
                 <svg
-                  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                  class="bi bi-arrow-right" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd"
-                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                  class="bi bi-arrow-right" fill="currentColor" height="16" viewBox="0 0 16 16"
+                  width="16" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"
+                    fill-rule="evenodd"/>
                 </svg>
               </a></li>
             </ul>
@@ -60,10 +62,11 @@
         <ng-container *ngIf="pageState.dataState === DataState.LOADED_STATE">
           <div class="row row-cols-4 row-cols-md-4 g-4 mb-2" style="height: 60vh;">
             <ng-container *ngFor="let product of pageState.page.content">
-              <app-products-card
+              <app-gear-card
+                (onClick)="onCard($event)"
+                [category]="getCategory(product)"
                 [ngClass]="border && productId === product.id ? 'border border-primary rounded-4 border-3' : null"
-                (onClick)="onCard($event)" [product]="product"
-                [category]="getCategory(product)"></app-products-card>
+                [product]="product"></app-gear-card>
             </ng-container>
           </div>
         </ng-container>
@@ -74,12 +77,12 @@
 <!--Create product modal-->
 <ng-container *ngIf="showCreateModal">
   <ng-container *ngIf="(createState$ | async) as cSate">
-    <app-modal [closeOnClick]="false" [showModal]="showCreateModal" (closeModel)="closeModal()">
+    <app-modal (closeModel)="closeModal()" [closeOnClick]="false" [showModal]="showCreateModal">
 
       <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <input [ngClass]="cSate.invalid && cSate.violations.name ? 'is-invalid' : null" type="text"
-               class="form-control" id="name" [(ngModel)]="productData.name" name="name">
+        <label class="form-label" for="name">Name</label>
+        <input [(ngModel)]="productData.name" [ngClass]="cSate.invalid && cSate.violations.name ? 'is-invalid' : null"
+               class="form-control" id="name" name="name" type="text">
         <div *ngIf="cSate.invalid && cSate.violations.name">
           <div class="text-red-500">
             {{ cSate.violations.name }}
@@ -87,9 +90,9 @@
         </div>
       </div>
       <div class="mb-3">
-        <label for="price" class="form-label">Price</label>
-        <input [ngClass]="cSate.invalid && cSate.violations.price ? 'is-invalid' : null" type="number"
-               class="form-control" id="price" [(ngModel)]="productData.price" name="price">
+        <label class="form-label" for="price">Price</label>
+        <input [(ngModel)]="productData.price" [ngClass]="cSate.invalid && cSate.violations.price ? 'is-invalid' : null"
+               class="form-control" id="price" name="price" type="number">
         <div *ngIf="cSate.invalid && cSate.violations.price">
           <div class="text-red-500">
             {{ cSate.violations.price }}
@@ -97,9 +100,10 @@
         </div>
       </div>
       <div class="mb-3">
-        <label for="weight" class="form-label">Weight</label>
-        <input [ngClass]="cSate.invalid && cSate.violations.weight ? 'is-invalid' : null" type="number"
-               class="form-control" id="weight" [(ngModel)]="productData.weight" name="weight">
+        <label class="form-label" for="weight">Weight</label>
+        <input [(ngModel)]="productData.weight"
+               [ngClass]="cSate.invalid && cSate.violations.weight ? 'is-invalid' : null"
+               class="form-control" id="weight" name="weight" type="number">
         <div *ngIf="cSate.invalid && cSate.violations.weight">
           <div class="text-red-500">
             {{ cSate.violations.weight }}
@@ -107,9 +111,10 @@
         </div>
       </div>
       <div class="mb-3">
-        <label for="image" class="form-label">Image</label>
-        <input [ngClass]="cSate.invalid && cSate.violations.file ? 'is-invalid' : null" type="file"
-               class="form-control" id="image" (change)="onImageSelected($event)" name="image">
+        <label class="form-label" for="image">Image</label>
+        <input (change)="onImageSelected($event)"
+               [ngClass]="cSate.invalid && cSate.violations.file ? 'is-invalid' : null"
+               class="form-control" id="image" name="image" type="file">
         <div *ngIf="cSate.invalid && cSate.violations.file">
           <div class="text-red-500">
             {{ cSate.violations.file }}
@@ -117,9 +122,10 @@
         </div>
       </div>
       <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea [ngClass]="cSate.invalid && cSate.violations.description ? 'is-invalid' : null"
-                  class="form-control" id="description" [(ngModel)]="productData.description"
+        <label class="form-label" for="description">Description</label>
+        <textarea [(ngModel)]="productData.description"
+                  [ngClass]="cSate.invalid && cSate.violations.description ? 'is-invalid' : null" class="form-control"
+                  id="description"
                   name="description"></textarea>
         <div *ngIf="cSate.invalid && cSate.violations.description">
           <div class="text-red-500">
@@ -128,16 +134,16 @@
         </div>
       </div>
       <div class="mb-3">
-        <label for="categoryId" class="form-label">Category</label>
-        <select class="form-select" id="categoryId" [(ngModel)]="productData.categoryId" name="categoryId">
-          <option value="" selected>Not specified</option>
+        <label class="form-label" for="categoryId">Category</label>
+        <select [(ngModel)]="productData.categoryId" class="form-select" id="categoryId" name="categoryId">
+          <option selected value="">Not specified</option>
           <option *ngFor="let category of categories" [value]="category.id">{{
               category.name
             }}
           </option>
         </select>
       </div>
-      <button (click)="createProduct()" class="btn btn-primary me-2">Create Product</button>
+      <button (click)="createProduct()" class="btn btn-primary me-2">Create Gear</button>
       <button (click)="closeModal()" class="btn btn-secondary">Close</button>
     </app-modal>
   </ng-container>

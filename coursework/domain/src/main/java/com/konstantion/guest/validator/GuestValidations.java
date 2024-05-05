@@ -7,9 +7,9 @@ import org.springframework.validation.FieldError;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 
-import static com.konstantion.utils.validator.ValidationConstants.*;
+import static com.konstantion.utils.validator.ValidationConstants.DISCOUNT_PERCENT_FIELD;
+import static com.konstantion.utils.validator.ValidationConstants.NAME_FIELD;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

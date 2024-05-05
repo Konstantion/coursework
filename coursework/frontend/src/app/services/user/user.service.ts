@@ -1,12 +1,12 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { CreateUserRequestDto } from 'src/app/models/dto/user/create-user-request-dto';
-import { Permission } from 'src/app/models/dto/user/permission';
-import { Role } from 'src/app/models/dto/user/role';
-import { UpdateUserRequestDto } from 'src/app/models/dto/user/update-user-request-dto';
-import { UserResponse } from 'src/app/models/responses/user-response';
-import { environment } from 'src/environments/environment';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, tap} from 'rxjs';
+import {CreateUserRequestDto} from 'src/app/models/dto/user/create-user-request-dto';
+import {Permission} from 'src/app/models/dto/user/permission';
+import {Role} from 'src/app/models/dto/user/role';
+import {UpdateUserRequestDto} from 'src/app/models/dto/user/update-user-request-dto';
+import {UserResponse} from 'src/app/models/responses/user-response';
+import {environment} from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,8 @@ export class UserService {
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+  }
 
   allActiveUsers$ = <Observable<UserResponse>>this.http.get(`${this.userUrl}`)
     .pipe(
@@ -54,7 +55,7 @@ export class UserService {
     let params = new HttpParams()
       .set('role', role);
 
-    return <Observable<UserResponse>>this.http.put(`${this.adminUserUrl}/${id}/roles`, '', { params })
+    return <Observable<UserResponse>>this.http.put(`${this.adminUserUrl}/${id}/roles`, '', {params})
       .pipe(
         tap(console.log)
       );
@@ -64,7 +65,7 @@ export class UserService {
     let params = new HttpParams()
       .set('role', role);
 
-    return <Observable<UserResponse>>this.http.delete(`${this.adminUserUrl}/${id}/roles`, { params })
+    return <Observable<UserResponse>>this.http.delete(`${this.adminUserUrl}/${id}/roles`, {params})
       .pipe(
         tap(console.log)
       );
@@ -74,7 +75,7 @@ export class UserService {
     let params = new HttpParams()
       .set('permission', permission);
 
-    return <Observable<UserResponse>>this.http.put(`${this.adminUserUrl}/${id}/permissions`, '', { params })
+    return <Observable<UserResponse>>this.http.put(`${this.adminUserUrl}/${id}/permissions`, '', {params})
       .pipe(
         tap(console.log)
       );
@@ -84,7 +85,7 @@ export class UserService {
     let params = new HttpParams()
       .set('permission', permission);
 
-    return <Observable<UserResponse>>this.http.delete(`${this.adminUserUrl}/${id}/permissions`, { params })
+    return <Observable<UserResponse>>this.http.delete(`${this.adminUserUrl}/${id}/permissions`, {params})
       .pipe(
         tap(console.log)
       );

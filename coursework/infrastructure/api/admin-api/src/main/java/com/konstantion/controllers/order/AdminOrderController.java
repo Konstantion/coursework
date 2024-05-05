@@ -2,11 +2,15 @@ package com.konstantion.controllers.order;
 
 import com.konstantion.dto.order.converter.OrderMapper;
 import com.konstantion.dto.order.dto.OrderDto;
-import com.konstantion.order.OrderService;
+import com.konstantion.equipment.EquipmentService;
 import com.konstantion.response.ResponseDto;
 import com.konstantion.user.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -21,13 +25,13 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/admin-api/orders")
 public record AdminOrderController(
-        OrderService orderService
+        EquipmentService equipmentService
 ) {
     private static final OrderMapper orderMapper = OrderMapper.INSTANCE;
 
     @GetMapping()
     public ResponseDto getAllOrders() {
-        List<OrderDto> dtos = orderMapper.toDto(orderService.getAll(false));
+        List<OrderDto> dtos = orderMapper.toDto(equipmentService.getAll(false));
 
         return ResponseDto.builder()
                 .status(OK)
@@ -43,7 +47,7 @@ public record AdminOrderController(
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal User user
     ) {
-        OrderDto dto = orderMapper.toDto(orderService.delete(id, user));
+        OrderDto dto = orderMapper.toDto(equipmentService.delete(id, user));
 
         return ResponseDto.builder()
                 .status(OK)

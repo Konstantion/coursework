@@ -1,13 +1,13 @@
 package com.konstantion.exception.utils;
 
-import com.konstantion.bill.Bill;
+import com.konstantion.camp.Camp;
+import com.konstantion.equipment.Equipment;
 import com.konstantion.exception.ActiveStateException;
 import com.konstantion.exception.NonExistingIdException;
+import com.konstantion.expedition.Expedition;
+import com.konstantion.gear.Gear;
 import com.konstantion.guest.Guest;
-import com.konstantion.hall.Hall;
-import com.konstantion.order.Order;
-import com.konstantion.product.Product;
-import com.konstantion.table.Table;
+import com.konstantion.log.Log;
 import com.konstantion.user.User;
 
 import java.util.UUID;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import static java.lang.String.format;
 
 public record ExceptionUtils() {
-    public static boolean isActiveOrThrow(Table table) {
+    public static boolean isActiveOrThrow(Expedition table) {
         boolean isActive = table.isActive();
         if (!isActive) {
             throw new ActiveStateException(format("Table with id %s, isn't active", table.getId()));
@@ -24,18 +24,18 @@ public record ExceptionUtils() {
         return true;
     }
 
-    public static boolean isActiveOrThrow(Order order) {
-        boolean isActive = order.isActive();
+    public static boolean isActiveOrThrow(Equipment equipment) {
+        boolean isActive = equipment.isActive();
         if (!isActive) {
-            throw new ActiveStateException(format("Order with id %s, isn't active", order.getId()));
+            throw new ActiveStateException(format("Order with id %s, isn't active", equipment.getId()));
         }
         return true;
     }
 
-    public static boolean isActiveOrThrow(Product product) {
-        boolean isActive = product.isActive();
+    public static boolean isActiveOrThrow(Gear gear) {
+        boolean isActive = gear.isActive();
         if (!isActive) {
-            throw new ActiveStateException(format("Product with id %s, isn't active", product.getId()));
+            throw new ActiveStateException(format("Product with id %s, isn't active", gear.getId()));
         }
         return true;
     }
@@ -48,18 +48,18 @@ public record ExceptionUtils() {
         return true;
     }
 
-    public static boolean isActiveOrThrow(Bill bill) {
-        boolean isActive = bill.isActive();
+    public static boolean isActiveOrThrow(Log log) {
+        boolean isActive = log.isActive();
         if (!isActive) {
-            throw new ActiveStateException(format("Bill with id %s, isn't active", bill.getId()));
+            throw new ActiveStateException(format("Bill with id %s, isn't active", log.getId()));
         }
         return true;
     }
 
-    public static boolean isActiveOrThrow(Hall hall) {
-        boolean isActive = hall.isActive();
+    public static boolean isActiveOrThrow(Camp camp) {
+        boolean isActive = camp.isActive();
         if (!isActive) {
-            throw new ActiveStateException(format("Bill with id %s, isn't active", hall.getId()));
+            throw new ActiveStateException(format("Bill with id %s, isn't active", camp.getId()));
         }
         return true;
     }
