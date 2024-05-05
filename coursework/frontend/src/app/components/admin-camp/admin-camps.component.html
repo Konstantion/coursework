@@ -11,7 +11,7 @@
       <div class="row row-cols-4 row-cols-md-5 g-4 my-2" style="height: 600;">
         <ng-container *ngFor="let table of pageState.tables">
           <ng-container *ngIf="onlyInactive ? !table.active : true">
-            <app-equipment-card [table]="table"></app-equipment-card>
+            <app-expedition-card [table]="table"></app-expedition-card>
           </ng-container>
         </ng-container>
       </div>

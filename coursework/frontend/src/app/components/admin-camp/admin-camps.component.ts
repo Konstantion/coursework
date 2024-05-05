@@ -7,12 +7,12 @@ import {TablesPageState} from 'src/app/models/state/pages/tables-page-state';
 import {TableService} from 'src/app/services/table/table.service';
 
 @Component({
-  selector: 'app-admin-equipments',
-  templateUrl: './admin-equipments.component.html',
-  styleUrls: ['./admin-equipments.component.css'],
+  selector: 'app-admin-camps',
+  templateUrl: './admin-camps.component.html',
+  styleUrls: ['./admin-camps.component.css'],
   providers: [ConfirmationService, MessageService]
 })
-export class AdminEquipmentsComponent implements OnInit {
+export class AdminCampsComponent implements OnInit {
   onlyInactive = false;
   readonly DataState = DataState;
   private tablesPageSubject = new BehaviorSubject<TablesPageState>({tablesState: DataState.LOADING_STATE});
@@ -48,6 +48,6 @@ export class AdminEquipmentsComponent implements OnInit {
   }
 
   onTable(id: string) {
-    this.router.navigate([`tables/${id}`]);
+    this.router.navigate([`equipment/${id}`]);
   }
 }

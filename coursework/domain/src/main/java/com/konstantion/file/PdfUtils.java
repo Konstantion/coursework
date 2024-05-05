@@ -44,7 +44,7 @@ public class PdfUtils {
             Document document
     ) throws DocumentException {
         // Add title
-        Paragraph title = new Paragraph("BILL", TITLE_FONT);
+        Paragraph title = new Paragraph("SUPPLY LOG", TITLE_FONT);
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
 
@@ -63,7 +63,7 @@ public class PdfUtils {
         String waiterName = waiter != null ? String.join(" ", waiter.getLastName(), waiter.getFirstName()) : "";
         String tableName = table != null ? table.getName() : "";
         String guestName = guest != null ? guest.getName() : "";
-        Paragraph tableInfo = new Paragraph(format("TABLE: %s%nWAITER: %s%nGUEST: %s%n",
+        Paragraph tableInfo = new Paragraph(format("EXPEDITION: %s%nGUIDE: %s%nDISCOUNT: %s%n",
                 tableName,
                 waiterName,
                 guestName), HEADER_FONT);
@@ -71,7 +71,7 @@ public class PdfUtils {
         document.add(tableInfo);
 
         //Add products title
-        Paragraph productTitle = new Paragraph(format("PRODUCTS:%n"), SUBTITLE_FONT);
+        Paragraph productTitle = new Paragraph(format("EQUIPMENT:%n"), SUBTITLE_FONT);
         productTitle.setSpacingAfter(10f);
         productTitle.setAlignment(Element.ALIGN_LEFT);
         document.add(productTitle);
@@ -82,7 +82,7 @@ public class PdfUtils {
         productsTable.setHeaderRows(1);
 
         // Add table headers
-        productsTable.addCell(createCell("PRODUCT", Element.ALIGN_CENTER, LIGHT_GRAY));
+        productsTable.addCell(createCell("GEAR", Element.ALIGN_CENTER, LIGHT_GRAY));
         productsTable.addCell(createCell("QUANTITY", Element.ALIGN_CENTER, LIGHT_GRAY));
         productsTable.addCell(createCell("PRICE", Element.ALIGN_CENTER, LIGHT_GRAY));
         productsTable.addCell(createCell("TOTAL", Element.ALIGN_CENTER, LIGHT_GRAY));

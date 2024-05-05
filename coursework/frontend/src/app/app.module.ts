@@ -50,7 +50,7 @@ import {CallsComponent} from './components/calls/calls.component';
 import {CategoryComponent} from './components/category/category.component';
 import {CategoriesComponent} from './components/categories/categories.component';
 import {CategoryCardComponent} from './components/category-card/category-card.component';
-import {AdminEquipmentsComponent} from './components/admin-equipments/admin-equipments.component';
+import {AdminCampsComponent} from './components/admin-camp/admin-camps.component';
 import {EquipmentComponent} from "./components/equipment/equipment.component";
 
 
@@ -69,7 +69,7 @@ import {EquipmentComponent} from "./components/equipment/equipment.component";
     EquipmentCardComponent,
     GearsComponent,
     GearCardComponent,
-    GearComponent, SpinnerComponent, UserComponent, LogComponent, EquipmentCardComponent, EquipmentsComponent, EquipmentComponent, LogCardComponent, LogsComponent, GuestComponent, GuestCardComponent, GuestsComponent, UsersComponent, CallsComponent, AdminEquipmentsComponent, CategoryComponent, CategoriesComponent, CategoryCardComponent
+    GearComponent, SpinnerComponent, UserComponent, LogComponent, EquipmentCardComponent, EquipmentsComponent, EquipmentComponent, LogCardComponent, LogsComponent, GuestComponent, GuestCardComponent, GuestsComponent, UsersComponent, CallsComponent, AdminCampsComponent, CategoryComponent, CategoriesComponent, CategoryCardComponent
   ],
   imports: [
     BrowserModule,

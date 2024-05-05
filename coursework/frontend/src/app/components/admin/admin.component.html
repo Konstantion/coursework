@@ -9,7 +9,7 @@
       <app-gears [isAdmin]="true"></app-gears>
     </p-tabPanel>
     <p-tabPanel header="Equimpents">
-      <app-equipments [isAdmin]="true"></app-equipments>
+      <app-equipments [isAdmin]="true" ></app-equipments>
     </p-tabPanel>
     <p-tabPanel header="Logs">
       <app-logs [isAdmin]="true"></app-logs>
@@ -17,11 +17,11 @@
     <p-tabPanel header="Users">
       <app-users [isAdmin]="true"></app-users>
     </p-tabPanel>
-    <p-tabPanel header="Camps" style="padding: 0;">
-      <app-equipments [isAdmin]="true" class="mt-0"></app-equipments>
+    <p-tabPanel header="Expedition" style="padding: 0;">
+      <app-admin-camps class="mt-0"></app-admin-camps>
     </p-tabPanel>
-    <p-tabPanel header="Expeditions">
-      <app-admin-equipments class="mt-0"></app-admin-equipments>
+    <p-tabPanel header="Camps">
+      <app-expeditions class="mt-0"></app-expeditions>
     </p-tabPanel>
     <p-tabPanel header="Categories">
       <app-categories class="mt-0"></app-categories>

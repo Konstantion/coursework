@@ -72,7 +72,7 @@ public class ExpeditionDatabaseAdapter implements ExpeditionPort {
             WHERE expedition_id = :expeditionId;
             """;
     private static final String SAVE_WAITER_QUERY = """
-            INSERT INTO public.expedition_guide (expedition_id, guideId)
+            INSERT INTO public.expedition_guide (expedition_id, guide_id)
             VALUES (:expeditionId, :guideId);
             """;
     private final NamedParameterJdbcTemplate jdbcTemplate;
