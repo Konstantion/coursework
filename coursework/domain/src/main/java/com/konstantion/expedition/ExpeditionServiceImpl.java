@@ -62,7 +62,7 @@ public record ExpeditionServiceImpl(
         if (onlyActive) {
             return tables.stream().filter(Expedition::isActive).toList();
         }
-        logger.info("Tables successfully returned, {}", tables);
+        logger.info("Expeditions successfully returned, {}", tables);
         return tables;
     }
 
@@ -82,9 +82,9 @@ public record ExpeditionServiceImpl(
 
         if (table.getGuidesId().add(waiter.getId())) {
             expeditionPort.save(table);
-            logger.info("Waiter with id {} successfully added to the table with id {}", waiter.getId(), tableId);
+            logger.info("Guide with id {} successfully added to the expedition with id {}", waiter.getId(), tableId);
         } else {
-            logger.warn("Table with id {} already has waiter with id {}", tableId, waiter.getId());
+            logger.warn("Expedition with id {} already has guide with id {}", tableId, waiter.getId());
         }
 
         return table;
@@ -104,9 +104,9 @@ public record ExpeditionServiceImpl(
 
         if (table.getGuidesId().remove(waiter.getId())) {
             expeditionPort.save(table);
-            logger.info("Waiter with id {} successfully removed from the table with id {}", waiter.getId(), tableId);
+            logger.info("Guide with id {} successfully removed from the expedition with id {}", waiter.getId(), tableId);
         } else {
-            logger.warn("Table with id {} already hasn't waiter with id {}", tableId, waiter.getId());
+            logger.warn("Expedition with id {} already hasn't guide with id {}", tableId, waiter.getId());
         }
 
         return table;
@@ -130,20 +130,20 @@ public record ExpeditionServiceImpl(
 
         if (!table.getName().equals(request.name())
                 && anyMatchCollection(dbTables, Expedition::getName, request.name(), Objects::equals)) {
-            throw new BadRequestException(format("Table with name %s already exist", request.name()));
+            throw new BadRequestException(format("Expedition with name %s already exist", request.name()));
         }
 
         if (nonNull(request.password())
                 && !passwordEncoder.matches(table.getPassword(), request.password())
                 && anyMatchCollection(dbTables, Expedition::getPassword, request.password(), passwordEncoder::matches)) {
-            throw new BadRequestException("Table with give password already exist");
+            throw new BadRequestException("Expedition with give password already exist");
         }
 
         updateTable(table, request);
 
         expeditionPort.save(table);
 
-        logger.info("Table with id {} successfully updated and returned", tableId);
+        logger.info("Expedition with id {} successfully updated and returned", tableId);
         return table;
     }
 
@@ -152,20 +152,20 @@ public record ExpeditionServiceImpl(
     public Expedition activate(UUID tableId, User user) {
         if (user.hasNoPermission(CHANGE_EXPEDITION_STATE)
                 && user.hasNoPermission(SUPER_USER)) {
-            throw new ForbiddenException("Not enough authorities to activate table");
+            throw new ForbiddenException("Not enough authorities to activate expedition");
         }
 
         Expedition table = getByIdOrThrow(tableId);
 
         if (table.isActive()) {
-            logger.warn("Table with id {} is active and returned", tableId);
+            logger.warn("Expedition with id {} is active and returned", tableId);
             return table;
         }
 
         prepareToActivate(table);
         expeditionPort.save(table);
 
-        logger.info("Table with id {} successfully activated and returned", tableId);
+        logger.info("Expedition with id {} successfully activated and returned", tableId);
         return table;
     }
 
@@ -173,7 +173,7 @@ public record ExpeditionServiceImpl(
     public Expedition deactivate(UUID tableId, User user) {
         if (user.hasNoPermission(CHANGE_EXPEDITION_STATE)
                 && user.hasNoPermission(SUPER_USER)) {
-            throw new ForbiddenException("Not enough authorities to deactivate table");
+            throw new ForbiddenException("Not enough authorities to deactivate expedition");
         }
 
         Expedition table = getByIdOrThrow(tableId);
@@ -181,14 +181,14 @@ public record ExpeditionServiceImpl(
         canBeDeactivatedOrThrow(table);
 
         if (!table.isActive()) {
-            logger.warn("Table with id {} is inactive and returned", tableId);
+            logger.warn("Expedition with id {} is inactive and returned", tableId);
             return table;
         }
 
         prepareToDeactivate(table);
         expeditionPort.save(table);
 
-        logger.info("Table with id {} successfully deactivated and returned", tableId);
+        logger.info("Expedition with id {} successfully deactivated and returned", tableId);
         return table;
     }
 
@@ -196,7 +196,7 @@ public record ExpeditionServiceImpl(
     public Expedition create(CreateTableRequest request, User user) {
         if (user.hasNoPermission(CREATE_EXPEDITION)
                 && user.hasNoPermission(SUPER_USER)) {
-            throw new ForbiddenException("Not enough authorities to create table");
+            throw new ForbiddenException("Not enough authorities to create expedition");
         }
 
         ValidationResult validationResult =
@@ -209,11 +209,11 @@ public record ExpeditionServiceImpl(
 
         List<Expedition> dbTables = expeditionPort.findAll();
         if (anyMatchCollection(dbTables, Expedition::getName, request.name(), Objects::equals)) {
-            throw new BadRequestException(format("Table with name %s already exist", request.name()));
+            throw new BadRequestException(format("Expedition with name %s already exist", request.name()));
         }
 
         if (anyMatchCollection(dbTables, Expedition::getPassword, request.password(), passwordEncoder::matches)) {
-            throw new BadRequestException("Table with given password already exist");
+            throw new BadRequestException("Expedition with given password already exist");
         }
 
 
@@ -221,7 +221,7 @@ public record ExpeditionServiceImpl(
 
         expeditionPort.save(table);
 
-        logger.info("Table successfully created and returned");
+        logger.info("Expedition successfully created and returned");
         return table;
     }
 
@@ -229,14 +229,14 @@ public record ExpeditionServiceImpl(
     public Expedition delete(UUID tableId, User user) {
         if (user.hasNoPermission(DELETE_EXPEDITION)
                 && user.hasNoPermission(SUPER_USER)) {
-            throw new ForbiddenException("Not enough authorities to delete table");
+            throw new ForbiddenException("Not enough authorities to delete expedition");
         }
 
         Expedition table = getByIdOrThrow(tableId);
 
         expeditionPort.delete(table);
 
-        logger.info("Table with id {} successfully deleted and returned", tableId);
+        logger.info("Expedition with id {} successfully deleted and returned", tableId);
         return table;
     }
 
@@ -256,7 +256,7 @@ public record ExpeditionServiceImpl(
         Equipment equipment = equipmentPort.findById(table.getEquipmentId())
                 .orElseThrow(nonExistingIdSupplier(Equipment.class, table.getEquipmentId()));
 
-        logger.info("Order with id {} for table with id {} successfully returned", equipment.getId(), tableId);
+        logger.info("Equipment with id {} for expedition with id {} successfully returned", equipment.getId(), tableId);
 
         return equipment;
     }
@@ -270,7 +270,7 @@ public record ExpeditionServiceImpl(
                         userPort.findById(userId)
                                 .orElseThrow(nonExistingIdSupplier(User.class, userId)))
                 .toList();
-        logger.info("Waiters for table with id {} successfully returned", tableId);
+        logger.info("Guides for expedition with id {} successfully returned", tableId);
         return waiters;
     }
 
@@ -285,7 +285,7 @@ public record ExpeditionServiceImpl(
         table.getGuidesId().clear();
 
         expeditionPort.save(table);
-        logger.info("All waiters successfully removed from the table with id {}", tableId);
+        logger.info("All guides successfully removed from the expedition with id {}", tableId);
         return table;
     }
 
@@ -294,7 +294,7 @@ public record ExpeditionServiceImpl(
         Expedition table = expeditionPort.findByName(username).orElseThrow(() -> {
             throw new UsernameNotFoundException(format("User with username %s doesn't exist", username));
         });
-        logger.info("Table with username {} successfully returned", username);
+        logger.info("Expedition with username {} successfully returned", username);
         return table;
     }
 
@@ -305,7 +305,7 @@ public record ExpeditionServiceImpl(
 
     private boolean canBeDeactivatedOrThrow(Expedition table) {
         if (table.hasOrder()) {
-            throw new ActiveStateException(format("Table with id %s has active order", table.getId()));
+            throw new ActiveStateException(format("Expedition with id %s has active order", table.getId()));
         }
         return true;
     }

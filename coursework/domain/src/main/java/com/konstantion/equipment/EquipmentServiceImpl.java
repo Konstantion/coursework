@@ -50,14 +50,14 @@ public record EquipmentServiceImpl(
         if (onlyActive) {
             return equipment.stream().filter(Equipment::isActive).toList();
         }
-        logger.info("All orders successfully returned");
+        logger.info("All equipments successfully returned");
         return equipment;
     }
 
     @Override
     public Equipment getById(UUID id) {
         Equipment equipment = getByIdOrThrow(id);
-        logger.info("Order with id {} successfully returned", id);
+        logger.info("Equipment with id {} successfully returned", id);
         return equipment;
     }
 
@@ -76,7 +76,7 @@ public record EquipmentServiceImpl(
         ExceptionUtils.isActiveOrThrow(newTable);
 
         if (newTable.hasOrder()) {
-            throw new BadRequestException(format("Table with id %s, already has active order with id %s", newTable.getId(), newTable.getEquipmentId()));
+            throw new BadRequestException(format("Expedition with id %s, already has active equipment with id %s", newTable.getId(), newTable.getEquipmentId()));
         }
 
         if (nonNull(equipment.getExpeditionId())) {
@@ -92,7 +92,7 @@ public record EquipmentServiceImpl(
         equipmentPort.save(equipment);
         expeditionPort.save(newTable);
 
-        logger.info("Order with id {} successfully transferred to the table with id {}", orderId, tableId);
+        logger.info("Equipment with id {} successfully transferred to the expedition with id {}", orderId, tableId);
         return equipment;
     }
 
@@ -108,7 +108,7 @@ public record EquipmentServiceImpl(
         ExceptionUtils.isActiveOrThrow(table);
 
         if (table.hasOrder()) {
-            throw new BadRequestException(format("Table with id %s already has order with id %s", table.getId(), table.getEquipmentId()));
+            throw new BadRequestException(format("Expedition with id %s already has equipment with id %s", table.getId(), table.getEquipmentId()));
         }
 
         Equipment equipment = Equipment.builder()
@@ -140,18 +140,18 @@ public record EquipmentServiceImpl(
 
         if (equipment.getGearsId().isEmpty()) {
             equipmentPort.delete(equipment);
-            logger.warn("Order with id {} didn't contain any product, so it was successfully deleted and returned", orderId);
+            logger.warn("Equipment with id {} didn't contain any gear, so it was successfully deleted and returned", orderId);
             return equipment;
         }
 
         if (!equipment.hasBill()) {
-            throw new BadRequestException(format("Order with id %s doesn't have a bill", equipment.getId()));
+            throw new BadRequestException(format("Equipment with id %s doesn't have a log", equipment.getId()));
         }
 
         Log log = logPort.findById(equipment.getLogId())
                 .orElseThrow(nonExistingIdSupplier(Log.class, equipment.getLogId()));
         if (log.isActive()) {
-            throw new BadRequestException(format("Order with id %s has a bill with id %s that has not been payed", equipment.getId(), log.getId()));
+            throw new BadRequestException(format("Equipment with id %s has a log with id %s that has not been closed", equipment.getId(), log.getId()));
         }
 
         if (nonNull(equipment.getExpeditionId())) {
@@ -168,7 +168,7 @@ public record EquipmentServiceImpl(
         prepareToClose(equipment);
         equipmentPort.save(equipment);
 
-        logger.info("Order with id {} successfully closed and returned", equipment);
+        logger.info("Equipment with id {} successfully closed and returned", equipment);
         return equipment;
     }
 
@@ -183,17 +183,10 @@ public record EquipmentServiceImpl(
 
         equipmentPort.delete(equipment);
 
-        logger.info("Order with id {} successfully deleted and returned", orderId);
+        logger.info("Equipment with id {} successfully deleted and returned", orderId);
         return equipment;
     }
 
-    /**
-     * Fast method to get order products <b>without image bytes</b>!
-     * <p> n - products</p>
-     * <p> k - unique products | k є o(n)</p>
-     * <p> db(x) - fetch image from database time;</p>
-     * <p> db(1) + Θ(n) + Θ(n + db(k)) + Θ(n) = O(n + db(k))</p>
-     */
     @Override
     public List<Gear> getProductsByOrderId(UUID orderId) {
         Equipment equipment = getByIdOrThrow(orderId);
@@ -210,7 +203,7 @@ public record EquipmentServiceImpl(
         List<Gear> gears = productIds.stream()
                 .map(productsMap::get)
                 .toList();
-        logger.info("Products from order with id {} successfully returned", orderId);
+        logger.info("Gear from equipment with id {} successfully returned", orderId);
         return gears;
     }
 
@@ -228,7 +221,7 @@ public record EquipmentServiceImpl(
         ExceptionUtils.isActiveOrThrow(equipment);
 
         if (equipment.hasBill()) {
-            throw new BadRequestException(format("Products can't be added to the order with id %s because it already has a bill with id %s", equipment.getId(), equipment.getLogId()));
+            throw new BadRequestException(format("Gear can't be added to the equipment with id %s because it already has a log with id %s", equipment.getId(), equipment.getLogId()));
         }
 
         Gear gear = gearPort.findById(productId)
@@ -240,7 +233,7 @@ public record EquipmentServiceImpl(
         }
         long theoreticalQuantity = equipment.getGearsId().stream().filter(id -> id.equals(gear.getId())).count() + quantity;
         if (theoreticalQuantity > 1 << 10) {
-            throw new BadRequestException(format("Total quantity of product in order should not be greater than 1024, given %s", theoreticalQuantity));
+            throw new BadRequestException(format("Total quantity of gear in order should not be greater than 1024, given %s", theoreticalQuantity));
         }
 
         int counter = 0;
@@ -249,7 +242,7 @@ public record EquipmentServiceImpl(
         }
 
         equipmentPort.save(equipment);
-        logger.info("{} product(s) with id {} successfully added to the order with id {}", counter, productId, orderId);
+        logger.info("{} gear with id {} successfully added to the equipment with id {}", counter, productId, orderId);
         return counter;
     }
 
@@ -267,7 +260,7 @@ public record EquipmentServiceImpl(
         ExceptionUtils.isActiveOrThrow(equipment);
 
         if (equipment.hasBill()) {
-            throw new BadRequestException(format("Products can't be removed from the order with id %s because it already has a bill with id %s", equipment.getId(), equipment.getLogId()));
+            throw new BadRequestException(format("Gear can't be removed from the equipment with id %s because it already has a log with id %s", equipment.getId(), equipment.getLogId()));
         }
 
         Gear gear = gearPort.findById(productId)
@@ -283,7 +276,7 @@ public record EquipmentServiceImpl(
             }
         }
         equipmentPort.save(equipment);
-        logger.info("{} product(s) with id {} successfully removed from the order with id {}", counter, productId, orderId);
+        logger.info("{} gear with id {} successfully removed from the equipment with id {}", counter, productId, orderId);
         return counter;
     }
 

@@ -64,14 +64,14 @@ public record LogServiceImpl(
         if (onlyActive) {
             return logs.stream().filter(Log::isActive).toList();
         }
-        logger.info("Bills successfully returned");
+        logger.info("Logs successfully returned");
         return logs;
     }
 
     @Override
     public Log getById(UUID id) {
         Log log = getByIdOrThrow(id);
-        logger.info("Bill with id {} successfully returned", id);
+        logger.info("Log with id {} successfully returned", id);
         return log;
     }
 
@@ -87,11 +87,11 @@ public record LogServiceImpl(
         ExceptionUtils.isActiveOrThrow(equipment);
 
         if (equipment.hasBill()) {
-            throw new BadRequestException(format("Order with id %s already has bill", equipment.getId()));
+            throw new BadRequestException(format("Equipment with id %s already has log", equipment.getId()));
         }
 
         if (equipment.getGearsId().isEmpty()) {
-            throw new BadRequestException(format("Cannot create bill for order with id %s because it doesn't contain any products", equipment.getId()));
+            throw new BadRequestException(format("Cannot create log for equipment with id %s because it doesn't contain any gear", equipment.getId()));
         }
 
         Guest guest = guestOrNull(createBillRequest.guestId());
@@ -113,7 +113,7 @@ public record LogServiceImpl(
         equipment.setLogId(log.getId());
         equipmentPort.save(equipment);
 
-        logger.info("Bill successfully created and returned");
+        logger.info("Log successfully created and returned");
         return log;
     }
 
@@ -137,7 +137,7 @@ public record LogServiceImpl(
         logPort.delete(log);
 
 
-        logger.info("Bill with id {} successfully canceled and returned", billId);
+        logger.info("Log with id {} successfully canceled and returned", billId);
         return log;
     }
 
@@ -150,14 +150,14 @@ public record LogServiceImpl(
 
         Log log = getByIdOrThrow(billId);
         if (!log.isActive()) {
-            logger.warn("Bill with id {} is already closed and returned", billId);
+            logger.warn("Log with id {} is already closed and returned", billId);
             return log;
         }
 
         prepareToClose(log);
 
         logPort.save(log);
-        logger.info("Bill with id {} successfully canceled and returned", billId);
+        logger.info("Log with id {} successfully canceled and returned", billId);
         return log;
     }
 
@@ -171,7 +171,7 @@ public record LogServiceImpl(
         Log log = getByIdOrThrow(billId);
 
         if (log.isActive()) {
-            logger.warn("Bill with id {} is already active and returned", billId);
+            logger.warn("Log with id {} is already active and returned", billId);
             return log;
         }
 
@@ -181,7 +181,7 @@ public record LogServiceImpl(
 
         logPort.save(log);
 
-        logger.info("Bill with id {} successfully activated and returned", billId);
+        logger.info("Log with id {} successfully activated and returned", billId);
         return log;
     }
 

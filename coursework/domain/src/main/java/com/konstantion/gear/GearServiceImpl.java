@@ -67,7 +67,7 @@ public record GearServiceImpl(
 
         gearPort.save(gear);
 
-        logger.info("Product successfully created and returned");
+        logger.info("Gear successfully created and returned");
         return gear;
     }
 
@@ -98,7 +98,7 @@ public record GearServiceImpl(
                 ascending,
                 onlyActive
         );
-        logger.info("All products successfully returned");
+        logger.info("All gear successfully returned");
         return products;
     }
 
@@ -113,7 +113,7 @@ public record GearServiceImpl(
 
         gearPort.delete(gear);
 
-        logger.info("Product with id {} successfully deleted and returned", productId);
+        logger.info("Gear with id {} successfully deleted and returned", productId);
         return gear;
     }
 
@@ -144,7 +144,7 @@ public record GearServiceImpl(
 
         gearPort.save(gear);
 
-        logger.info("Product with id {} successfully updated and returned", productId);
+        logger.info("Gear with id {} successfully updated and returned", productId);
         return gear;
     }
 
@@ -158,14 +158,14 @@ public record GearServiceImpl(
         Gear gear = getByIdOrThrow(productId);
 
         if (!gear.isActive()) {
-            logger.info("Product with id {} is already inactive", productId);
+            logger.info("Gear with id {} is already inactive", productId);
             return gear;
         }
 
         prepareToDeactivate(gear);
         gearPort.save(gear);
 
-        logger.info("Product with id {} successfully deactivated and returned", gear);
+        logger.info("Gear with id {} successfully deactivated and returned", gear);
 
         return gear;
     }
@@ -180,21 +180,21 @@ public record GearServiceImpl(
         Gear gear = getByIdOrThrow(productId);
 
         if (gear.isActive()) {
-            logger.warn("Product with id {} is already active", productId);
+            logger.warn("Gear with id {} is already active", productId);
             return gear;
         }
 
         prepareToActivate(gear);
         gearPort.save(gear);
 
-        logger.info("Product with id {} successfully activated and returned", productId);
+        logger.info("Gear with id {} successfully activated and returned", productId);
         return gear;
     }
 
     @Override
     public Gear getById(UUID productId) {
         Gear gear = getByIdOrThrow(productId);
-        logger.info("Product with id {} successfully returned", productId);
+        logger.info("Gear with id {} successfully returned", productId);
         return gear;
     }
 

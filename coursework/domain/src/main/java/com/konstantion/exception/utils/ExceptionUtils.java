@@ -64,7 +64,7 @@ public record ExceptionUtils() {
         return true;
     }
 
-    public static <X extends Throwable> Supplier<? extends X> nonExistingIdSupplier(Class target, UUID id) throws X {
+    public static <X extends Throwable> Supplier<? extends X> nonExistingIdSupplier(Class<?> target, UUID id) throws X {
         String className = target.getSimpleName();
         return () -> {
             throw new NonExistingIdException(format("%s with id %s, doesn't exist", className, id));

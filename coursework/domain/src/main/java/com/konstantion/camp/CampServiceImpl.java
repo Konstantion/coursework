@@ -48,14 +48,14 @@ public record CampServiceImpl(
                 .build();
 
         hallPort.save(camp);
-        logger.info("Hall with id {} successfully created and returned", camp.getId());
+        logger.info("Camp with id {} successfully created and returned", camp.getId());
         return camp;
     }
 
     @Override
     public Camp getById(UUID id) {
         Camp camp = getByIdOrThrow(id);
-        logger.info("Hall with id {} successfully returned", camp.getId());
+        logger.info("Camp with id {} successfully returned", camp.getId());
         return camp;
     }
 
@@ -65,7 +65,7 @@ public record CampServiceImpl(
         if (onlyActive) {
             return camps.stream().filter(Camp::isActive).toList();
         }
-        logger.info("All halls successfully returned");
+        logger.info("All camps successfully returned");
         return camps;
     }
 
@@ -83,7 +83,7 @@ public record CampServiceImpl(
         updateHall(camp, request);
 
         hallPort.save(camp);
-        logger.info("Hall with id {} successfully updated and returned", id);
+        logger.info("Camp with id {} successfully updated and returned", id);
         return camp;
     }
 
@@ -104,7 +104,7 @@ public record CampServiceImpl(
         prepareToActivate(camp);
 
         hallPort.save(camp);
-        logger.info("Hall with id {} successfully activated and returned", id);
+        logger.info("Camp with id {} successfully activated and returned", id);
         return camp;
     }
 
@@ -118,14 +118,14 @@ public record CampServiceImpl(
         Camp camp = getByIdOrThrow(id);
 
         if (!camp.isActive()) {
-            logger.warn("Hall with id {} is already inactive and returned", id);
+            logger.warn("Camp with id {} is already inactive and returned", id);
             return camp;
         }
 
         prepareToDeactivate(camp);
 
         hallPort.save(camp);
-        logger.info("Hall with id {} successfully deactivated and returned", id);
+        logger.info("Camp with id {} successfully deactivated and returned", id);
         return camp;
     }
 
@@ -138,7 +138,7 @@ public record CampServiceImpl(
         Camp camp = getByIdOrThrow(id);
 
         hallPort.delete(camp);
-        logger.info("Hall with id {} successfully deleted", id);
+        logger.info("Camp with id {} successfully deleted", id);
         return camp;
     }
 
@@ -150,7 +150,7 @@ public record CampServiceImpl(
         if (onlyActive) {
             tables = tables.stream().filter(Expedition::isActive).toList();
         }
-        logger.info("Tables in hall with id {} successfully returned", id);
+        logger.info("Expeditions in camp with id {} successfully returned", id);
         return tables;
     }
 
